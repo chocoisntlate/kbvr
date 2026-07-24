@@ -3,7 +3,13 @@
 import { useKeyboard } from "../keyboard/KeyboardContext";
 
 export default function ButtonsBar() {
-  const { setInspectMode, isInspectMode } = useKeyboard();
+  const {
+    setInspectMode,
+    isInspectMode,
+    isSearchVisible,
+    setSearchVisible,
+    setPressedKeys,
+  } = useKeyboard();
 
   return (
     <div
@@ -17,6 +23,23 @@ export default function ButtonsBar() {
       >
         {isInspectMode ? "Exit Inspection" : "Inspect Keys"}
       </button>
+      {!isInspectMode && (
+        <>
+          <button
+            className="rounded-md border border-gray-300 px-3 py-2 text-xs font-medium shadow-sm bg-white hover:bg-gray-100 transition-colors"
+            onClick={() => setSearchVisible((prev) => !prev)}
+            aria-pressed={isSearchVisible}
+          >
+            {isSearchVisible ? "Hide Search" : "Show Search"}
+          </button>
+          <button
+            className="rounded-md border border-gray-300 px-3 py-2 text-xs font-medium shadow-sm bg-white hover:bg-gray-100 transition-colors"
+            onClick={() => setPressedKeys(new Set())}
+          >
+            Reset Pressed Keys
+          </button>
+        </>
+      )}
     </div>
   );
 }

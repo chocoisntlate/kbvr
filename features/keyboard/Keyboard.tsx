@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "@/features/spec/layoutSchema";
 import { Diagram, Shortcut } from "../spec/diagramSchema";
 import { Key } from "./Key";
@@ -34,12 +34,32 @@ function addGapCompensation(rows: Layout["rows"], gap: number) {
 // ------------------------------------------------------------------
 
 export function Keyboard() {
-  const { keyDiagram, keyLayout, isInspectMode } = useKeyboard();
-  const [pressedKeys, setPressedKeys] = useState<Set<string>>(() => new Set());
+  const {
+    keyDiagram,
+    keyLayout,
+    isInspectMode,
+    pressedKeys,
+    setPressedKeys,
+    setKeyboardHeight,
+  } = useKeyboard();
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [editingShortcuts, setEditingShortcuts] = useState<
     Diagram["shortcuts"]
   >([]);
+  const keyboardRef = useRef<HTMLDivElement>(null);
+
+  // publish the keyboard's rendered height so sibling UI (e.g. the search
+  // panel) can size itself to match without growing past it
+  useEffect(() => {
+    const el = keyboardRef.current;
+    if (!el) return;
+
+    const observer = new ResizeObserver(() => {
+      setKeyboardHeight(el.getBoundingClientRect().height);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [setKeyboardHeight]);
 
   const keyCandidatesMap = useMemo(() => {
     if (!keyDiagram) return new Map<string, Shortcut[]>();
@@ -76,7 +96,7 @@ export function Keyboard() {
       next.has(keyId) ? next.delete(keyId) : next.add(keyId);
       return next;
     });
-  }, []);
+  }, [setPressedKeys]);
 
   const editKey = useCallback(
     (keyId: string | null) => {
@@ -94,7 +114,6 @@ export function Keyboard() {
 
   // reset interaction state when toggling modes
   useEffect(() => {
-    setPressedKeys(new Set());
     setEditingKey(null);
     setEditingShortcuts([]);
   }, [isInspectMode]);
@@ -105,7 +124,10 @@ export function Keyboard() {
 
   return (
     <>
-      <div className="flex flex-col gap-1 rounded-xl p-3 shadow-md border border-gray-300 w-fit">
+      <div
+        ref={keyboardRef}
+        className="flex flex-col gap-1 rounded-xl p-3 shadow-md border border-gray-300 w-fit"
+      >
         {layout.map((row, rowIndex) => (
           <div key={rowIndex} className="flex" style={{ gap: GAP }}>
             {row.map((key, keyIndex) =>

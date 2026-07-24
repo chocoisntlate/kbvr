@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import { ShortcutRow } from "./ShortcutRow";
 import { getValidKeyIds } from "../diagram/shortcut";
 import { useKeyboard } from "../keyboard/KeyboardContext";
@@ -110,6 +110,16 @@ export default function InspectModal({
     },
     [collapseEdit, clearError],
   );
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
 
   /* ---------- Render ---------- */
 
