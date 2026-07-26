@@ -8,19 +8,49 @@ import { isSupabaseConfigured } from "@/utils/supabase/config";
 type AuthContextType = {
   user: User | null;
   loading: boolean;
+  displayName: string | null;
+  refreshDisplayName: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+async function fetchDisplayName(userId: string): Promise<string | null> {
+  try {
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("id", userId)
+      .maybeSingle();
+    return data?.display_name ?? null;
+  } catch (err) {
+    console.warn("Could not fetch display name:", err);
+    return null;
+  }
+}
+
 export function AuthProvider({
   initialUser,
+  initialDisplayName,
   children,
 }: {
   initialUser: User | null;
+  initialDisplayName: string | null;
   children: React.ReactNode;
 }) {
   const [user, setUser] = useState<User | null>(initialUser);
   const [loading, setLoading] = useState(false);
+  const [displayName, setDisplayName] = useState<string | null>(
+    initialDisplayName,
+  );
+
+  const refreshDisplayName = async () => {
+    if (!user) {
+      setDisplayName(null);
+      return;
+    }
+    setDisplayName(await fetchDisplayName(user.id));
+  };
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
@@ -32,6 +62,11 @@ export function AuthProvider({
       } = supabase.auth.onAuthStateChange((_event, session) => {
         setUser(session?.user ?? null);
         setLoading(false);
+        if (session?.user) {
+          fetchDisplayName(session.user.id).then(setDisplayName);
+        } else {
+          setDisplayName(null);
+        }
       });
 
       return () => subscription.unsubscribe();
@@ -56,7 +91,9 @@ export function AuthProvider({
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider
+      value={{ user, loading, displayName, refreshDisplayName }}
+    >
       {children}
     </AuthContext.Provider>
   );

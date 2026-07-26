@@ -6,7 +6,7 @@ import { signInWithGoogle } from "@/features/auth/signInWithGoogle";
 import { createClient } from "@/utils/supabase/client";
 
 export default function Navbar() {
-  const { user } = useAuth();
+  const { user, displayName } = useAuth();
 
   const signOut = () => {
     try {
@@ -20,15 +20,28 @@ export default function Navbar() {
 
   return (
     <div className="p-4 bg-gray-100 shadow-md flex items-center justify-between">
-      <Link className="font-mono" href="/">
-        key-diagram
-      </Link>
+      <div className="flex items-center gap-4">
+        <Link className="font-mono" href="/">
+          key-diagram
+        </Link>
+        <nav className="flex items-center gap-3 text-xs text-gray-600">
+          <Link href="/browse" className="hover:text-gray-900 transition-colors">
+            Browse
+          </Link>
+          <Link href="/library" className="hover:text-gray-900 transition-colors">
+            Library
+          </Link>
+        </nav>
+      </div>
 
       {user ? (
         <div className="flex items-center gap-3 text-xs">
-          <span className="text-gray-600">
-            {user.user_metadata?.full_name ?? user.email}
-          </span>
+          <Link
+            href="/account"
+            className="text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            {displayName ?? user.user_metadata?.full_name ?? user.email}
+          </Link>
           <button
             type="button"
             onClick={signOut}

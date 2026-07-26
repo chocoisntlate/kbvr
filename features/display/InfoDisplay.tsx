@@ -3,24 +3,36 @@
 import React from "react";
 import { ImportExportButton } from "./ImportExport";
 import { useKeyboard } from "../keyboard/KeyboardContext";
+import { SavePostButton } from "@/features/posts/SavePostButton";
 
 /* ------------------------------------------------------------------ */
 /* Keyboard panel with diagram + optional layout info                 */
 /* ------------------------------------------------------------------ */
 
 export function KeyboardPanel() {
-  const { keyDiagram, setKeyDiagram, keyLayout, setKeyLayout } = useKeyboard();
+  const {
+    keyDiagram,
+    setKeyDiagram,
+    keyLayout,
+    setKeyLayout,
+    currentDiagramMeta,
+    setCurrentDiagramMeta,
+    currentLayoutMeta,
+    setCurrentLayoutMeta,
+  } = useKeyboard();
 
-  /* Helper to import JSON and update state */
+  /* Helper to import JSON, update state, and detach it from any saved post */
   const handleImport = <T,>(
     file: File,
     setter: React.Dispatch<React.SetStateAction<T>>,
+    resetMeta: () => void,
   ) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const data = JSON.parse(e.target?.result as string) as T;
         setter(data);
+        resetMeta();
       } catch (err) {
         console.error("Failed to import JSON:", err);
       }
@@ -74,11 +86,21 @@ export function KeyboardPanel() {
           <>
             <ImportExportButton
               title="Import"
-              onFileSelect={(file) => handleImport(file, setKeyDiagram)}
+              onFileSelect={(file) =>
+                handleImport(file, setKeyDiagram, () =>
+                  setCurrentDiagramMeta(null),
+                )
+              }
             />
             <ImportExportButton
               title="Export"
               onClick={() => handleExport(keyDiagram.name, keyDiagram)}
+            />
+            <SavePostButton
+              kind="diagram"
+              data={keyDiagram}
+              meta={currentDiagramMeta}
+              onMetaChange={setCurrentDiagramMeta}
             />
           </>
         }
@@ -106,11 +128,21 @@ export function KeyboardPanel() {
           <>
             <ImportExportButton
               title="Import"
-              onFileSelect={(file) => handleImport(file, setKeyLayout)}
+              onFileSelect={(file) =>
+                handleImport(file, setKeyLayout, () =>
+                  setCurrentLayoutMeta(null),
+                )
+              }
             />
             <ImportExportButton
               title="Export"
               onClick={() => handleExport(keyLayout.name, keyLayout)}
+            />
+            <SavePostButton
+              kind="layout"
+              data={keyLayout}
+              meta={currentLayoutMeta}
+              onMetaChange={setCurrentLayoutMeta}
             />
           </>
         }

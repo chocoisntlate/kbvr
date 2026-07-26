@@ -10,6 +10,7 @@ type ImportExportButtonProps<T> = {
     contextSetter?: React.Dispatch<React.SetStateAction<T>>,
   ) => void;
   contextSetter?: React.Dispatch<React.SetStateAction<T>>;
+  disabled?: boolean;
 };
 
 export function ImportExportButton<T>({
@@ -17,6 +18,7 @@ export function ImportExportButton<T>({
   onClick,
   onFileSelect,
   contextSetter,
+  disabled,
 }: ImportExportButtonProps<T>) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -36,8 +38,9 @@ export function ImportExportButton<T>({
   return (
     <>
       <button
-        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         onClick={handleClick}
+        disabled={disabled}
       >
         {title}
       </button>
