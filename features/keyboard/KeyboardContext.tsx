@@ -5,6 +5,7 @@ import { Diagram } from "../spec/diagramSchema";
 import { Layout } from "@/features/spec/layoutSchema";
 import { INTRODUCTION_DIAGRAM } from "@/examples/default.diagram";
 import { QWERTY_US_80 } from "../../examples/default.layout";
+import { PostMeta } from "@/features/posts/types";
 
 type KeyboardContextType = {
   keyDiagram: Diagram;
@@ -19,6 +20,10 @@ type KeyboardContextType = {
   setSearchVisible: React.Dispatch<React.SetStateAction<boolean>>;
   keyboardHeight: number | null;
   setKeyboardHeight: React.Dispatch<React.SetStateAction<number | null>>;
+  currentDiagramMeta: PostMeta | null;
+  setCurrentDiagramMeta: React.Dispatch<React.SetStateAction<PostMeta | null>>;
+  currentLayoutMeta: PostMeta | null;
+  setCurrentLayoutMeta: React.Dispatch<React.SetStateAction<PostMeta | null>>;
 };
 
 const KeyboardContext = createContext<KeyboardContextType | undefined>(
@@ -26,18 +31,34 @@ const KeyboardContext = createContext<KeyboardContextType | undefined>(
 );
 
 export function KeyboardContextProvider({
+  initialDiagram,
+  initialLayout,
+  initialDiagramMeta,
+  initialLayoutMeta,
   children,
 }: {
+  initialDiagram?: Diagram;
+  initialLayout?: Layout;
+  initialDiagramMeta?: PostMeta | null;
+  initialLayoutMeta?: PostMeta | null;
   children: React.ReactNode;
 }) {
-  const [keyDiagram, setKeyDiagram] = useState<Diagram>(INTRODUCTION_DIAGRAM);
-  const [keyLayout, setKeyLayout] = useState<Layout>(QWERTY_US_80);
+  const [keyDiagram, setKeyDiagram] = useState<Diagram>(
+    initialDiagram ?? INTRODUCTION_DIAGRAM,
+  );
+  const [keyLayout, setKeyLayout] = useState<Layout>(
+    initialLayout ?? QWERTY_US_80,
+  );
   const [isInspectMode, setInspectMode] = useState<boolean>(false);
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(
     () => new Set(),
   );
   const [isSearchVisible, setSearchVisible] = useState<boolean>(false);
   const [keyboardHeight, setKeyboardHeight] = useState<number | null>(null);
+  const [currentDiagramMeta, setCurrentDiagramMeta] =
+    useState<PostMeta | null>(initialDiagramMeta ?? null);
+  const [currentLayoutMeta, setCurrentLayoutMeta] =
+    useState<PostMeta | null>(initialLayoutMeta ?? null);
 
   useEffect(() => {
     setPressedKeys(new Set());
@@ -58,6 +79,10 @@ export function KeyboardContextProvider({
         setSearchVisible,
         keyboardHeight,
         setKeyboardHeight,
+        currentDiagramMeta,
+        setCurrentDiagramMeta,
+        currentLayoutMeta,
+        setCurrentLayoutMeta,
       }}
     >
       {children}

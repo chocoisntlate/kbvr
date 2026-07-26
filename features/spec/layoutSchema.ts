@@ -1,17 +1,20 @@
 import { z } from "zod";
 
-export const KeySchema = z.object({
-  id: z
-    .string()
-    .min(1, "Key ID cannot be empty")
-    .max(50, "Key ID too long")
-    .nullable(),
-  label: z
-    .string()
-    .min(1, "Key label cannot be empty")
-    .max(20, "Key label too long"),
-  widthScale: z.number().positive().optional(),
-});
+export const KeySchema = z
+  .object({
+    id: z
+      .string()
+      .min(1, "Key ID cannot be empty")
+      .max(50, "Key ID too long")
+      .nullable(),
+    label: z.string().max(20, "Key label too long"),
+    widthScale: z.number().positive().optional(),
+  })
+  // Spacer keys (id: null) render no label, so only real keys require one.
+  .refine((key) => key.id === null || key.label.length > 0, {
+    message: "Key label cannot be empty",
+    path: ["label"],
+  });
 
 export const RowSchema = z
   .array(KeySchema)
