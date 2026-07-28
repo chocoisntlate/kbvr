@@ -1,5 +1,4 @@
-import { cookies } from "next/headers";
-import { createClient } from "@/utils/supabase/server";
+import { getServerAuthContext } from "@/utils/supabase/server";
 import { isSupabaseConfigured } from "@/utils/supabase/config";
 import { Diagram } from "@/features/spec/diagramSchema";
 import { Layout } from "@/features/spec/layoutSchema";
@@ -30,11 +29,10 @@ function mapRow<T>(row: PostRow): { id: string; ownerId: string; ownerDisplayNam
 }
 
 async function getServerContext() {
-  const supabase = createClient(await cookies());
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return { supabase, user };
+  // safely() below only calls run() when isSupabaseConfigured() is true, so
+  // supabase is guaranteed non-null here.
+  const { supabase, user } = await getServerAuthContext();
+  return { supabase: supabase!, user };
 }
 
 /* Sanitize a search term for use inside a PostgREST `.or()` filter string. */

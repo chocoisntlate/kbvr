@@ -1,6 +1,5 @@
-import { cookies } from "next/headers";
-import { createClient } from "@/utils/supabase/server";
-import { isSupabaseConfigured } from "@/utils/supabase/config";
+import { Suspense } from "react";
+import { getServerAuthContext } from "@/utils/supabase/server";
 import {
   getUserOwnedDiagrams,
   getUserOwnedLayouts,
@@ -26,26 +25,25 @@ function dedupeById<T extends { id: string }>(
   return Array.from(map.values());
 }
 
-export default async function LibraryPage() {
-  let signedIn = false;
-  if (isSupabaseConfigured()) {
-    try {
-      const supabase = createClient(await cookies());
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      signedIn = !!user;
-    } catch (err) {
-      console.warn("Supabase unavailable, continuing signed out:", err);
-    }
-  }
+export default function LibraryPage() {
+  return (
+    <main className="mx-auto flex max-w-3xl flex-col gap-6 p-4">
+      <h1 className="text-lg font-semibold"> My Library</h1>
+      <Suspense
+        fallback={<p className="text-sm text-gray-500">Loading…</p>}
+      >
+        <LibraryContent />
+      </Suspense>
+    </main>
+  );
+}
 
-  if (!signedIn) {
+async function LibraryContent() {
+  const { user } = await getServerAuthContext();
+
+  if (!user) {
     return (
-      <main className="mx-auto flex max-w-3xl flex-col gap-4 p-4">
-        <h1 className="text-lg font-semibold"> My Library</h1>
-        <SignInPrompt message="Sign in to see your saved diagrams and layouts." />
-      </main>
+      <SignInPrompt message="Sign in to see your saved diagrams and layouts." />
     );
   }
 
@@ -69,9 +67,7 @@ export default async function LibraryPage() {
   const layouts = dedupeById<LayoutPost>(ownedLayouts, savedLayouts);
 
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-6 p-4">
-      <h1 className="text-lg font-semibold"> My Library</h1>
-
+    <>
       <section className="flex flex-col gap-2">
         <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
           Diagrams
@@ -104,6 +100,6 @@ export default async function LibraryPage() {
           />
         ))}
       </section>
-    </main>
+    </>
   );
 }

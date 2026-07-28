@@ -1,10 +1,9 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import type { User } from "@supabase/supabase-js";
 import type { z } from "zod";
-import { createClient } from "@/utils/supabase/server";
+import { createClient, getServerAuthContext } from "@/utils/supabase/server";
 import { DiagramSchema, type Diagram } from "@/features/spec/diagramSchema";
 import { LayoutSchema, type Layout } from "@/features/spec/layoutSchema";
 import { PostMeta } from "./types";
@@ -13,11 +12,8 @@ type PostTable = "diagrams" | "layouts";
 type SavedTable = "saved_diagrams" | "saved_layouts";
 
 async function requireUser() {
-  const supabase = createClient(await cookies());
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("You must be signed in to do this.");
+  const { supabase, user } = await getServerAuthContext();
+  if (!supabase || !user) throw new Error("You must be signed in to do this.");
   return { supabase, user };
 }
 
@@ -297,11 +293,8 @@ export async function deleteLayout(id: string): Promise<void> {
  */
 export async function ensureDefaultLayoutSeeded(): Promise<void> {
   try {
-    const supabase = createClient(await cookies());
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
+    const { supabase, user } = await getServerAuthContext();
+    if (!supabase || !user) return;
 
     const { data: profile } = await supabase
       .from("profiles")

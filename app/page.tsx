@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import ButtonsBar from "@/features/display/ButtonsBar";
 import { KeyboardPanel } from "@/features/display/InfoDisplay";
 import { Keyboard } from "@/features/keyboard/Keyboard";
@@ -9,7 +10,21 @@ import { PostMeta } from "@/features/posts/types";
 import { Diagram } from "@/features/spec/diagramSchema";
 import { Layout } from "@/features/spec/layoutSchema";
 
-export default async function Home({
+export default function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ diagram?: string }>;
+}) {
+  return (
+    <main className="overflow-hidden p-2 flex flex-col items-center gap-4 my-4">
+      <Suspense fallback={<p className="text-sm text-gray-500">Loading…</p>}>
+        <HomeContent searchParams={searchParams} />
+      </Suspense>
+    </main>
+  );
+}
+
+async function HomeContent({
   searchParams,
 }: {
   searchParams: Promise<{ diagram?: string }>;
@@ -51,22 +66,20 @@ export default async function Home({
   }
 
   return (
-    <main className="overflow-hidden p-2 flex flex-col items-center gap-4 my-4">
-      <KeyboardContextProvider
-        initialDiagram={initialDiagram}
-        initialDiagramMeta={initialDiagramMeta}
-        initialLayout={initialLayout}
-        initialLayoutMeta={initialLayoutMeta}
-      >
-        <KeyboardPanel />
-        <div>
-          <ButtonsBar />
-          <div className="flex items-stretch gap-4">
-            <Keyboard />
-            <SearchBar />
-          </div>
+    <KeyboardContextProvider
+      initialDiagram={initialDiagram}
+      initialDiagramMeta={initialDiagramMeta}
+      initialLayout={initialLayout}
+      initialLayoutMeta={initialLayoutMeta}
+    >
+      <KeyboardPanel />
+      <div>
+        <ButtonsBar />
+        <div className="flex items-stretch gap-4">
+          <Keyboard />
+          <SearchBar />
         </div>
-      </KeyboardContextProvider>
-    </main>
+      </div>
+    </KeyboardContextProvider>
   );
 }

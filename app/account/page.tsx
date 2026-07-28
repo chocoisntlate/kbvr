@@ -1,6 +1,5 @@
-import { cookies } from "next/headers";
-import { createClient } from "@/utils/supabase/server";
-import { isSupabaseConfigured } from "@/utils/supabase/config";
+import { Suspense } from "react";
+import { getServerAuthContext } from "@/utils/supabase/server";
 import {
   getUserOwnedDiagrams,
   getUserOwnedLayouts,
@@ -12,46 +11,44 @@ import { DisplayNameForm } from "@/features/account/DisplayNameForm";
 import { ExportDataButton } from "@/features/account/ExportDataButton";
 import { DeleteAccountDialog } from "@/features/account/DeleteAccountDialog";
 
-export default async function AccountPage() {
+export default function AccountPage() {
+  return (
+    <main className="mx-auto flex max-w-xl flex-col gap-6 p-4">
+      <h1 className="text-lg font-semibold">Account</h1>
+      <Suspense
+        fallback={<p className="text-sm text-gray-500">Loading…</p>}
+      >
+        <AccountContent />
+      </Suspense>
+    </main>
+  );
+}
+
+async function AccountContent() {
   let email: string | null = null;
   let displayName: string | null = null;
 
-  if (isSupabaseConfigured()) {
+  const { supabase, user } = await getServerAuthContext();
+  if (supabase && user) {
+    email = user.email ?? null;
     try {
-      const supabase = createClient(await cookies());
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        email = user.email ?? null;
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("display_name")
-          .eq("id", user.id)
-          .maybeSingle();
-        displayName = profile?.display_name ?? null;
-      }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("display_name")
+        .eq("id", user.id)
+        .maybeSingle();
+      displayName = profile?.display_name ?? null;
     } catch (err) {
       console.warn("Supabase unavailable, continuing signed out:", err);
     }
   }
 
   if (!email) {
-    return (
-      <main className="mx-auto flex max-w-xl flex-col gap-4 p-4">
-        <h1 className="text-lg font-semibold">Account</h1>
-        <SignInPrompt message="Sign in to manage your account." />
-      </main>
-    );
+    return <SignInPrompt message="Sign in to manage your account." />;
   }
 
   if (!displayName) {
-    return (
-      <main className="mx-auto flex max-w-xl flex-col gap-4 p-4">
-        <h1 className="text-lg font-semibold">Account</h1>
-        <p className="text-sm text-gray-500">Setting up your account…</p>
-      </main>
-    );
+    return <p className="text-sm text-gray-500">Setting up your account…</p>;
   }
 
   const [ownedDiagrams, ownedLayouts, savedDiagrams, savedLayouts] =
@@ -63,9 +60,7 @@ export default async function AccountPage() {
     ]);
 
   return (
-    <main className="mx-auto flex max-w-xl flex-col gap-6 p-4">
-      <h1 className="text-lg font-semibold">Account</h1>
-
+    <>
       <section className="rounded-lg border border-gray-200 bg-white p-4">
         <p className="mb-3 text-xs text-gray-500">
           Signed in as <span className="text-gray-700">{email}</span>
@@ -119,6 +114,6 @@ export default async function AccountPage() {
       </section>
 
       <DeleteAccountDialog displayName={displayName} />
-    </main>
+    </>
   );
 }

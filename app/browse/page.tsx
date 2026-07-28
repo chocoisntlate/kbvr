@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import {
   searchPosts,
   getUserSavedLayouts,
@@ -16,19 +17,6 @@ export default async function BrowsePage({
 }) {
   const { q = "", type } = await searchParams;
   const activeType = type === "layout" ? "layout" : "diagram";
-
-  const posts = await searchPosts(activeType, q);
-
-  let savedLayoutIds = new Set<string>();
-  let defaultLayoutId: string | null = null;
-  if (activeType === "layout") {
-    const [savedLayouts, defaultId] = await Promise.all([
-      getUserSavedLayouts(),
-      getUserDefaultLayoutId(),
-    ]);
-    savedLayoutIds = new Set(savedLayouts.map((l) => l.id));
-    defaultLayoutId = defaultId;
-  }
 
   const tabHref = (t: "diagram" | "layout") =>
     `/browse?type=${t}${q ? `&q=${encodeURIComponent(q)}` : ""}`;
@@ -62,25 +50,55 @@ export default async function BrowsePage({
 
       <BrowseSearchInput initialQuery={q} type={activeType} />
 
-      <div className="flex flex-col gap-3">
-        {posts.length === 0 && (
-          <p className="text-sm text-gray-500">
-            No public {activeType}s found.
-          </p>
-        )}
-        {activeType === "diagram"
-          ? (posts as DiagramPost[]).map((post) => (
-              <DiagramPostCard key={post.id} post={post} />
-            ))
-          : (posts as LayoutPost[]).map((post) => (
-              <LayoutPostCard
-                key={post.id}
-                post={post}
-                isSaved={savedLayoutIds.has(post.id)}
-                isDefault={defaultLayoutId === post.id}
-              />
-            ))}
-      </div>
+      <Suspense
+        key={`${activeType}:${q}`}
+        fallback={<p className="text-sm text-gray-500">Loading…</p>}
+      >
+        <BrowseResults activeType={activeType} q={q} />
+      </Suspense>
     </main>
+  );
+}
+
+async function BrowseResults({
+  activeType,
+  q,
+}: {
+  activeType: "diagram" | "layout";
+  q: string;
+}) {
+  const posts = await searchPosts(activeType, q);
+
+  let savedLayoutIds = new Set<string>();
+  let defaultLayoutId: string | null = null;
+  if (activeType === "layout") {
+    const [savedLayouts, defaultId] = await Promise.all([
+      getUserSavedLayouts(),
+      getUserDefaultLayoutId(),
+    ]);
+    savedLayoutIds = new Set(savedLayouts.map((l) => l.id));
+    defaultLayoutId = defaultId;
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      {posts.length === 0 && (
+        <p className="text-sm text-gray-500">
+          No public {activeType}s found.
+        </p>
+      )}
+      {activeType === "diagram"
+        ? (posts as DiagramPost[]).map((post) => (
+            <DiagramPostCard key={post.id} post={post} />
+          ))
+        : (posts as LayoutPost[]).map((post) => (
+            <LayoutPostCard
+              key={post.id}
+              post={post}
+              isSaved={savedLayoutIds.has(post.id)}
+              isDefault={defaultLayoutId === post.id}
+            />
+          ))}
+    </div>
   );
 }
