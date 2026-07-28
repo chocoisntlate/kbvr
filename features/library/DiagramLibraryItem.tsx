@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { DiagramPost } from "@/features/posts/types";
 import {
   toggleDiagramVisibility,
@@ -12,6 +10,7 @@ import {
 } from "@/features/posts/actions";
 import { VisibilityDialog } from "@/features/posts/SaveDialog";
 import { ConfirmDialog } from "@/features/ui/Modal";
+import { useLibraryItemActions } from "./useLibraryItemActions";
 
 export function DiagramLibraryItem({
   post,
@@ -20,59 +19,26 @@ export function DiagramLibraryItem({
   post: DiagramPost;
   isOwned: boolean;
 }) {
-  const router = useRouter();
-  const [isPublic, setIsPublic] = useState(post.isPublic);
-  const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [removed, setRemoved] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const {
+    isPublic,
+    removed,
+    busy,
+    showDuplicateDialog,
+    setShowDuplicateDialog,
+    showDeleteDialog,
+    setShowDeleteDialog,
+    handleToggleVisibility,
+    handleRemove,
+    handleConfirmDuplicate,
+    handleDelete,
+  } = useLibraryItemActions(post.id, post.isPublic, {
+    toggleVisibility: toggleDiagramVisibility,
+    removeSaved: removeSavedDiagram,
+    duplicate: duplicateDiagram,
+    deleteItem: deleteDiagram,
+  });
 
   if (removed) return null;
-
-  const handleToggleVisibility = async () => {
-    setBusy(true);
-    try {
-      await toggleDiagramVisibility(post.id, !isPublic);
-      setIsPublic((v) => !v);
-      router.refresh();
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleRemove = async () => {
-    setBusy(true);
-    try {
-      await removeSavedDiagram(post.id);
-      setRemoved(true);
-      router.refresh();
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleConfirmDuplicate = async (asPublic: boolean) => {
-    setShowDuplicateDialog(false);
-    setBusy(true);
-    try {
-      await duplicateDiagram(post.id, asPublic);
-      router.refresh();
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    setShowDeleteDialog(false);
-    setBusy(true);
-    try {
-      await deleteDiagram(post.id);
-      setRemoved(true);
-      router.refresh();
-    } finally {
-      setBusy(false);
-    }
-  };
 
   return (
     <div className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm">

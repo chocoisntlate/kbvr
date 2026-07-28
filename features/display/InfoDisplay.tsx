@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ImportExportButton } from "./ImportExport";
-import { useKeyboard } from "../keyboard/KeyboardContext";
+import { useKeyboardContent } from "../keyboard/KeyboardContext";
 import { SavePostButton } from "@/features/posts/SavePostButton";
 
 /* ------------------------------------------------------------------ */
@@ -19,7 +19,7 @@ export function KeyboardPanel() {
     setCurrentDiagramMeta,
     currentLayoutMeta,
     setCurrentLayoutMeta,
-  } = useKeyboard();
+  } = useKeyboardContent();
 
   /* Helper to import JSON, update state, and detach it from any saved post */
   const handleImport = <T,>(

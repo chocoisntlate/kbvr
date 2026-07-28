@@ -1,9 +1,10 @@
 import { useCallback } from "react";
-import { Shortcut } from "../../spec/diagramSchema";
-import { useKeyboard } from "../../keyboard/KeyboardContext";
+import { Diagram, Shortcut } from "../../spec/diagramSchema";
+import { useKeyboardContent } from "../../keyboard/KeyboardContext";
 import {
   EditableShortcut,
   FieldErrors,
+  getDisplayKey,
   validateShortcut,
 } from "../../diagram/shortcut";
 
@@ -18,7 +19,7 @@ export function useSaveShortcuts(
   validKeyIds: string[],
   keyId: string,
 ) {
-  const { setKeyDiagram } = useKeyboard();
+  const { setKeyDiagram } = useKeyboardContent();
 
   const validate = useCallback((): ValidationResult => {
     const errors: Record<number, FieldErrors> = {};
@@ -47,10 +48,10 @@ export function useSaveShortcuts(
 
   const save = useCallback(
     (validShortcuts: Shortcut[]) => {
-      setKeyDiagram((d: any) => ({
+      setKeyDiagram((d: Diagram) => ({
         ...d,
         shortcuts: [
-          ...d.shortcuts.filter((s: Shortcut) => s.displayKey !== keyId),
+          ...d.shortcuts.filter((s) => getDisplayKey(s) !== keyId),
           ...validShortcuts,
         ],
       }));

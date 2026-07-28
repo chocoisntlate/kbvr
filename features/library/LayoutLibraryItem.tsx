@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { LayoutPost } from "@/features/posts/types";
 import {
   toggleLayoutVisibility,
@@ -12,6 +10,7 @@ import {
 } from "@/features/posts/actions";
 import { VisibilityDialog } from "@/features/posts/SaveDialog";
 import { ConfirmDialog } from "@/features/ui/Modal";
+import { useLibraryItemActions } from "./useLibraryItemActions";
 
 export function LayoutLibraryItem({
   post,
@@ -22,69 +21,29 @@ export function LayoutLibraryItem({
   isOwned: boolean;
   isDefault: boolean;
 }) {
-  const router = useRouter();
-  const [isPublic, setIsPublic] = useState(post.isPublic);
-  const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [removed, setRemoved] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const {
+    isPublic,
+    removed,
+    busy,
+    showDuplicateDialog,
+    setShowDuplicateDialog,
+    showDeleteDialog,
+    setShowDeleteDialog,
+    handleToggleVisibility,
+    handleRemove,
+    handleConfirmDuplicate,
+    handleDelete,
+    run,
+  } = useLibraryItemActions(post.id, post.isPublic, {
+    toggleVisibility: toggleLayoutVisibility,
+    removeSaved: removeSavedLayout,
+    duplicate: duplicateLayout,
+    deleteItem: deleteLayout,
+  });
 
   if (removed) return null;
 
-  const handleToggleVisibility = async () => {
-    setBusy(true);
-    try {
-      await toggleLayoutVisibility(post.id, !isPublic);
-      setIsPublic((v) => !v);
-      router.refresh();
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleRemove = async () => {
-    setBusy(true);
-    try {
-      await removeSavedLayout(post.id);
-      setRemoved(true);
-      router.refresh();
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleSetDefault = async () => {
-    setBusy(true);
-    try {
-      await setDefaultLayout(post.id);
-      router.refresh();
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleConfirmDuplicate = async (asPublic: boolean) => {
-    setShowDuplicateDialog(false);
-    setBusy(true);
-    try {
-      await duplicateLayout(post.id, asPublic);
-      router.refresh();
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    setShowDeleteDialog(false);
-    setBusy(true);
-    try {
-      await deleteLayout(post.id);
-      setRemoved(true);
-      router.refresh();
-    } finally {
-      setBusy(false);
-    }
-  };
+  const handleSetDefault = () => run(() => setDefaultLayout(post.id));
 
   return (
     <div className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm">

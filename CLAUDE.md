@@ -21,10 +21,10 @@ There is no test suite configured in this repo currently.
 
 The app revolves around two independent JSON documents, both validated with Zod schemas in `features/spec/`:
 
-- **Diagram** (`features/spec/diagramSchema.ts`) — a set of `Shortcut`s. Each shortcut has `keys` (up to 5 key IDs), one or more `description`s (multiple = conflicting keybinds on the same trigger), a `displayKey` (which physical key the description renders on), and optional `tags`.
+- **Diagram** (`features/spec/diagramSchema.ts`) — a set of `Shortcut`s. Each shortcut has `keys` (up to 5 key IDs), one or more `description`s (multiple = conflicting keybinds on the same trigger), and optional `tags`/`mode`. The physical key a description renders on (the "display key") is not stored — it's derived as the last element of `keys` via `getDisplayKey()` (`features/diagram/shortcut.ts`).
 - **Layout** (`features/spec/layoutSchema.ts`) — the physical keyboard: `rows` of `Key`s, each with an `id` (or `null` for a spacer), `label`, and optional `widthScale` for wide keys (Shift, Space, etc.).
 
-A Diagram and Layout are matched at render time purely by `Key.id` <-> `Shortcut.keys`/`displayKey` string equality — there is no foreign-key enforcement beyond what `getValidKeyIds()` checks during editing. See `README.md` for the full field-level spec and JSON examples.
+A Diagram and Layout are matched at render time purely by `Key.id` <-> `Shortcut.keys` string equality (the display key being the last element) — there is no foreign-key enforcement beyond what `getValidKeyIds()` checks during editing. See `README.md` for the full field-level spec and JSON examples.
 
 Default/example data lives in `examples/` (`default.diagram.ts`, `default.layout.ts`, `us-qwerty.ts`) and seeds `KeyboardContextProvider`'s initial state.
 
@@ -34,16 +34,16 @@ State is centralized in a single React context, `KeyboardContext` (`features/key
 
 Feature folders under `features/`:
 
-- `keyboard/` — renders the keyboard grid (`Keyboard.tsx`, `Key.tsx`) and owns the shared context. `Keyboard.tsx` computes per-key rendered widths (`addGapCompensation`) and builds a `displayKey -> Shortcut[]` map each render. `description.ts` (`getKeyDescription`) contains the logic for matching the currently pressed key combo (as tracked in `pressedKeys` state) against candidate shortcuts to decide which description to surface, including "one modifier short" partial matches.
+- `keyboard/` — renders the keyboard grid (`Keyboard.tsx`, `Key.tsx`) and owns the shared context. `Keyboard.tsx` computes per-key rendered widths (`addGapCompensation`) and builds a map keyed by each shortcut's derived display key (via `getDisplayKey()`) each render. `description.ts` (`getKeyDescription`) contains the logic for matching the currently pressed key combo (as tracked in `pressedKeys` state) against candidate shortcuts to decide which description to surface, including "one modifier short" partial matches.
 - `display/` — the info/metadata panel (`InfoDisplay.tsx`, `MetadataCard.tsx`) and JSON import/export (`ImportExport.tsx`, generic `ImportExportButton<T>` that round-trips a context setter through file input / Blob download) and the mode-toggle bar (`ButtonsBar.tsx`).
 - `inspect/` — the "Inspect Keys" editing modal (`InspectKey.tsx`) for editing all shortcuts bound to a given key. Split into small single-purpose hooks in `inspect/hooks/`: `useShortcutDraft` (in-memory draft array in human-editable string form), `useShortcutErrors` (per-row validation errors, keyed by index, with index-shifting on delete), `useEditMode` (edit/collapse state), `useScrollToRow` (scroll+focus a row by index), `useSaveShortcuts` (runs validation and commits valid rows back into `keyDiagram` via `setKeyDiagram`).
-- `diagram/shortcut.ts` — the boundary between the human-editable form representation (`EditableShortcut`: space/comma-separated strings) and the validated domain type (`Shortcut`). `normalizeShortcut()` parses the string form; `validateShortcut()` checks key IDs exist in the current layout (`getValidKeyIds`), rejects duplicate keybinds on the same `displayKey`, then runs `ShortcutSchema.safeParse`.
+- `diagram/shortcut.ts` — the boundary between the human-editable form representation (`EditableShortcut`: space/comma-separated strings) and the validated domain type (`Shortcut`). `normalizeShortcut()` parses the string form; `validateShortcut()` checks key IDs exist in the current layout (`getValidKeyIds`), rejects duplicate keybinds with the same key set, then runs `ShortcutSchema.safeParse`. `getDisplayKey()` derives the display key from a shortcut's `keys`.
 - `spec/` — Zod schemas and inferred types (`Diagram`, `Shortcut`, `Layout`), the source of truth for both domain types and runtime validation of imported JSON.
 - `navbar/` — top-level nav bar.
 
 Two interaction modes driven by `isInspectMode`:
 1. **Normal mode** — clicking a key toggles it in/out of `pressedKeys`; `Key.tsx` shows the matched shortcut description and a tooltip listing all descriptions if there's a conflict.
-2. **Inspect mode** — clicking a key opens `InspectModal` to view/add/edit/delete shortcuts bound to that key's `displayKey`.
+2. **Inspect mode** — clicking a key opens `InspectModal` to view/add/edit/delete shortcuts whose derived display key matches that key.
 
 ## Supabase
 

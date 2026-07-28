@@ -3,10 +3,14 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import type { User } from "@supabase/supabase-js";
+import type { z } from "zod";
 import { createClient } from "@/utils/supabase/server";
 import { DiagramSchema, type Diagram } from "@/features/spec/diagramSchema";
 import { LayoutSchema, type Layout } from "@/features/spec/layoutSchema";
 import { PostMeta } from "./types";
+
+type PostTable = "diagrams" | "layouts";
+type SavedTable = "saved_diagrams" | "saved_layouts";
 
 async function requireUser() {
   const supabase = createClient(await cookies());
@@ -40,18 +44,20 @@ function revalidatePostPages() {
   revalidatePath("/library");
 }
 
-/* ---------- Diagrams ---------- */
+/* ---------- Shared helpers ---------- */
 
-export async function saveNewDiagram(
-  data: Diagram,
+async function insertPost<T>(
+  table: PostTable,
+  schema: z.ZodType<T>,
+  data: T,
   isPublic: boolean,
 ): Promise<PostMeta> {
   const { supabase, user } = await requireUser();
-  const parsed = DiagramSchema.parse(data);
+  const parsed = schema.parse(data);
   const displayName = await ownerDisplayName(supabase, user);
 
   const { data: row, error } = await supabase
-    .from("diagrams")
+    .from(table)
     .insert({
       owner_id: user.id,
       owner_display_name: displayName,
@@ -72,12 +78,17 @@ export async function saveNewDiagram(
   };
 }
 
-export async function updateDiagram(id: string, data: Diagram): Promise<void> {
+async function updatePost<T>(
+  table: PostTable,
+  schema: z.ZodType<T>,
+  id: string,
+  data: T,
+): Promise<void> {
   const { supabase, user } = await requireUser();
-  const parsed = DiagramSchema.parse(data);
+  const parsed = schema.parse(data);
 
   const { error } = await supabase
-    .from("diagrams")
+    .from(table)
     .update({ data: parsed, updated_at: new Date().toISOString() })
     .eq("id", id)
     .eq("owner_id", user.id);
@@ -86,26 +97,31 @@ export async function updateDiagram(id: string, data: Diagram): Promise<void> {
   revalidatePostPages();
 }
 
-export async function duplicateDiagram(
+async function duplicatePost<T>(
+  table: PostTable,
+  schema: z.ZodType<T>,
   sourceId: string,
   isPublic: boolean,
 ): Promise<PostMeta> {
   const { supabase, user } = await requireUser();
 
   const { data: source, error: sourceError } = await supabase
-    .from("diagrams")
+    .from(table)
     .select("data")
     .eq("id", sourceId)
     .single();
   if (sourceError) throw sourceError;
 
+  // re-validate rather than trusting the stored row is still well-formed
+  const parsed = schema.parse(source.data);
   const displayName = await ownerDisplayName(supabase, user);
+
   const { data: row, error } = await supabase
-    .from("diagrams")
+    .from(table)
     .insert({
       owner_id: user.id,
       owner_display_name: displayName,
-      data: source.data,
+      data: parsed,
       is_public: isPublic,
       forked_from_id: sourceId,
     })
@@ -123,33 +139,14 @@ export async function duplicateDiagram(
   };
 }
 
-export async function saveDiagramReference(diagramId: string): Promise<void> {
-  const { supabase, user } = await requireUser();
-  const { error } = await supabase
-    .from("saved_diagrams")
-    .upsert({ user_id: user.id, diagram_id: diagramId });
-  if (error) throw error;
-  revalidatePostPages();
-}
-
-export async function removeSavedDiagram(diagramId: string): Promise<void> {
-  const { supabase, user } = await requireUser();
-  const { error } = await supabase
-    .from("saved_diagrams")
-    .delete()
-    .eq("user_id", user.id)
-    .eq("diagram_id", diagramId);
-  if (error) throw error;
-  revalidatePostPages();
-}
-
-export async function toggleDiagramVisibility(
+async function toggleVisibility(
+  table: PostTable,
   id: string,
   isPublic: boolean,
 ): Promise<void> {
   const { supabase, user } = await requireUser();
   const { error } = await supabase
-    .from("diagrams")
+    .from(table)
     .update({ is_public: isPublic, updated_at: new Date().toISOString() })
     .eq("id", id)
     .eq("owner_id", user.id);
@@ -157,15 +154,82 @@ export async function toggleDiagramVisibility(
   revalidatePostPages();
 }
 
-export async function deleteDiagram(id: string): Promise<void> {
+async function deletePost(table: PostTable, id: string): Promise<void> {
   const { supabase, user } = await requireUser();
   const { error } = await supabase
-    .from("diagrams")
+    .from(table)
     .delete()
     .eq("id", id)
     .eq("owner_id", user.id);
   if (error) throw error;
   revalidatePostPages();
+}
+
+async function saveReference(
+  savedTable: SavedTable,
+  idColumn: string,
+  id: string,
+): Promise<void> {
+  const { supabase, user } = await requireUser();
+  const { error } = await supabase
+    .from(savedTable)
+    .upsert({ user_id: user.id, [idColumn]: id });
+  if (error) throw error;
+  revalidatePostPages();
+}
+
+async function removeSavedReference(
+  savedTable: SavedTable,
+  idColumn: string,
+  id: string,
+): Promise<void> {
+  const { supabase, user } = await requireUser();
+  const { error } = await supabase
+    .from(savedTable)
+    .delete()
+    .eq("user_id", user.id)
+    .eq(idColumn, id);
+  if (error) throw error;
+  revalidatePostPages();
+}
+
+/* ---------- Diagrams ---------- */
+
+export async function saveNewDiagram(
+  data: Diagram,
+  isPublic: boolean,
+): Promise<PostMeta> {
+  return insertPost("diagrams", DiagramSchema, data, isPublic);
+}
+
+export async function updateDiagram(id: string, data: Diagram): Promise<void> {
+  return updatePost("diagrams", DiagramSchema, id, data);
+}
+
+export async function duplicateDiagram(
+  sourceId: string,
+  isPublic: boolean,
+): Promise<PostMeta> {
+  return duplicatePost("diagrams", DiagramSchema, sourceId, isPublic);
+}
+
+export async function saveDiagramReference(diagramId: string): Promise<void> {
+  return saveReference("saved_diagrams", "diagram_id", diagramId);
+}
+
+export async function removeSavedDiagram(diagramId: string): Promise<void> {
+  return removeSavedReference("saved_diagrams", "diagram_id", diagramId);
+}
+
+export async function toggleDiagramVisibility(
+  id: string,
+  isPublic: boolean,
+): Promise<void> {
+  return toggleVisibility("diagrams", id, isPublic);
+}
+
+export async function deleteDiagram(id: string): Promise<void> {
+  return deletePost("diagrams", id);
 }
 
 /* ---------- Layouts ---------- */
@@ -174,115 +238,33 @@ export async function saveNewLayout(
   data: Layout,
   isPublic: boolean,
 ): Promise<PostMeta> {
-  const { supabase, user } = await requireUser();
-  const parsed = LayoutSchema.parse(data);
-  const displayName = await ownerDisplayName(supabase, user);
-
-  const { data: row, error } = await supabase
-    .from("layouts")
-    .insert({
-      owner_id: user.id,
-      owner_display_name: displayName,
-      data: parsed,
-      is_public: isPublic,
-    })
-    .select("id")
-    .single();
-  if (error) throw error;
-
-  revalidatePostPages();
-  return {
-    id: row.id,
-    ownerId: user.id,
-    ownerDisplayName: displayName,
-    isPublic,
-    isSavedByMe: false,
-  };
+  return insertPost("layouts", LayoutSchema, data, isPublic);
 }
 
 export async function updateLayout(id: string, data: Layout): Promise<void> {
-  const { supabase, user } = await requireUser();
-  const parsed = LayoutSchema.parse(data);
-
-  const { error } = await supabase
-    .from("layouts")
-    .update({ data: parsed, updated_at: new Date().toISOString() })
-    .eq("id", id)
-    .eq("owner_id", user.id);
-  if (error) throw error;
-
-  revalidatePostPages();
+  return updatePost("layouts", LayoutSchema, id, data);
 }
 
 export async function duplicateLayout(
   sourceId: string,
   isPublic: boolean,
 ): Promise<PostMeta> {
-  const { supabase, user } = await requireUser();
-
-  const { data: source, error: sourceError } = await supabase
-    .from("layouts")
-    .select("data")
-    .eq("id", sourceId)
-    .single();
-  if (sourceError) throw sourceError;
-
-  const displayName = await ownerDisplayName(supabase, user);
-  const { data: row, error } = await supabase
-    .from("layouts")
-    .insert({
-      owner_id: user.id,
-      owner_display_name: displayName,
-      data: source.data,
-      is_public: isPublic,
-      forked_from_id: sourceId,
-    })
-    .select("id")
-    .single();
-  if (error) throw error;
-
-  revalidatePostPages();
-  return {
-    id: row.id,
-    ownerId: user.id,
-    ownerDisplayName: displayName,
-    isPublic,
-    isSavedByMe: false,
-  };
+  return duplicatePost("layouts", LayoutSchema, sourceId, isPublic);
 }
 
 export async function saveLayoutReference(layoutId: string): Promise<void> {
-  const { supabase, user } = await requireUser();
-  const { error } = await supabase
-    .from("saved_layouts")
-    .upsert({ user_id: user.id, layout_id: layoutId });
-  if (error) throw error;
-  revalidatePostPages();
+  return saveReference("saved_layouts", "layout_id", layoutId);
 }
 
 export async function removeSavedLayout(layoutId: string): Promise<void> {
-  const { supabase, user } = await requireUser();
-  const { error } = await supabase
-    .from("saved_layouts")
-    .delete()
-    .eq("user_id", user.id)
-    .eq("layout_id", layoutId);
-  if (error) throw error;
-  revalidatePostPages();
+  return removeSavedReference("saved_layouts", "layout_id", layoutId);
 }
 
 export async function toggleLayoutVisibility(
   id: string,
   isPublic: boolean,
 ): Promise<void> {
-  const { supabase, user } = await requireUser();
-  const { error } = await supabase
-    .from("layouts")
-    .update({ is_public: isPublic, updated_at: new Date().toISOString() })
-    .eq("id", id)
-    .eq("owner_id", user.id);
-  if (error) throw error;
-  revalidatePostPages();
+  return toggleVisibility("layouts", id, isPublic);
 }
 
 export async function setDefaultLayout(layoutId: string): Promise<void> {
@@ -302,14 +284,7 @@ export async function setDefaultLayout(layoutId: string): Promise<void> {
 }
 
 export async function deleteLayout(id: string): Promise<void> {
-  const { supabase, user } = await requireUser();
-  const { error } = await supabase
-    .from("layouts")
-    .delete()
-    .eq("id", id)
-    .eq("owner_id", user.id);
-  if (error) throw error;
-  revalidatePostPages();
+  return deletePost("layouts", id);
 }
 
 /*

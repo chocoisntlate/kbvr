@@ -4,8 +4,8 @@ export const ShortcutSchema = z.object({
   keys: z.array(z.string().min(1).max(50)).min(1).max(5),
   description: z.array(z.string().min(1).max(150)).min(1).max(10), // For conflicting keybinds
 
-  displayKey: z.string().min(1).max(100),
   tags: z.array(z.string().max(100).optional()).optional(),
+  mode: z.string().optional(),
 });
 
 export const DiagramSchema = z.object({
