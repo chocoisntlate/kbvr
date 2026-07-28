@@ -1,4 +1,4 @@
-import { EditableShortcut, FieldErrors } from "../diagram/shortcut";
+import { EditableShortcut, FieldErrors, parseKeys } from "../diagram/shortcut";
 import { Field, Input } from "./ShortcutFormFields";
 
 type ShortcutRowProps = {
@@ -70,7 +70,11 @@ function ShortcutRowCollapsed({
 }) {
   return (
     <>
-      <div className="font-medium">{shortcut.keys || "(No keys)"}</div>
+      <div className="font-medium">
+        {[shortcut.modifierKeys, shortcut.triggerKey]
+          .filter(Boolean)
+          .join(" + ") || "(No keys)"}
+      </div>
 
       {shortcut.description && (
         <ul className="mt-1 list-disc pl-4 text-gray-500">
@@ -90,6 +94,12 @@ function ShortcutRowCollapsed({
               {tag}
             </span>
           ))}
+        </div>
+      )}
+
+      {shortcut.mode && (
+        <div className="mt-1 text-[11px] text-gray-500">
+          Mode: {shortcut.mode}
         </div>
       )}
 
@@ -124,23 +134,31 @@ function ShortcutRowExpanded({
   onUpdate: (patch: Partial<EditableShortcut>) => void;
   onCollapse: () => void;
 }) {
+  const keys = parseKeys(shortcut.modifierKeys, shortcut.triggerKey);
+
   return (
     <div className="flex flex-col gap-3">
-      <Field label="*Display key" error={error.displayKey}>
+      <Field label="Modifier keys" error={error.modifierKeys}>
         <Input
-          value={shortcut.displayKey}
-          onChange={(v) => onUpdate({ displayKey: v })}
-          error={!!error.displayKey}
+          value={shortcut.modifierKeys}
+          onChange={(v) => onUpdate({ modifierKeys: v })}
+          error={!!error.modifierKeys}
         />
       </Field>
+      <p className="-mt-2 text-[11px] text-gray-500">
+        Space separated combination of keys held down with the trigger key
+      </p>
 
-      <Field label="*Keys" error={error.keys}>
-        <Input
-          value={shortcut.keys}
-          onChange={(v) => onUpdate({ keys: v })}
-          error={!!error.keys}
-        />
+      <Field label="Trigger key" error={error.triggerKey}>
+        <Input value={shortcut.triggerKey} error={!!error.triggerKey} disabled />
       </Field>
+      <p className="-mt-2 text-[11px] text-gray-500">
+        The key that completes the shortcut. The description will display on this key.
+      </p>
+
+      <p className="text-[11px] text-gray-500">
+        Combination: <span className="font-medium">{keys.join(" + ") || "—"}</span>
+      </p>
 
       <Field label="*Descriptions" error={error.description}>
         <textarea
@@ -158,6 +176,14 @@ function ShortcutRowExpanded({
           value={shortcut.tags ?? ""}
           onChange={(v) => onUpdate({ tags: v })}
           error={!!error.tags}
+        />
+      </Field>
+
+      <Field label="Mode" error={error.mode}>
+        <Input
+          value={shortcut.mode ?? ""}
+          onChange={(v) => onUpdate({ mode: v })}
+          error={!!error.mode}
         />
       </Field>
 

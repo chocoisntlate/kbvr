@@ -5,7 +5,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
   "description": "Hover over keys to learn about key-diagram",
   "shortcuts": [
     {
-      "displayKey": "w",
       "keys": [
         "ctrl-left",
         "w"
@@ -18,7 +17,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "tab",
       "keys": [
         "ctrl-left",
         "tab"
@@ -31,7 +29,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "n",
       "keys": [
         "ctrl-left",
         "n"
@@ -44,7 +41,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "f",
       "keys": [
         "ctrl-left",
         "f"
@@ -57,7 +53,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "r",
       "keys": [
         "ctrl-left",
         "r"
@@ -70,7 +65,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "l",
       "keys": [
         "ctrl-left",
         "l"
@@ -83,7 +77,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "p",
       "keys": [
         "ctrl-left",
         "p"
@@ -96,7 +89,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "s",
       "keys": [
         "ctrl-left",
         "s"
@@ -109,7 +101,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "a",
       "keys": [
         "ctrl-left",
         "a"
@@ -122,7 +113,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "c",
       "keys": [
         "ctrl-left",
         "c"
@@ -135,7 +125,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "v",
       "keys": [
         "ctrl-left",
         "v"
@@ -148,7 +137,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "x",
       "keys": [
         "ctrl-left",
         "x"
@@ -161,7 +149,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "z",
       "keys": [
         "ctrl-left",
         "z"
@@ -174,7 +161,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "plus",
       "keys": [
         "ctrl-left",
         "plus"
@@ -187,7 +173,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "minus",
       "keys": [
         "ctrl-left",
         "minus"
@@ -200,7 +185,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "0",
       "keys": [
         "ctrl-left",
         "0"
@@ -213,7 +197,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "d",
       "keys": [
         "ctrl-left",
         "d"
@@ -226,7 +209,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "n",
       "keys": [
         "ctrl-left",
         "shift-left",
@@ -240,7 +222,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "tab",
       "keys": [
         "ctrl-left",
         "shift-left",
@@ -254,7 +235,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "b",
       "keys": [
         "ctrl-left",
         "shift-left",
@@ -268,7 +248,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "delete",
       "keys": [
         "ctrl-left",
         "shift-left",
@@ -282,7 +261,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "i",
       "keys": [
         "ctrl-left",
         "shift-left",
@@ -296,7 +274,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "ctrl-left",
       "keys": [
         "ctrl-left"
       ],
@@ -305,7 +282,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "1",
       "keys": [
         "1"
       ],
@@ -317,7 +293,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "shift-left",
       "keys": [
         "ctrl-left",
         "shift-left"
@@ -327,7 +302,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "2",
       "keys": [
         "2"
       ],
@@ -339,7 +313,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "h",
       "keys": [
         "h"
       ],
@@ -351,7 +324,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "t",
       "keys": [
         "t"
       ],
@@ -363,7 +335,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "u",
       "keys": [
         "u"
       ],
@@ -376,7 +347,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "g",
       "keys": [
         "g"
       ],
@@ -388,7 +358,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "y",
       "keys": [
         "y"
       ],
@@ -400,7 +369,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "3",
       "keys": [
         "3"
       ],
@@ -412,7 +380,6 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       ]
     },
     {
-      "displayKey": "j",
       "keys": [
         "j"
       ],

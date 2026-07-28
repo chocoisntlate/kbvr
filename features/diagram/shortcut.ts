@@ -6,17 +6,19 @@ import { Layout } from "../spec/layoutSchema";
 /* ---------- Types ---------- */
 
 export type EditableShortcut = {
-  displayKey: string;
-  keys: string; // e.g. "ctrl shift t"
+  modifierKeys: string; // e.g. "ctrl shift" — held down with the trigger key, order doesn't matter
+  triggerKey: string; // the key that completes the combo; also the key the description displays on
   description: string; // multiline text
   tags?: string; // space or comma separated
+  mode?: string;
 };
 
 export type FieldErrors = {
-  displayKey?: string;
-  keys?: string;
+  modifierKeys?: string;
+  triggerKey?: string;
   description?: string;
   tags?: string;
+  mode?: string;
 };
 
 export type ValidationResult =
@@ -34,14 +36,26 @@ export function getValidKeyIds(layout: Layout): Set<string> {
   );
 }
 
-/* ---------- Normalization ---------- */
+export function getDisplayKey(shortcut: Shortcut): string {
+  return shortcut.keys[shortcut.keys.length - 1];
+}
 
-export function normalizeShortcut(input: EditableShortcut): Shortcut {
-  const keys = input.keys
+export function parseKeys(modifierKeys: string, triggerKey: string): string[] {
+  const modifiers = modifierKeys
     .split(/[+\s]+/)
     .map((k) => k.trim())
     .filter(Boolean)
-    .slice(0, 5);
+    .slice(0, 4);
+
+  const trigger = triggerKey.trim();
+
+  return trigger ? [...modifiers, trigger] : modifiers;
+}
+
+/* ---------- Normalization ---------- */
+
+export function normalizeShortcut(input: EditableShortcut): Shortcut {
+  const keys = parseKeys(input.modifierKeys, input.triggerKey);
 
   const tags = input.tags
     ?.split(/[,\s]+/)
@@ -49,13 +63,13 @@ export function normalizeShortcut(input: EditableShortcut): Shortcut {
     .filter(Boolean);
 
   return {
-    displayKey: input.displayKey,
     keys,
     description: input.description
       .split("\n")
       .map((d) => d.trim())
       .filter(Boolean),
     tags: tags && tags.length > 0 ? tags : undefined,
+    mode: input.mode,
   };
 }
 
@@ -70,14 +84,16 @@ export function validateShortcut(
   },
 ): ValidationResult {
   const normalized = normalizeShortcut(input);
+  const triggerKey = input.triggerKey.trim();
 
   /* key existence */
   const invalidKey = normalized.keys.find((k) => !ctx.validKeyIds.has(k));
   if (invalidKey) {
+    const field = invalidKey === triggerKey ? "triggerKey" : "modifierKeys";
     return {
       success: false,
       errors: {
-        keys: `Unknown key ID: "${invalidKey}"`,
+        [field]: `Unknown key ID: "${invalidKey}"`,
       },
     };
   }
@@ -87,17 +103,14 @@ export function validateShortcut(
   const duplicateIndex = ctx.draft.findIndex((s, i) => {
     if (i === ctx.index) return false;
     const other = normalizeShortcut(s);
-    return (
-      other.displayKey === normalized.displayKey &&
-      other.keys.slice().sort().join("+") === keysString
-    );
+    return other.keys.slice().sort().join("+") === keysString;
   });
 
   if (duplicateIndex !== -1) {
     return {
       success: false,
       errors: {
-        keys: `Duplicate keybind (entry #${duplicateIndex + 1})`,
+        triggerKey: `Duplicate keybind (entry #${duplicateIndex + 1})`,
       },
     };
   }
@@ -107,7 +120,7 @@ export function validateShortcut(
   if (!parsed.success) {
     const errors: FieldErrors = {};
     for (const issue of parsed.error.issues) {
-      const field = issue.path[0] as keyof FieldErrors;
+      const field = issue.path[0] === "keys" ? "triggerKey" : (issue.path[0] as keyof FieldErrors);
       errors[field] = issue.message;
     }
     return { success: false, errors };

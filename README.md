@@ -18,33 +18,28 @@ It is represented as a JSON object with the following structure.
   "description": "Common keyboard shortcuts for Google Chrome",
   "shortcuts": [
     {
-      "keys": ["Ctrl", "T"],
+      "keys": ["ctrl-left", "t"],
       "description": ["Open a new tab"],
-      "displayKey": "Ctrl + T",
       "tags": ["tab", "navigation"]
     },
     {
-      "keys": ["Ctrl", "W"],
+      "keys": ["ctrl-left", "w"],
       "description": ["Close current tab"],
-      "displayKey": "Ctrl + W",
       "tags": ["tab"]
     },
     {
-      "keys": ["Ctrl", "Shift", "T"],
+      "keys": ["ctrl-left", "shift-left", "t"],
       "description": ["Reopen last closed tab"],
-      "displayKey": "Ctrl + Shift + T",
       "tags": ["tab", "history"]
     },
     {
-      "keys": ["Ctrl", "L"],
+      "keys": ["ctrl-left", "l"],
       "description": ["Focus address bar"],
-      "displayKey": "Ctrl + L",
       "tags": ["navigation"]
     },
     {
-      "keys": ["Ctrl", "Shift", "N"],
+      "keys": ["ctrl-left", "shift-left", "n"],
       "description": ["Open new incognito window"],
-      "displayKey": "Ctrl + Shift + N",
       "tags": ["window", "privacy"]
     }
   ]
@@ -66,8 +61,10 @@ It is represented as a JSON object with the following structure.
 | ------------- | -------- | -------- | ---------------------------------------- |
 | `keys`        | string[] | yes      | Key combination to trigger               |
 | `description` | string[] | yes      | One or more descriptions (for conflicts) |
-| `displayKey`  | string   | yes      | Key to display description on            |
 | `tags`        | string[] | no       | For grouping and filtering               |
+| `mode`        | string   | no       | Optional mode label                      |
+
+The physical key a description renders on is not stored — it's inferred as the last element of `keys`.
 
 ## Layout
 

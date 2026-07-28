@@ -1,4 +1,5 @@
 import { Shortcut } from "../spec/diagramSchema";
+import { getDisplayKey } from "../diagram/shortcut";
 
 export function getKeyDescription(
   candidates: Shortcut[] | undefined,
@@ -19,7 +20,7 @@ export function getKeyDescription(
     if (
       matches.length === candidate.keys.length - 1 &&
       pressedKeys.size === matches.length &&
-      !matches.includes(candidate.displayKey)
+      !matches.includes(getDisplayKey(candidate))
     ) {
       return candidate.description;
     }

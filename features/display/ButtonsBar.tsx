@@ -1,15 +1,11 @@
 "use client";
 
-import { useKeyboard } from "../keyboard/KeyboardContext";
+import { useKeyboardUI, usePressedKeys } from "../keyboard/KeyboardContext";
 
 export default function ButtonsBar() {
-  const {
-    setInspectMode,
-    isInspectMode,
-    isSearchVisible,
-    setSearchVisible,
-    setPressedKeys,
-  } = useKeyboard();
+  const { setInspectMode, isInspectMode, isSearchVisible, setSearchVisible } =
+    useKeyboardUI();
+  const { setPressedKeys } = usePressedKeys();
 
   return (
     <div

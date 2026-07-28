@@ -1,13 +1,14 @@
 import { useCallback, useState } from "react";
 import { Shortcut } from "../../spec/diagramSchema";
-import { EditableShortcut } from "../../diagram/shortcut";
+import { EditableShortcut, getDisplayKey } from "../../diagram/shortcut";
 
 function normalizeShortcut(s: Shortcut): EditableShortcut {
   return {
-    displayKey: s.displayKey,
-    keys: s.keys.join(" + "),
+    modifierKeys: s.keys.slice(0, -1).join(" + "),
+    triggerKey: getDisplayKey(s),
     description: s.description.join("\n"),
     tags: s.tags?.join(" "),
+    mode: s.mode,
   };
 }
 

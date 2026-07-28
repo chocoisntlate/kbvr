@@ -1,7 +1,5 @@
 "use client";
 
-import { useKeyboard } from "./KeyboardContext";
-
 type KeyProps = {
   label: string;
   width: number;
@@ -12,6 +10,7 @@ type KeyProps = {
 
   onClick: () => void;
   isPressed: boolean;
+  isInspectMode: boolean;
 };
 
 export function Key({
@@ -22,9 +21,8 @@ export function Key({
   candidateCount,
   onClick,
   isPressed,
+  isInspectMode,
 }: KeyProps) {
-  const { isInspectMode } = useKeyboard();
-
   return (
     <button
       type="button"

@@ -19,7 +19,7 @@ export function searchShortcuts(
     shortcut.description.forEach((description, index) => {
       if (description.toLowerCase().includes(trimmed)) {
         results.push({
-          key: `${shortcut.displayKey}-${shortcut.keys.join("+")}-${index}`,
+          key: `${shortcut.keys.join("+")}-${index}`,
           shortcut,
           description,
         });

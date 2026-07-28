@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useKeyboard } from "../keyboard/KeyboardContext";
+import { useKeyboardContent, useKeyboardUI, usePressedKeys } from "../keyboard/KeyboardContext";
 import { searchShortcuts } from "./searchShortcuts";
 
 function isTypingTarget(el: Element | null): boolean {
@@ -11,15 +11,9 @@ function isTypingTarget(el: Element | null): boolean {
 }
 
 export default function SearchBar() {
-  const {
-    keyDiagram,
-    keyLayout,
-    isInspectMode,
-    pressedKeys,
-    setPressedKeys,
-    isSearchVisible,
-    keyboardHeight,
-  } = useKeyboard();
+  const { keyDiagram, keyLayout } = useKeyboardContent();
+  const { isInspectMode, isSearchVisible, keyboardHeight } = useKeyboardUI();
+  const { pressedKeys, setPressedKeys } = usePressedKeys();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);

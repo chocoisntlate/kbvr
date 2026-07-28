@@ -4,9 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "@/features/spec/layoutSchema";
 import { Diagram, Shortcut } from "../spec/diagramSchema";
 import { Key } from "./Key";
-import { useKeyboard } from "./KeyboardContext";
+import { useKeyboardContent, useKeyboardUI, usePressedKeys } from "./KeyboardContext";
 import InspectModal from "../inspect/InspectKey";
 import { getKeyDescription } from "./description";
+import { getDisplayKey } from "../diagram/shortcut";
 
 // ------------------------------------------------------------------
 // Configuration
@@ -34,14 +35,9 @@ function addGapCompensation(rows: Layout["rows"], gap: number) {
 // ------------------------------------------------------------------
 
 export function Keyboard() {
-  const {
-    keyDiagram,
-    keyLayout,
-    isInspectMode,
-    pressedKeys,
-    setPressedKeys,
-    setKeyboardHeight,
-  } = useKeyboard();
+  const { keyDiagram, keyLayout } = useKeyboardContent();
+  const { isInspectMode, setKeyboardHeight } = useKeyboardUI();
+  const { pressedKeys, setPressedKeys } = usePressedKeys();
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [editingShortcuts, setEditingShortcuts] = useState<
     Diagram["shortcuts"]
@@ -67,7 +63,7 @@ export function Keyboard() {
     const map = new Map<string, Shortcut[]>();
 
     for (const shortcut of keyDiagram.shortcuts) {
-      const key = shortcut.displayKey;
+      const key = getDisplayKey(shortcut);
 
       if (!map.has(key)) {
         map.set(key, []);
@@ -77,11 +73,11 @@ export function Keyboard() {
     }
 
     return map;
-  }, [keyLayout, keyDiagram]);
+  }, [keyDiagram]);
 
   const layout = useMemo(
     () => addGapCompensation(keyLayout.rows, GAP),
-    [keyLayout, keyDiagram],
+    [keyLayout],
   );
 
   // ------------------------------------------------------------------
@@ -103,7 +99,7 @@ export function Keyboard() {
       if (!keyId || !keyDiagram) return;
 
       const shortcutsForKey = keyDiagram.shortcuts.filter(
-        (s) => s.displayKey === keyId,
+        (s) => getDisplayKey(s) === keyId,
       );
 
       setEditingKey(keyId);
@@ -149,6 +145,7 @@ export function Keyboard() {
                   )}
                   candidateCount={keyCandidatesMap.get(key.id)?.length ?? 0}
                   isPressed={pressedKeys.has(key.id)}
+                  isInspectMode={isInspectMode}
                   onClick={() =>
                     isInspectMode ? editKey(key.id) : toggleKey(key.id)
                   }

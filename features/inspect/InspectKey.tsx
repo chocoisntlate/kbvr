@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useEffect } from "react";
 import { ShortcutRow } from "./ShortcutRow";
 import { getValidKeyIds } from "../diagram/shortcut";
-import { useKeyboard } from "../keyboard/KeyboardContext";
+import { useKeyboardContent } from "../keyboard/KeyboardContext";
 import { useShortcutDraft } from "./hooks/useShortcutDraft";
 import { useShortcutErrors } from "./hooks/useShortcutErrors";
 import { useEditMode } from "./hooks/useEditMode";
@@ -26,7 +26,7 @@ export default function InspectModal({
   shortcuts,
   onClose,
 }: InspectModalProps) {
-  const { keyLayout } = useKeyboard();
+  const { keyLayout } = useKeyboardContent();
 
   /* ---------- Derived ---------- */
 
@@ -88,8 +88,8 @@ export default function InspectModal({
     const index = draft.length;
 
     add({
-      displayKey: keyId,
-      keys: "",
+      modifierKeys: "",
+      triggerKey: keyId,
       description: "",
       tags: "",
     });
