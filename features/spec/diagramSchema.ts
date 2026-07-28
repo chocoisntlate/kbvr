@@ -13,6 +13,7 @@ export const DiagramSchema = z.object({
   description: z.string().max(500).optional(),
   createdBy: z.string().max(100).optional(),
 
+  modes: z.array(z.string().min(1).max(100)).optional(),
   shortcuts: z.array(ShortcutSchema).min(1),
 });
 

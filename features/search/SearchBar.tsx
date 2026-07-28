@@ -12,7 +12,8 @@ function isTypingTarget(el: Element | null): boolean {
 
 export default function SearchBar() {
   const { keyDiagram, keyLayout } = useKeyboardContent();
-  const { isInspectMode, isSearchVisible, keyboardHeight } = useKeyboardUI();
+  const { isInspectMode, isSearchVisible, keyboardHeight, activeMode } =
+    useKeyboardUI();
   const { pressedKeys, setPressedKeys } = usePressedKeys();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -28,8 +29,8 @@ export default function SearchBar() {
   }, [query]);
 
   const results = useMemo(
-    () => searchShortcuts(keyDiagram, debouncedQuery),
-    [keyDiagram, debouncedQuery],
+    () => searchShortcuts(keyDiagram, debouncedQuery, activeMode),
+    [keyDiagram, debouncedQuery, activeMode],
   );
 
   const keyLabels = useMemo(() => {
