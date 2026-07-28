@@ -9,23 +9,26 @@ export type SearchResult = {
 export function searchShortcuts(
   diagram: Diagram,
   query: string,
+  activeMode: string | null,
 ): SearchResult[] {
   const trimmed = query.trim().toLowerCase();
   if (!trimmed) return [];
 
   const results: SearchResult[] = [];
 
-  for (const shortcut of diagram.shortcuts) {
+  diagram.shortcuts.forEach((shortcut, shortcutIndex) => {
+    if (activeMode !== null && shortcut.mode !== activeMode) return;
+
     shortcut.description.forEach((description, index) => {
       if (description.toLowerCase().includes(trimmed)) {
         results.push({
-          key: `${shortcut.keys.join("+")}-${index}`,
+          key: `${shortcutIndex}-${index}`,
           shortcut,
           description,
         });
       }
     });
-  }
+  });
 
   return results;
 }

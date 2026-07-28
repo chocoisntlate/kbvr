@@ -103,7 +103,10 @@ export function validateShortcut(
   const duplicateIndex = ctx.draft.findIndex((s, i) => {
     if (i === ctx.index) return false;
     const other = normalizeShortcut(s);
-    return other.keys.slice().sort().join("+") === keysString;
+    return (
+      other.keys.slice().sort().join("+") === keysString &&
+      other.mode === normalized.mode
+    );
   });
 
   if (duplicateIndex !== -1) {

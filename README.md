@@ -53,6 +53,7 @@ It is represented as a JSON object with the following structure.
 | `name`        | string     | yes      | Diagram name        |
 | `description` | string     | no       | Diagram description |
 | `createdBy`   | string     | no       | Author of diagram   |
+| `modes`       | string[]   | no       | Declared shortcut modes (e.g. `["normal", "insert"]`); shown as the mode-switcher options |
 | `shortcuts`   | Shortcut[] | yes      | List of shortcuts   |
 
 ### Shortcut Structure
@@ -62,7 +63,7 @@ It is represented as a JSON object with the following structure.
 | `keys`        | string[] | yes      | Key combination to trigger               |
 | `description` | string[] | yes      | One or more descriptions (for conflicts) |
 | `tags`        | string[] | no       | For grouping and filtering               |
-| `mode`        | string   | no       | Optional mode label                      |
+| `mode`        | string   | no       | Which of the diagram's declared `modes` this shortcut belongs to |
 
 The physical key a description renders on is not stored — it's inferred as the last element of `keys`.
 

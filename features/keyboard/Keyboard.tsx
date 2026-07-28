@@ -36,7 +36,7 @@ function addGapCompensation(rows: Layout["rows"], gap: number) {
 
 export function Keyboard() {
   const { keyDiagram, keyLayout } = useKeyboardContent();
-  const { isInspectMode, setKeyboardHeight } = useKeyboardUI();
+  const { isInspectMode, activeMode, setKeyboardHeight } = useKeyboardUI();
   const { pressedKeys, setPressedKeys } = usePressedKeys();
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [editingShortcuts, setEditingShortcuts] = useState<
@@ -63,6 +63,8 @@ export function Keyboard() {
     const map = new Map<string, Shortcut[]>();
 
     for (const shortcut of keyDiagram.shortcuts) {
+      if (activeMode !== null && shortcut.mode !== activeMode) continue;
+
       const key = getDisplayKey(shortcut);
 
       if (!map.has(key)) {
@@ -73,7 +75,7 @@ export function Keyboard() {
     }
 
     return map;
-  }, [keyDiagram]);
+  }, [keyDiagram, activeMode]);
 
   const layout = useMemo(
     () => addGapCompensation(keyLayout.rows, GAP),

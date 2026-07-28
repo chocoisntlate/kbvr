@@ -49,6 +49,8 @@ type KeyboardUIType = {
   setSearchVisible: React.Dispatch<React.SetStateAction<boolean>>;
   keyboardHeight: number | null;
   setKeyboardHeight: React.Dispatch<React.SetStateAction<number | null>>;
+  activeMode: string | null;
+  setActiveMode: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 const KeyboardUIContext = createContext<KeyboardUIType | undefined>(
@@ -118,6 +120,7 @@ export function KeyboardContextProvider({
   const [isInspectMode, setInspectMode] = useState<boolean>(false);
   const [isSearchVisible, setSearchVisible] = useState<boolean>(false);
   const [keyboardHeight, setKeyboardHeight] = useState<number | null>(null);
+  const [activeMode, setActiveMode] = useState<string | null>(null);
 
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(
     () => new Set(),
@@ -148,6 +151,8 @@ export function KeyboardContextProvider({
           setSearchVisible,
           keyboardHeight,
           setKeyboardHeight,
+          activeMode,
+          setActiveMode,
         }}
       >
         <PressedKeysContext.Provider value={{ pressedKeys, setPressedKeys }}>
