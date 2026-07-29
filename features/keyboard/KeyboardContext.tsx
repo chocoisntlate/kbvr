@@ -47,6 +47,8 @@ type KeyboardUIType = {
   setInspectMode: React.Dispatch<React.SetStateAction<boolean>>;
   isSearchVisible: boolean;
   setSearchVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  isJsonEditorVisible: boolean;
+  setJsonEditorVisible: React.Dispatch<React.SetStateAction<boolean>>;
   keyboardHeight: number | null;
   setKeyboardHeight: React.Dispatch<React.SetStateAction<number | null>>;
   activeMode: string | null;
@@ -119,6 +121,8 @@ export function KeyboardContextProvider({
 
   const [isInspectMode, setInspectMode] = useState<boolean>(false);
   const [isSearchVisible, setSearchVisible] = useState<boolean>(true);
+  const [isJsonEditorVisible, setJsonEditorVisible] =
+    useState<boolean>(false);
   const [keyboardHeight, setKeyboardHeight] = useState<number | null>(null);
   const [activeMode, setActiveMode] = useState<string | null>(null);
 
@@ -151,6 +155,8 @@ export function KeyboardContextProvider({
           setInspectMode,
           isSearchVisible,
           setSearchVisible,
+          isJsonEditorVisible,
+          setJsonEditorVisible,
           keyboardHeight,
           setKeyboardHeight,
           activeMode,

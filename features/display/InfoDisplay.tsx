@@ -61,7 +61,7 @@ export function KeyboardPanel() {
   };
 
   return (
-    <section className="flex justify-center w-full max-w-md gap-4 rounded-xl p-4">
+    <section className="flex justify-center w-full max-w-5xl gap-4 rounded-xl p-4">
       {/* Diagram Info Row */}
       <InfoRow
         title="Diagram"
@@ -88,7 +88,7 @@ export function KeyboardPanel() {
               title="Import"
               onFileSelect={(file) =>
                 handleImport(file, setKeyDiagram, () =>
-                  setCurrentDiagramMeta(null),
+                  setCurrentDiagramMeta(null)
                 )
               }
             />
@@ -165,7 +165,7 @@ type InfoRowProps = {
 
 function InfoRow({ title, name, description, meta, actions }: InfoRowProps) {
   return (
-    <div className="flex items-center gap-x-3 rounded-lg border border-gray-200 bg-white px-5 py-4 shadow-sm relative w-full">
+    <div className="flex items-center gap-x-3 rounded-lg border border-gray-200 bg-white px-5 py-4 shadow-sm relative flex-1 min-w-0">
       {meta && (
         <div className="absolute top-3 left-3">
           <InfoHover>{meta}</InfoHover>
@@ -194,8 +194,9 @@ function InfoRow({ title, name, description, meta, actions }: InfoRowProps) {
 
 function MetaRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div>
-      <span className="font-bold">{label}:</span> {value}
+    <div className="flex gap-1.5">
+      <span className="font-semibold text-gray-500">{label}:</span>
+      <span className="text-gray-900">{value}</span>
     </div>
   );
 }
@@ -205,17 +206,23 @@ function InfoHover({ children }: { children: React.ReactNode }) {
     <div className="group relative shrink-0">
       <button
         type="button"
-        className="flex h-4 w-4 items-center justify-center rounded-full border border-gray-300 bg-white text-[9px] font-semibold text-gray-500 hover:bg-gray-100 transition-colors"
+        className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-white text-[10px] font-semibold text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
         aria-label="More information"
       >
         i
       </button>
 
-      <div className="absolute left-0 top-full z-10 mt-1 w-48 translate-y-1 rounded-md border border-gray-200 bg-white p-3 text-xs text-gray-700 shadow-lg 
-                opacity-0 pointer-events-none transition-all duration-150 
-                group-hover:translate-y-0 group-hover:opacity-100 group-hover:pointer-events-auto">
-
-        <div className="flex flex-col gap-1.5">{children}</div>
+      {/* pt-2 (not mt-2) keeps this wrapper's box touching the button with
+          no true gap, so the cursor stays over a hoverable element the
+          whole way from the icon into the panel below it */}
+      <div
+        className="absolute left-0 top-full z-10 w-64 pt-2 translate-y-1
+                opacity-0 pointer-events-none transition-all duration-150
+                group-hover:translate-y-0 group-hover:opacity-100 group-hover:pointer-events-auto"
+      >
+        <div className="rounded-md border border-gray-200 bg-white p-4 text-sm text-gray-700 shadow-lg">
+          <div className="flex flex-col gap-2">{children}</div>
+        </div>
       </div>
     </div>
   );
