@@ -121,7 +121,8 @@ export function KeyboardContextProvider({
 
   const [isInspectMode, setInspectMode] = useState<boolean>(false);
   const [isSearchVisible, setSearchVisible] = useState<boolean>(true);
-  const [isJsonEditorVisible, setJsonEditorVisible] = useState<boolean>(true);
+  const [isJsonEditorVisible, setJsonEditorVisible] =
+    useState<boolean>(false);
   const [keyboardHeight, setKeyboardHeight] = useState<number | null>(null);
   const [activeMode, setActiveMode] = useState<string | null>(null);
 

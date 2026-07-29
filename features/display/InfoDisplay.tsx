@@ -61,7 +61,7 @@ export function KeyboardPanel() {
   };
 
   return (
-    <section className="flex justify-center w-full max-w-md gap-4 rounded-xl p-4">
+    <section className="flex justify-center w-full max-w-5xl gap-4 rounded-xl p-4">
       {/* Diagram Info Row */}
       <InfoRow
         title="Diagram"
@@ -88,7 +88,7 @@ export function KeyboardPanel() {
               title="Import"
               onFileSelect={(file) =>
                 handleImport(file, setKeyDiagram, () =>
-                  setCurrentDiagramMeta(null),
+                  setCurrentDiagramMeta(null)
                 )
               }
             />
@@ -165,7 +165,7 @@ type InfoRowProps = {
 
 function InfoRow({ title, name, description, meta, actions }: InfoRowProps) {
   return (
-    <div className="flex items-center gap-x-3 rounded-lg border border-gray-200 bg-white px-5 py-4 shadow-sm relative w-full">
+    <div className="flex items-center gap-x-3 rounded-lg border border-gray-200 bg-white px-5 py-4 shadow-sm relative flex-1 min-w-0">
       {meta && (
         <div className="absolute top-3 left-3">
           <InfoHover>{meta}</InfoHover>
