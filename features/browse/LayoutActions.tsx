@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { mutate } from "swr";
 import { useAuth } from "@/features/auth/AuthContext";
 import { signInWithGoogle } from "@/features/auth/signInWithGoogle";
 import { saveLayoutReference, setDefaultLayout } from "@/features/posts/actions";
@@ -30,6 +31,8 @@ export function LayoutActions({
     try {
       await saveLayoutReference(layoutId);
       setSaved(true);
+      await mutate(["browse-layout-flags"]);
+      mutate(["library", user.id]);
       router.refresh();
     } catch (err) {
       console.error(err);
@@ -48,6 +51,8 @@ export function LayoutActions({
       await setDefaultLayout(layoutId);
       setSaved(true);
       setIsDefault(true);
+      await mutate(["browse-layout-flags"]);
+      mutate(["library", user.id]);
       router.refresh();
     } catch (err) {
       console.error(err);

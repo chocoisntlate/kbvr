@@ -1,14 +1,9 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import {
-  searchPosts,
-  getUserSavedLayouts,
-  getUserDefaultLayoutId,
-} from "@/features/posts/queries";
+import { searchPosts } from "@/features/posts/queries";
+import { getBrowseLayoutFlagsAction } from "@/features/posts/readActions";
 import { BrowseSearchInput } from "@/features/browse/BrowseSearchInput";
-import { DiagramPostCard } from "@/features/browse/DiagramPostCard";
-import { LayoutPostCard } from "@/features/browse/LayoutPostCard";
-import { DiagramPost, LayoutPost } from "@/features/posts/types";
+import { BrowseResultsList } from "@/features/browse/BrowseResultsList";
 
 export default async function BrowsePage({
   searchParams,
@@ -67,38 +62,17 @@ async function BrowseResults({
   activeType: "diagram" | "layout";
   q: string;
 }) {
-  const posts = await searchPosts(activeType, q);
+  const firstPage = await searchPosts(activeType, q, 0);
 
-  let savedLayoutIds = new Set<string>();
-  let defaultLayoutId: string | null = null;
-  if (activeType === "layout") {
-    const [savedLayouts, defaultId] = await Promise.all([
-      getUserSavedLayouts(),
-      getUserDefaultLayoutId(),
-    ]);
-    savedLayoutIds = new Set(savedLayouts.map((l) => l.id));
-    defaultLayoutId = defaultId;
-  }
+  const layoutFlags =
+    activeType === "layout" ? await getBrowseLayoutFlagsAction() : undefined;
 
   return (
-    <div className="flex flex-col gap-3">
-      {posts.length === 0 && (
-        <p className="text-sm text-gray-500">
-          No public {activeType}s found.
-        </p>
-      )}
-      {activeType === "diagram"
-        ? (posts as DiagramPost[]).map((post) => (
-            <DiagramPostCard key={post.id} post={post} />
-          ))
-        : (posts as LayoutPost[]).map((post) => (
-            <LayoutPostCard
-              key={post.id}
-              post={post}
-              isSaved={savedLayoutIds.has(post.id)}
-              isDefault={defaultLayoutId === post.id}
-            />
-          ))}
-    </div>
+    <BrowseResultsList
+      activeType={activeType}
+      q={q}
+      initialPage={firstPage}
+      initialLayoutFlags={layoutFlags}
+    />
   );
 }
