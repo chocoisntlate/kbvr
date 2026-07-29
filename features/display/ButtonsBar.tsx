@@ -24,6 +24,8 @@ export default function ButtonsBar() {
     isInspectMode,
     isSearchVisible,
     setSearchVisible,
+    isJsonEditorVisible,
+    setJsonEditorVisible,
     activeMode,
     setActiveMode,
   } = useKeyboardUI();
@@ -80,6 +82,13 @@ export default function ButtonsBar() {
       if (key === "i") {
         e.preventDefault();
         setInspectMode((prev) => !prev);
+        return;
+      }
+
+      // toggles the JSON editor's own visibility, independent of inspect mode
+      if (key === "j") {
+        e.preventDefault();
+        setJsonEditorVisible((prev) => !prev);
         return;
       }
 
@@ -157,6 +166,7 @@ export default function ButtonsBar() {
     setInspectMode,
     setActiveMode,
     setSearchVisible,
+    setJsonEditorVisible,
     setPressedKeys,
   ]);
 
@@ -172,6 +182,14 @@ export default function ButtonsBar() {
       >
         {isInspectMode ? "Exit Inspection" : "Inspect Keys"}
         <HoverTooltip>Press I to toggle</HoverTooltip>
+      </button>
+      <button
+        className={BUTTON_CLASS}
+        onClick={() => setJsonEditorVisible((prev) => !prev)}
+        aria-pressed={isJsonEditorVisible}
+      >
+        {isJsonEditorVisible ? "Hide JSON" : "Show JSON"}
+        <HoverTooltip>Press J to toggle</HoverTooltip>
       </button>
       {!isInspectMode && (
         <>

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import ButtonsBar from "@/features/display/ButtonsBar";
 import { KeyboardPanel } from "@/features/display/InfoDisplay";
+import SpecEditor from "@/features/display/SpecEditor";
 import { Keyboard } from "@/features/keyboard/Keyboard";
 import { KeyboardContextProvider } from "@/features/keyboard/KeyboardContext";
 import SearchBar from "@/features/search/SearchBar";
@@ -79,6 +80,7 @@ async function HomeContent({
           <Keyboard />
           <SearchBar />
         </div>
+        <SpecEditor />
       </div>
     </KeyboardContextProvider>
   );
