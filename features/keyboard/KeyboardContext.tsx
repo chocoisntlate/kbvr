@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { Diagram } from "../spec/diagramSchema";
 import { Layout } from "@/features/spec/layoutSchema";
 import { INTRODUCTION_DIAGRAM } from "@/examples/default.diagram";
@@ -118,7 +118,7 @@ export function KeyboardContextProvider({
     useState<PostMeta | null>(initialLayoutMeta ?? null);
 
   const [isInspectMode, setInspectMode] = useState<boolean>(false);
-  const [isSearchVisible, setSearchVisible] = useState<boolean>(false);
+  const [isSearchVisible, setSearchVisible] = useState<boolean>(true);
   const [keyboardHeight, setKeyboardHeight] = useState<number | null>(null);
   const [activeMode, setActiveMode] = useState<string | null>(null);
 
@@ -126,9 +126,11 @@ export function KeyboardContextProvider({
     () => new Set(),
   );
 
-  useEffect(() => {
+  const [prevInspectMode, setPrevInspectMode] = useState(isInspectMode);
+  if (isInspectMode !== prevInspectMode) {
+    setPrevInspectMode(isInspectMode);
     setPressedKeys(new Set());
-  }, [isInspectMode]);
+  }
 
   return (
     <KeyboardContentContext.Provider
