@@ -1,5 +1,7 @@
 "use client";
 
+import { HoverTooltip } from "./HoverTooltip";
+
 type KeyProps = {
   label: string;
   width: number;
@@ -64,8 +66,8 @@ export function Key({
             )}
           </span>
 
-          <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10 shadow-lg">
-            <ul className="list-disc list-inside whitespace-nowrap">
+          <HoverTooltip>
+            <ul className="list-disc list-inside">
               {description.length > 1 ? (
                 <>
                   {description.map((item, i) => (
@@ -76,7 +78,7 @@ export function Key({
                 description[0]
               )}
             </ul>
-          </span>
+          </HoverTooltip>
         </>
       )}
     </button>

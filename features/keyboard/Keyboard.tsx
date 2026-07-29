@@ -91,7 +91,11 @@ export function Keyboard() {
 
     setPressedKeys((prev) => {
       const next = new Set(prev);
-      next.has(keyId) ? next.delete(keyId) : next.add(keyId);
+      if (next.has(keyId)) {
+        next.delete(keyId);
+      } else {
+        next.add(keyId);
+      }
       return next;
     });
   }, [setPressedKeys]);
@@ -111,10 +115,12 @@ export function Keyboard() {
   );
 
   // reset interaction state when toggling modes
-  useEffect(() => {
+  const [prevInspectMode, setPrevInspectMode] = useState(isInspectMode);
+  if (isInspectMode !== prevInspectMode) {
+    setPrevInspectMode(isInspectMode);
     setEditingKey(null);
     setEditingShortcuts([]);
-  }, [isInspectMode]);
+  }
 
   // ------------------------------------------------------------------
   // Render
@@ -171,7 +177,3 @@ export function Keyboard() {
     </>
   );
 }
-
-// ------------------------------------------------------------------
-// Editor stub (intentionally minimal)
-// ------------------------------------------------------------------

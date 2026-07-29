@@ -71,9 +71,12 @@ export default function SearchBar() {
     setIsFocused(false);
   }, [setPressedKeys]);
 
-  // a new search invalidates whatever was being previewed from the old list
+  // a new search invalidates whatever was being previewed from the old list;
+  // deliberately only reacts to debouncedQuery, not activeIndex/revertToBaseline,
+  // otherwise every arrow-key preview would immediately revert itself
   useEffect(() => {
     if (activeIndex !== null) revertToBaseline();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery]);
 
   useEffect(() => {
