@@ -56,11 +56,24 @@ async function safely<T>(fallback: T, run: () => Promise<T>): Promise<T> {
   }
 }
 
+export const PAGE_SIZE = 20;
+
+export type SearchPostsResult = {
+  posts: (DiagramPost | LayoutPost)[];
+  hasMore: boolean;
+};
+
+/*
+ * Offset-based pagination: rows inserted between page fetches can shift
+ * later pages (classic offset-under-concurrent-writes tradeoff), acceptable
+ * given how infrequently new public posts appear relative to browsing.
+ */
 export async function searchPosts(
   type: "diagram" | "layout",
   query: string,
-): Promise<(DiagramPost | LayoutPost)[]> {
-  return safely([], async () => {
+  page: number = 0,
+): Promise<SearchPostsResult> {
+  return safely({ posts: [], hasMore: false }, async () => {
     const { supabase } = await getServerContext();
     const table = type === "diagram" ? "diagrams" : "layouts";
 
@@ -75,11 +88,17 @@ export async function searchPosts(
       builder = builder.or(`name.ilike.%${term}%,description.ilike.%${term}%`);
     }
 
-    const { data, error } = await builder;
+    const from = page * PAGE_SIZE;
+    const to = from + PAGE_SIZE; // inclusive range: fetch PAGE_SIZE + 1 rows to derive hasMore
+    const { data, error } = await builder.range(from, to);
     if (error) throw error;
-    return (data as PostRow[]).map((row) =>
+
+    const rows = data as PostRow[];
+    const hasMore = rows.length > PAGE_SIZE;
+    const posts = (hasMore ? rows.slice(0, PAGE_SIZE) : rows).map((row) =>
       mapRow<Diagram | Layout>(row),
     ) as (DiagramPost | LayoutPost)[];
+    return { posts, hasMore };
   });
 }
 

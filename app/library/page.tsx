@@ -1,29 +1,9 @@
 import { Suspense } from "react";
 import { getServerAuthContext } from "@/utils/supabase/server";
-import {
-  getUserOwnedDiagrams,
-  getUserOwnedLayouts,
-  getUserSavedDiagrams,
-  getUserSavedLayouts,
-  getUserDefaultLayoutId,
-} from "@/features/posts/queries";
+import { getLibraryDataAction } from "@/features/posts/readActions";
 import { ensureDefaultLayoutSeeded } from "@/features/posts/actions";
 import { SignInPrompt } from "@/features/auth/SignInPrompt";
-import { DiagramLibraryItem } from "@/features/library/DiagramLibraryItem";
-import { LayoutLibraryItem } from "@/features/library/LayoutLibraryItem";
-import { DiagramPost, LayoutPost } from "@/features/posts/types";
-
-function dedupeById<T extends { id: string }>(
-  owned: T[],
-  saved: T[],
-): { post: T; isOwned: boolean }[] {
-  const map = new Map<string, { post: T; isOwned: boolean }>();
-  for (const post of owned) map.set(post.id, { post, isOwned: true });
-  for (const post of saved) {
-    if (!map.has(post.id)) map.set(post.id, { post, isOwned: false });
-  }
-  return Array.from(map.values());
-}
+import { LibraryList } from "@/features/library/LibraryList";
 
 export default function LibraryPage() {
   return (
@@ -32,13 +12,13 @@ export default function LibraryPage() {
       <Suspense
         fallback={<p className="text-sm text-gray-500">Loading…</p>}
       >
-        <LibraryContent />
+        <LibraryServerContent />
       </Suspense>
     </main>
   );
 }
 
-async function LibraryContent() {
+async function LibraryServerContent() {
   const { user } = await getServerAuthContext();
 
   if (!user) {
@@ -49,57 +29,7 @@ async function LibraryContent() {
 
   await ensureDefaultLayoutSeeded();
 
-  const [
-    ownedDiagrams,
-    ownedLayouts,
-    savedDiagrams,
-    savedLayouts,
-    defaultLayoutId,
-  ] = await Promise.all([
-    getUserOwnedDiagrams(),
-    getUserOwnedLayouts(),
-    getUserSavedDiagrams(),
-    getUserSavedLayouts(),
-    getUserDefaultLayoutId(),
-  ]);
+  const libraryData = await getLibraryDataAction();
 
-  const diagrams = dedupeById<DiagramPost>(ownedDiagrams, savedDiagrams);
-  const layouts = dedupeById<LayoutPost>(ownedLayouts, savedLayouts);
-
-  return (
-    <>
-      <section className="flex flex-col gap-2">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Diagrams
-        </h2>
-        {diagrams.length === 0 && (
-          <p className="text-sm text-gray-500">
-            No diagrams yet — save one from Browse or the keyboard page.
-          </p>
-        )}
-        {diagrams.map(({ post, isOwned }) => (
-          <DiagramLibraryItem key={post.id} post={post} isOwned={isOwned} />
-        ))}
-      </section>
-
-      <section className="flex flex-col gap-2">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Layouts
-        </h2>
-        {layouts.length === 0 && (
-          <p className="text-sm text-gray-500">
-            No layouts yet — save one from Browse.
-          </p>
-        )}
-        {layouts.map(({ post, isOwned }) => (
-          <LayoutLibraryItem
-            key={post.id}
-            post={post}
-            isOwned={isOwned}
-            isDefault={defaultLayoutId === post.id}
-          />
-        ))}
-      </section>
-    </>
-  );
+  return <LibraryList initialData={libraryData} />;
 }

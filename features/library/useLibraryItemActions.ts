@@ -1,5 +1,7 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
+import { mutate } from "swr";
+import { useAuth } from "@/features/auth/AuthContext";
 import { PostMeta } from "@/features/posts/types";
 
 type LibraryItemActions = {
@@ -15,6 +17,7 @@ export function useLibraryItemActions(
   actions: LibraryItemActions,
 ) {
   const router = useRouter();
+  const { user } = useAuth();
   const [isPublic, setIsPublic] = useState(initialIsPublic);
   const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -26,12 +29,14 @@ export function useLibraryItemActions(
       setBusy(true);
       try {
         await fn();
+        await mutate(["library", user?.id ?? null]);
+        await mutate((key) => Array.isArray(key) && key[0] === "browse");
         router.refresh();
       } finally {
         setBusy(false);
       }
     },
-    [router],
+    [router, user?.id],
   );
 
   const handleToggleVisibility = () =>
