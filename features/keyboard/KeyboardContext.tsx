@@ -53,6 +53,8 @@ type KeyboardUIType = {
   setKeyboardHeight: React.Dispatch<React.SetStateAction<number | null>>;
   activeMode: string | null;
   setActiveMode: React.Dispatch<React.SetStateAction<string | null>>;
+  editingKey: string | null;
+  setEditingKey: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 const KeyboardUIContext = createContext<KeyboardUIType | undefined>(undefined);
@@ -124,6 +126,7 @@ export function KeyboardContextProvider({
   const [isJsonEditorVisible, setJsonEditorVisible] = useState<boolean>(false);
   const [keyboardHeight, setKeyboardHeight] = useState<number | null>(null);
   const [activeMode, setActiveMode] = useState<string | null>(null);
+  const [editingKey, setEditingKey] = useState<string | null>(null);
 
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(() => new Set());
 
@@ -131,6 +134,7 @@ export function KeyboardContextProvider({
   if (isInspectMode !== prevInspectMode) {
     setPrevInspectMode(isInspectMode);
     setPressedKeys(new Set());
+    setEditingKey(null);
   }
 
   return (
@@ -158,6 +162,8 @@ export function KeyboardContextProvider({
           setKeyboardHeight,
           activeMode,
           setActiveMode,
+          editingKey,
+          setEditingKey,
         }}
       >
         <PressedKeysContext.Provider value={{ pressedKeys, setPressedKeys }}>

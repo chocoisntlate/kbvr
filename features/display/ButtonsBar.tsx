@@ -92,8 +92,6 @@ export default function ButtonsBar() {
         return;
       }
 
-      if (isInspectMode) return;
-
       if (isModeMenuOpen) {
         if (e.key === "ArrowDown") {
           e.preventDefault();
@@ -191,79 +189,73 @@ export default function ButtonsBar() {
         {isJsonEditorVisible ? "Hide JSON" : "Show JSON"}
         <HoverTooltip>Press J to toggle</HoverTooltip>
       </button>
-      {!isInspectMode && (
-        <>
-          <button
-            className={BUTTON_CLASS}
-            onClick={() => setSearchVisible((prev) => !prev)}
-            aria-pressed={isSearchVisible}
-          >
-            {isSearchVisible ? "Hide Search" : "Show Search"}
-            <HoverTooltip>Press / to toggle</HoverTooltip>
-          </button>
-          <button
-            className={BUTTON_CLASS}
-            onClick={() => setPressedKeys(new Set())}
-          >
-            Reset Pressed Keys
-            <HoverTooltip>Press Escape to reset</HoverTooltip>
-          </button>
-          <div ref={modeMenuRef} className="relative">
-            <button
-              ref={modeTriggerRef}
-              className={BUTTON_CLASS}
-              onClick={() =>
-                setIsModeMenuOpen((prev) => {
-                  const next = !prev;
-                  if (next) {
-                    const currentIndex = modeItems.findIndex(
-                      (item) => item.value === activeMode,
-                    );
-                    setHighlightedIndex(currentIndex === -1 ? 0 : currentIndex);
-                  }
-                  return next;
-                })
+      <button
+        className={BUTTON_CLASS}
+        onClick={() => setSearchVisible((prev) => !prev)}
+        aria-pressed={isSearchVisible}
+      >
+        {isSearchVisible ? "Hide Search" : "Show Search"}
+        <HoverTooltip>Press / to toggle</HoverTooltip>
+      </button>
+      <button
+        className={BUTTON_CLASS}
+        onClick={() => setPressedKeys(new Set())}
+      >
+        Reset Pressed Keys
+        <HoverTooltip>Press Escape to reset</HoverTooltip>
+      </button>
+      <div ref={modeMenuRef} className="relative">
+        <button
+          ref={modeTriggerRef}
+          className={BUTTON_CLASS}
+          onClick={() =>
+            setIsModeMenuOpen((prev) => {
+              const next = !prev;
+              if (next) {
+                const currentIndex = modeItems.findIndex(
+                  (item) => item.value === activeMode,
+                );
+                setHighlightedIndex(currentIndex === -1 ? 0 : currentIndex);
               }
-              aria-haspopup="listbox"
-              aria-expanded={isModeMenuOpen}
-            >
-              {activeMode ?? "All modes"}
-              <span className="ml-1 opacity-60">▾</span>
-              <HoverTooltip>
-                Press M to open • 0-9 to jump directly
-              </HoverTooltip>
-            </button>
+              return next;
+            })
+          }
+          aria-haspopup="listbox"
+          aria-expanded={isModeMenuOpen}
+        >
+          {activeMode ?? "All modes"}
+          <span className="ml-1 opacity-60">▾</span>
+          <HoverTooltip>Press M to open • 0-9 to jump directly</HoverTooltip>
+        </button>
 
-            {isModeMenuOpen && (
-              <div
-                role="listbox"
-                className="absolute left-0 top-full z-20 mt-1 flex min-w-full flex-col gap-0.5 rounded-md border border-gray-300 bg-white p-1 shadow-lg"
+        {isModeMenuOpen && (
+          <div
+            role="listbox"
+            className="absolute left-0 top-full z-20 mt-1 flex min-w-full flex-col gap-0.5 rounded-md border border-gray-300 bg-white p-1 shadow-lg"
+          >
+            {modeItems.map((item, index) => (
+              <button
+                key={item.value ?? "__all__"}
+                role="option"
+                aria-selected={activeMode === item.value}
+                onClick={() => {
+                  setActiveMode(item.value);
+                  setIsModeMenuOpen(false);
+                }}
+                onMouseEnter={() => setHighlightedIndex(index)}
+                className={`flex items-center justify-between gap-4 whitespace-nowrap rounded px-2 py-1 text-left text-xs ${
+                  index === highlightedIndex ? "bg-gray-100" : ""
+                } ${activeMode === item.value ? "font-semibold" : ""}`}
               >
-                {modeItems.map((item, index) => (
-                  <button
-                    key={item.value ?? "__all__"}
-                    role="option"
-                    aria-selected={activeMode === item.value}
-                    onClick={() => {
-                      setActiveMode(item.value);
-                      setIsModeMenuOpen(false);
-                    }}
-                    onMouseEnter={() => setHighlightedIndex(index)}
-                    className={`flex items-center justify-between gap-4 whitespace-nowrap rounded px-2 py-1 text-left text-xs ${
-                      index === highlightedIndex ? "bg-gray-100" : ""
-                    } ${activeMode === item.value ? "font-semibold" : ""}`}
-                  >
-                    <span>{item.label}</span>
-                    {index <= 9 && (
-                      <span className="text-[10px] opacity-50">{index}</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
+                <span>{item.label}</span>
+                {index <= 9 && (
+                  <span className="text-[10px] opacity-50">{index}</span>
+                )}
+              </button>
+            ))}
           </div>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 }

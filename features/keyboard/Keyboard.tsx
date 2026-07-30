@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Layout } from "@/features/spec/layoutSchema";
-import { Diagram, Shortcut } from "../spec/diagramSchema";
+import { Shortcut } from "../spec/diagramSchema";
 import { Key } from "./Key";
 import {
   useKeyboardContent,
@@ -40,12 +40,14 @@ function addGapCompensation(rows: Layout["rows"], gap: number) {
 
 export function Keyboard() {
   const { keyDiagram, keyLayout } = useKeyboardContent();
-  const { isInspectMode, activeMode, setKeyboardHeight } = useKeyboardUI();
+  const {
+    isInspectMode,
+    activeMode,
+    setKeyboardHeight,
+    editingKey,
+    setEditingKey,
+  } = useKeyboardUI();
   const { pressedKeys, setPressedKeys } = usePressedKeys();
-  const [editingKey, setEditingKey] = useState<string | null>(null);
-  const [editingShortcuts, setEditingShortcuts] = useState<
-    Diagram["shortcuts"]
-  >([]);
   const keyboardRef = useRef<HTMLDivElement>(null);
 
   // publish the keyboard's rendered height so sibling UI (e.g. the search
@@ -107,29 +109,15 @@ export function Keyboard() {
     [setPressedKeys],
   );
 
-  const editKey = useCallback(
-    (keyId: string | null) => {
-      if (!keyId || !keyDiagram) return;
+  const editingShortcuts = useMemo(() => {
+    if (!editingKey || !keyDiagram) return [];
 
-      const shortcutsForKey = keyDiagram.shortcuts.filter(
-        (s) =>
-          getDisplayKey(s) === keyId &&
-          (activeMode === null || s.mode === activeMode),
-      );
-
-      setEditingKey(keyId);
-      setEditingShortcuts(shortcutsForKey);
-    },
-    [keyDiagram, activeMode],
-  );
-
-  // reset interaction state when toggling modes
-  const [prevInspectMode, setPrevInspectMode] = useState(isInspectMode);
-  if (isInspectMode !== prevInspectMode) {
-    setPrevInspectMode(isInspectMode);
-    setEditingKey(null);
-    setEditingShortcuts([]);
-  }
+    return keyDiagram.shortcuts.filter(
+      (s) =>
+        getDisplayKey(s) === editingKey &&
+        (activeMode === null || s.mode === activeMode),
+    );
+  }, [editingKey, keyDiagram, activeMode]);
 
   // ------------------------------------------------------------------
   // Render
@@ -164,7 +152,7 @@ export function Keyboard() {
                   isPressed={pressedKeys.has(key.id)}
                   isInspectMode={isInspectMode}
                   onClick={() =>
-                    isInspectMode ? editKey(key.id) : toggleKey(key.id)
+                    isInspectMode ? setEditingKey(key.id) : toggleKey(key.id)
                   }
                 />
               ),
@@ -175,13 +163,11 @@ export function Keyboard() {
 
       {editingKey && (
         <InspectModal
+          key={`${editingKey}:${activeMode ?? ""}`}
           keyId={editingKey}
           shortcuts={editingShortcuts}
           activeMode={activeMode}
-          onClose={() => {
-            setEditingKey(null);
-            setEditingShortcuts([]);
-          }}
+          onClose={() => setEditingKey(null)}
         />
       )}
     </>

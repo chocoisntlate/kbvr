@@ -7,6 +7,7 @@ import {
   usePressedKeys,
 } from "../keyboard/KeyboardContext";
 import { searchShortcuts } from "./searchShortcuts";
+import { getDisplayKey } from "../diagram/shortcut";
 
 function isTypingTarget(el: Element | null): boolean {
   if (!el) return false;
@@ -32,8 +33,13 @@ function highlightMatch(description: string, trimmedQuery: string) {
 
 export default function SearchBar() {
   const { keyDiagram, keyLayout } = useKeyboardContent();
-  const { isInspectMode, isSearchVisible, keyboardHeight, activeMode } =
-    useKeyboardUI();
+  const {
+    isInspectMode,
+    isSearchVisible,
+    keyboardHeight,
+    activeMode,
+    setEditingKey,
+  } = useKeyboardUI();
   const { pressedKeys, setPressedKeys } = usePressedKeys();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -72,19 +78,31 @@ export default function SearchBar() {
 
   const previewResult = useCallback(
     (index: number) => {
-      setPressedKeys(new Set(results[index].shortcut.keys));
+      const shortcut = results[index].shortcut;
+      setPressedKeys(
+        isInspectMode
+          ? new Set([getDisplayKey(shortcut)])
+          : new Set(shortcut.keys),
+      );
       setActiveIndex(index);
     },
-    [results, setPressedKeys],
+    [results, setPressedKeys, isInspectMode],
   );
 
   const selectResult = useCallback(
     (index: number) => {
-      const stuck = new Set(results[index].shortcut.keys);
+      const shortcut = results[index].shortcut;
+
+      if (isInspectMode) {
+        setEditingKey(getDisplayKey(shortcut));
+        return;
+      }
+
+      const stuck = new Set(shortcut.keys);
       setPressedKeys(stuck);
       focusBaselineRef.current = stuck;
     },
-    [results, setPressedKeys],
+    [results, setPressedKeys, isInspectMode, setEditingKey],
   );
 
   const revertPreview = useCallback(() => {
@@ -108,7 +126,7 @@ export default function SearchBar() {
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (!isSearchVisible || isInspectMode) return;
+      if (!isSearchVisible) return;
 
       if (e.key === "Escape") {
         if (document.activeElement === inputRef.current) {
@@ -167,7 +185,7 @@ export default function SearchBar() {
     selectResult,
   ]);
 
-  if (!isSearchVisible || isInspectMode) return null;
+  if (!isSearchVisible) return null;
 
   return (
     <div
