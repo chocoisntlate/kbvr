@@ -46,7 +46,9 @@ export function Key({
         height: unit + "px",
       }}
     >
-      <span className="absolute top-1 left-1.5 text-xs opacity-75">{label}</span>
+      <span className="absolute top-1 left-1.5 text-xs opacity-75">
+        {label}
+      </span>
 
       {isInspectMode && (
         <span className="absolute bottom-1 right-1 text-xs opacity-80">

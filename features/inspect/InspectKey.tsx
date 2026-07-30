@@ -116,7 +116,9 @@ export default function InspectModal({
       <div className="w-full max-w-md max-h-[90vh] rounded-lg bg-white p-4 shadow-lg flex flex-col">
         {/* Header */}
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold">Keybinds for &quot;{keyId}&quot;</h3>
+          <h3 className="text-sm font-semibold">
+            Keybinds for &quot;{keyId}&quot;
+          </h3>
 
           <button
             className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors"

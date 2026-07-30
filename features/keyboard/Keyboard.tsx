@@ -4,7 +4,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "@/features/spec/layoutSchema";
 import { Diagram, Shortcut } from "../spec/diagramSchema";
 import { Key } from "./Key";
-import { useKeyboardContent, useKeyboardUI, usePressedKeys } from "./KeyboardContext";
+import {
+  useKeyboardContent,
+  useKeyboardUI,
+  usePressedKeys,
+} from "./KeyboardContext";
 import InspectModal from "../inspect/InspectKey";
 import { getKeyDescription } from "./description";
 import { getDisplayKey } from "../diagram/shortcut";
@@ -86,19 +90,22 @@ export function Keyboard() {
   // Interaction
   // ------------------------------------------------------------------
 
-  const toggleKey = useCallback((keyId: string | null) => {
-    if (!keyId) return;
+  const toggleKey = useCallback(
+    (keyId: string | null) => {
+      if (!keyId) return;
 
-    setPressedKeys((prev) => {
-      const next = new Set(prev);
-      if (next.has(keyId)) {
-        next.delete(keyId);
-      } else {
-        next.add(keyId);
-      }
-      return next;
-    });
-  }, [setPressedKeys]);
+      setPressedKeys((prev) => {
+        const next = new Set(prev);
+        if (next.has(keyId)) {
+          next.delete(keyId);
+        } else {
+          next.add(keyId);
+        }
+        return next;
+      });
+    },
+    [setPressedKeys],
+  );
 
   const editKey = useCallback(
     (keyId: string | null) => {

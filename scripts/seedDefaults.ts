@@ -61,7 +61,11 @@ async function upsertSeedLayout(ownerId: string): Promise<string> {
   if (existing) {
     const { error } = await supabase
       .from("layouts")
-      .update({ owner_id: ownerId, owner_display_name: SYSTEM_DISPLAY_NAME, data })
+      .update({
+        owner_id: ownerId,
+        owner_display_name: SYSTEM_DISPLAY_NAME,
+        data,
+      })
       .eq("id", existing.id);
     if (error) throw error;
     return existing.id;

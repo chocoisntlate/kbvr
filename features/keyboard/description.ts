@@ -28,7 +28,9 @@ export function getKeyDescription(
   // contains every mode's shortcuts when "All modes" is selected), so every
   // matching candidate here is a genuine conflict for the current view —
   // combine all of them rather than only the first one found.
-  const matched = candidates.filter((candidate) => isMatch(candidate, pressedKeys));
+  const matched = candidates.filter((candidate) =>
+    isMatch(candidate, pressedKeys),
+  );
   if (matched.length > 0) {
     return matched.flatMap((candidate) => candidate.description);
   }

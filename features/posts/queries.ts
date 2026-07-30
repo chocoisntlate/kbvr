@@ -15,7 +15,16 @@ type PostRow = {
   updated_at: string;
 };
 
-function mapRow<T>(row: PostRow): { id: string; ownerId: string; ownerDisplayName: string | null; data: T; isPublic: boolean; forkedFromId: string | null; createdAt: string; updatedAt: string } {
+function mapRow<T>(row: PostRow): {
+  id: string;
+  ownerId: string;
+  ownerDisplayName: string | null;
+  data: T;
+  isPublic: boolean;
+  forkedFromId: string | null;
+  createdAt: string;
+  updatedAt: string;
+} {
   return {
     id: row.id,
     ownerId: row.owner_id,
@@ -244,7 +253,9 @@ export async function getUserSavedLayouts(): Promise<LayoutPost[]> {
   });
 }
 
-export async function getPublicPostsByDisplayName(displayName: string): Promise<{
+export async function getPublicPostsByDisplayName(
+  displayName: string,
+): Promise<{
   diagrams: DiagramPost[];
   layouts: LayoutPost[];
 } | null> {
@@ -271,16 +282,18 @@ export async function getPublicPostsByDisplayName(displayName: string): Promise<
     // Most accounts are found via `profiles`, but the seed account created by
     // scripts/seedDefaults.ts never gets a profile row — fall back to the
     // denormalized owner_display_name so its posts still resolve here too.
-    const [{ data: diagrams, error: diagramsError }, { data: layouts, error: layoutsError }] =
-      profile
-        ? await Promise.all([
-            diagramsQuery.eq("owner_id", profile.id),
-            layoutsQuery.eq("owner_id", profile.id),
-          ])
-        : await Promise.all([
-            diagramsQuery.ilike("owner_display_name", displayName),
-            layoutsQuery.ilike("owner_display_name", displayName),
-          ]);
+    const [
+      { data: diagrams, error: diagramsError },
+      { data: layouts, error: layoutsError },
+    ] = profile
+      ? await Promise.all([
+          diagramsQuery.eq("owner_id", profile.id),
+          layoutsQuery.eq("owner_id", profile.id),
+        ])
+      : await Promise.all([
+          diagramsQuery.ilike("owner_display_name", displayName),
+          layoutsQuery.ilike("owner_display_name", displayName),
+        ]);
     if (diagramsError) throw diagramsError;
     if (layoutsError) throw layoutsError;
 

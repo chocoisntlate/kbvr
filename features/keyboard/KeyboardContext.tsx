@@ -55,9 +55,7 @@ type KeyboardUIType = {
   setActiveMode: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-const KeyboardUIContext = createContext<KeyboardUIType | undefined>(
-  undefined,
-);
+const KeyboardUIContext = createContext<KeyboardUIType | undefined>(undefined);
 
 export const useKeyboardUI = () => {
   const context = useContext(KeyboardUIContext);
@@ -114,21 +112,20 @@ export function KeyboardContextProvider({
   const [keyLayout, setKeyLayout] = useState<Layout>(
     initialLayout ?? QWERTY_US_80,
   );
-  const [currentDiagramMeta, setCurrentDiagramMeta] =
-    useState<PostMeta | null>(initialDiagramMeta ?? null);
-  const [currentLayoutMeta, setCurrentLayoutMeta] =
-    useState<PostMeta | null>(initialLayoutMeta ?? null);
+  const [currentDiagramMeta, setCurrentDiagramMeta] = useState<PostMeta | null>(
+    initialDiagramMeta ?? null,
+  );
+  const [currentLayoutMeta, setCurrentLayoutMeta] = useState<PostMeta | null>(
+    initialLayoutMeta ?? null,
+  );
 
   const [isInspectMode, setInspectMode] = useState<boolean>(false);
   const [isSearchVisible, setSearchVisible] = useState<boolean>(true);
-  const [isJsonEditorVisible, setJsonEditorVisible] =
-    useState<boolean>(false);
+  const [isJsonEditorVisible, setJsonEditorVisible] = useState<boolean>(false);
   const [keyboardHeight, setKeyboardHeight] = useState<number | null>(null);
   const [activeMode, setActiveMode] = useState<string | null>(null);
 
-  const [pressedKeys, setPressedKeys] = useState<Set<string>>(
-    () => new Set(),
-  );
+  const [pressedKeys, setPressedKeys] = useState<Set<string>>(() => new Set());
 
   const [prevInspectMode, setPrevInspectMode] = useState(isInspectMode);
   if (isInspectMode !== prevInspectMode) {

@@ -18,26 +18,24 @@ export const createClient = async (request: NextRequest) => {
   }
 
   try {
-    const supabase = createServerClient(
-      supabaseUrl!,
-      supabaseKey!,
-      {
-        cookies: {
-          getAll() {
-            return request.cookies.getAll()
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-            supabaseResponse = NextResponse.next({
-              request,
-            })
-            cookiesToSet.forEach(({ name, value, options }) =>
-              supabaseResponse.cookies.set(name, value, options)
-            )
-          },
+    const supabase = createServerClient(supabaseUrl!, supabaseKey!, {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value),
+          );
+          supabaseResponse = NextResponse.next({
+            request,
+          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options),
+          );
         },
       },
-    );
+    });
 
     // Refreshing the auth token must happen here (do not remove): this is what
     // actually triggers the cookie getAll/setAll calls above. Supabase's SDK
@@ -47,5 +45,5 @@ export const createClient = async (request: NextRequest) => {
     console.warn("Supabase unavailable, passing request through:", err);
   }
 
-  return supabaseResponse
+  return supabaseResponse;
 };

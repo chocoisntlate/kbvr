@@ -9,9 +9,7 @@ export default function LibraryPage() {
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-6 p-4">
       <h1 className="text-lg font-semibold"> My Library</h1>
-      <Suspense
-        fallback={<p className="text-sm text-gray-500">Loading…</p>}
-      >
+      <Suspense fallback={<p className="text-sm text-gray-500">Loading…</p>}>
         <LibraryServerContent />
       </Suspense>
     </main>

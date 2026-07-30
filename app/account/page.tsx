@@ -15,9 +15,7 @@ export default function AccountPage() {
   return (
     <main className="mx-auto flex max-w-xl flex-col gap-6 p-4">
       <h1 className="text-lg font-semibold">Account</h1>
-      <Suspense
-        fallback={<p className="text-sm text-gray-500">Loading…</p>}
-      >
+      <Suspense fallback={<p className="text-sm text-gray-500">Loading…</p>}>
         <AccountContent />
       </Suspense>
     </main>
@@ -81,9 +79,7 @@ async function AccountContent() {
           </div>
           <div>
             <dt className="text-xs text-gray-500">Layouts created</dt>
-            <dd className="font-medium text-gray-900">
-              {ownedLayouts.length}
-            </dd>
+            <dd className="font-medium text-gray-900">{ownedLayouts.length}</dd>
           </div>
           <div>
             <dt className="text-xs text-gray-500">Diagrams saved</dt>
@@ -93,9 +89,7 @@ async function AccountContent() {
           </div>
           <div>
             <dt className="text-xs text-gray-500">Layouts saved</dt>
-            <dd className="font-medium text-gray-900">
-              {savedLayouts.length}
-            </dd>
+            <dd className="font-medium text-gray-900">{savedLayouts.length}</dd>
           </div>
         </dl>
       </section>

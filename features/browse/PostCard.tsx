@@ -28,9 +28,7 @@ export function PostCard({
       title={name}
       expanded={expanded}
       onToggle={() => setExpanded((e) => !e)}
-      details={
-        <div className="text-xs text-gray-600">{details}</div>
-      }
+      details={<div className="text-xs text-gray-600">{details}</div>}
     >
       <div className="flex flex-col gap-2">
         {description && <p className="text-xs text-gray-600">{description}</p>}

@@ -10,9 +10,11 @@ export default function Navbar() {
 
   const signOut = () => {
     try {
-      createClient().auth.signOut().catch((err) => {
-        console.warn("Sign-out failed:", err);
-      });
+      createClient()
+        .auth.signOut()
+        .catch((err) => {
+          console.warn("Sign-out failed:", err);
+        });
     } catch (err) {
       console.warn("Sign-out failed:", err);
     }
@@ -25,10 +27,16 @@ export default function Navbar() {
           key-diagram
         </Link>
         <nav className="flex items-center gap-3 text-xs text-gray-600">
-          <Link href="/browse" className="hover:text-gray-900 transition-colors">
+          <Link
+            href="/browse"
+            className="hover:text-gray-900 transition-colors"
+          >
             Browse
           </Link>
-          <Link href="/library" className="hover:text-gray-900 transition-colors">
+          <Link
+            href="/library"
+            className="hover:text-gray-900 transition-colors"
+          >
             Library
           </Link>
         </nav>

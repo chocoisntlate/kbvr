@@ -84,7 +84,9 @@ export function LayoutLibraryItem({
             <button
               onClick={() => setShowDeleteDialog(true)}
               disabled={busy || isDefault}
-              title={isDefault ? "Set a different default layout first" : undefined}
+              title={
+                isDefault ? "Set a different default layout first" : undefined
+              }
               className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               Delete

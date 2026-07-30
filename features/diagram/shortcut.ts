@@ -123,7 +123,10 @@ export function validateShortcut(
   if (!parsed.success) {
     const errors: FieldErrors = {};
     for (const issue of parsed.error.issues) {
-      const field = issue.path[0] === "keys" ? "triggerKey" : (issue.path[0] as keyof FieldErrors);
+      const field =
+        issue.path[0] === "keys"
+          ? "triggerKey"
+          : (issue.path[0] as keyof FieldErrors);
       errors[field] = issue.message;
     }
     return { success: false, errors };

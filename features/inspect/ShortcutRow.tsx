@@ -149,14 +149,20 @@ function ShortcutRowExpanded({
       </p>
 
       <Field label="Trigger key" error={error.triggerKey}>
-        <Input value={shortcut.triggerKey} error={!!error.triggerKey} disabled />
+        <Input
+          value={shortcut.triggerKey}
+          error={!!error.triggerKey}
+          disabled
+        />
       </Field>
       <p className="-mt-2 text-[11px] text-gray-500">
-        The key that completes the shortcut. The description will display on this key.
+        The key that completes the shortcut. The description will display on
+        this key.
       </p>
 
       <p className="text-[11px] text-gray-500">
-        Combination: <span className="font-medium">{keys.join(" + ") || "—"}</span>
+        Combination:{" "}
+        <span className="font-medium">{keys.join(" + ") || "—"}</span>
       </p>
 
       <Field label="*Descriptions" error={error.description}>

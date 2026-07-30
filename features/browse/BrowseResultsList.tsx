@@ -30,11 +30,15 @@ export function BrowseResultsList({
 
   const { data, size, setSize, isValidating, mutate } =
     useSWRInfinite<SearchPostsResult>(
-      (pageIndex, previousPageData: SearchPostsResult | null): BrowseKey | null => {
+      (
+        pageIndex,
+        previousPageData: SearchPostsResult | null,
+      ): BrowseKey | null => {
         if (previousPageData && !previousPageData.hasMore) return null;
         return ["browse", activeType, q, pageIndex];
       },
-      ([, type, query, page]: BrowseKey) => searchPostsAction(type, query, page),
+      ([, type, query, page]: BrowseKey) =>
+        searchPostsAction(type, query, page),
       { fallbackData: [initialPage] },
     );
 
@@ -68,9 +72,7 @@ export function BrowseResultsList({
       </div>
 
       {posts.length === 0 && !isValidating && (
-        <p className="text-sm text-gray-500">
-          No public {activeType}s found.
-        </p>
+        <p className="text-sm text-gray-500">No public {activeType}s found.</p>
       )}
       {activeType === "diagram"
         ? (posts as DiagramPost[]).map((post) => (

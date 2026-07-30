@@ -7,117 +7,525 @@
     { "keys": ["j"], "description": ["Move cursor down"], "mode": "normal" },
     { "keys": ["k"], "description": ["Move cursor up"], "mode": "normal" },
     { "keys": ["l"], "description": ["Move cursor right"], "mode": "normal" },
-    { "keys": ["w"], "description": ["Move to start of next word"], "mode": "normal" },
-    { "keys": ["b"], "description": ["Move to start of previous word"], "mode": "normal" },
+    {
+      "keys": ["w"],
+      "description": ["Move to start of next word"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["b"],
+      "description": ["Move to start of previous word"],
+      "mode": "normal"
+    },
     { "keys": ["e"], "description": ["Move to end of word"], "mode": "normal" },
-    { "keys": ["0"], "description": ["Move to start of line"], "mode": "normal" },
-    { "keys": ["shift-left", "4"], "description": ["Move to end of line ($)"], "mode": "normal" },
-    { "keys": ["g"], "description": ["gg: go to top of file (press twice)"], "mode": "normal" },
-    { "keys": ["shift-left", "g"], "description": ["Go to bottom of file"], "mode": "normal" },
-    { "keys": ["shift-left", "h"], "description": ["Move to top of screen"], "mode": "normal" },
-    { "keys": ["shift-left", "m"], "description": ["Move to middle of screen"], "mode": "normal" },
-    { "keys": ["shift-left", "l"], "description": ["Move to bottom of screen"], "mode": "normal" },
-    { "keys": ["ctrl-left", "f"], "description": ["Scroll forward one full page"], "mode": "normal" },
-    { "keys": ["ctrl-left", "b"], "description": ["Scroll backward one full page"], "mode": "normal" },
-    { "keys": ["ctrl-left", "d"], "description": ["Scroll down half a page"], "mode": "normal" },
-    { "keys": ["ctrl-left", "u"], "description": ["Scroll up half a page"], "mode": "normal" },
-    { "keys": ["ctrl-left", "e"], "description": ["Scroll view down one line (cursor stays)"], "mode": "normal" },
-    { "keys": ["ctrl-left", "y"], "description": ["Scroll view up one line (cursor stays)"], "mode": "normal" },
-    { "keys": ["i"], "description": ["Enter Insert mode before cursor"], "mode": "normal" },
-    { "keys": ["a"], "description": ["Enter Insert mode after cursor"], "mode": "normal" },
-    { "keys": ["shift-left", "i"], "description": ["Insert at beginning of line"], "mode": "normal" },
-    { "keys": ["shift-left", "a"], "description": ["Append at end of line"], "mode": "normal" },
-    { "keys": ["o"], "description": ["Open a new line below and enter Insert mode"], "mode": "normal" },
-    { "keys": ["shift-left", "o"], "description": ["Open a new line above and enter Insert mode"], "mode": "normal" },
+    {
+      "keys": ["0"],
+      "description": ["Move to start of line"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "4"],
+      "description": ["Move to end of line ($)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["g"],
+      "description": ["gg: go to top of file (press twice)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "g"],
+      "description": ["Go to bottom of file"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "h"],
+      "description": ["Move to top of screen"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "m"],
+      "description": ["Move to middle of screen"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "l"],
+      "description": ["Move to bottom of screen"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["ctrl-left", "f"],
+      "description": ["Scroll forward one full page"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["ctrl-left", "b"],
+      "description": ["Scroll backward one full page"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["ctrl-left", "d"],
+      "description": ["Scroll down half a page"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["ctrl-left", "u"],
+      "description": ["Scroll up half a page"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["ctrl-left", "e"],
+      "description": ["Scroll view down one line (cursor stays)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["ctrl-left", "y"],
+      "description": ["Scroll view up one line (cursor stays)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["i"],
+      "description": ["Enter Insert mode before cursor"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["a"],
+      "description": ["Enter Insert mode after cursor"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "i"],
+      "description": ["Insert at beginning of line"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "a"],
+      "description": ["Append at end of line"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["o"],
+      "description": ["Open a new line below and enter Insert mode"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "o"],
+      "description": ["Open a new line above and enter Insert mode"],
+      "mode": "normal"
+    },
     { "keys": ["v"], "description": ["Enter Visual mode"], "mode": "normal" },
-    { "keys": ["shift-left", "v"], "description": ["Enter Visual Line mode"], "mode": "normal" },
-    { "keys": ["ctrl-left", "v"], "description": ["Enter Visual Block mode"], "mode": "normal" },
-    { "keys": ["x"], "description": ["Delete character under cursor"], "mode": "normal" },
-    { "keys": ["shift-left", "x"], "description": ["Delete character before cursor"], "mode": "normal" },
-    { "keys": ["r"], "description": ["Replace single character under cursor"], "mode": "normal" },
-    { "keys": ["shift-left", "r"], "description": ["Enter Replace mode"], "mode": "normal" },
-    { "keys": ["d"], "description": ["dd: delete current line (press twice)", "dw: delete to next word", "d$: delete to end of line (same as D)"], "mode": "normal" },
-    { "keys": ["shift-left", "d"], "description": ["Delete to end of line (same as d$)"], "mode": "normal" },
-    { "keys": ["c"], "description": ["cc: change current line (press twice)", "cw: change to next word", "c$: change to end of line (same as C)"], "mode": "normal" },
-    { "keys": ["shift-left", "c"], "description": ["Change to end of line (same as c$)"], "mode": "normal" },
-    { "keys": ["y"], "description": ["yy: yank current line (press twice)", "yw: yank to next word", "y$: yank to end of line (same as Y)"], "mode": "normal" },
-    { "keys": ["shift-left", "y"], "description": ["Yank to end of line (same as y$)"], "mode": "normal" },
+    {
+      "keys": ["shift-left", "v"],
+      "description": ["Enter Visual Line mode"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["ctrl-left", "v"],
+      "description": ["Enter Visual Block mode"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["x"],
+      "description": ["Delete character under cursor"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "x"],
+      "description": ["Delete character before cursor"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["r"],
+      "description": ["Replace single character under cursor"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "r"],
+      "description": ["Enter Replace mode"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["d"],
+      "description": [
+        "dd: delete current line (press twice)",
+        "dw: delete to next word",
+        "d$: delete to end of line (same as D)"
+      ],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "d"],
+      "description": ["Delete to end of line (same as d$)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["c"],
+      "description": [
+        "cc: change current line (press twice)",
+        "cw: change to next word",
+        "c$: change to end of line (same as C)"
+      ],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "c"],
+      "description": ["Change to end of line (same as c$)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["y"],
+      "description": [
+        "yy: yank current line (press twice)",
+        "yw: yank to next word",
+        "y$: yank to end of line (same as Y)"
+      ],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "y"],
+      "description": ["Yank to end of line (same as y$)"],
+      "mode": "normal"
+    },
     { "keys": ["p"], "description": ["Paste after cursor"], "mode": "normal" },
-    { "keys": ["shift-left", "p"], "description": ["Paste before cursor"], "mode": "normal" },
+    {
+      "keys": ["shift-left", "p"],
+      "description": ["Paste before cursor"],
+      "mode": "normal"
+    },
     { "keys": ["u"], "description": ["Undo"], "mode": "normal" },
     { "keys": ["ctrl-left", "r"], "description": ["Redo"], "mode": "normal" },
-    { "keys": ["period"], "description": ["Repeat last change"], "mode": "normal" },
-    { "keys": ["m"], "description": ["Set a mark at cursor position"], "mode": "normal" },
-    { "keys": ["quote"], "description": ["Jump to a mark (line-wise)"], "mode": "normal" },
-    { "keys": ["grave"], "description": ["Jump to a mark (exact position)"], "mode": "normal" },
-    { "keys": ["ctrl-left", "o"], "description": ["Jump to older cursor position"], "mode": "normal" },
-    { "keys": ["shift-left", "5"], "description": ["Jump to matching bracket (%)"], "mode": "normal" },
-    { "keys": ["shift-left", "8"], "description": ["Search word under cursor forward (*)"], "mode": "normal" },
-    { "keys": ["shift-left", "3"], "description": ["Search word under cursor backward (#)"], "mode": "normal" },
-    { "keys": ["shift-left", "grave"], "description": ["Toggle case of character under cursor (~)"], "mode": "normal" },
-    { "keys": ["shift-left", "semicolon"], "description": ["Enter Command-line mode"], "mode": "normal" },
+    {
+      "keys": ["period"],
+      "description": ["Repeat last change"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["m"],
+      "description": ["Set a mark at cursor position"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["quote"],
+      "description": ["Jump to a mark (line-wise)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["grave"],
+      "description": ["Jump to a mark (exact position)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["ctrl-left", "o"],
+      "description": ["Jump to older cursor position"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "5"],
+      "description": ["Jump to matching bracket (%)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "8"],
+      "description": ["Search word under cursor forward (*)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "3"],
+      "description": ["Search word under cursor backward (#)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "grave"],
+      "description": ["Toggle case of character under cursor (~)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "semicolon"],
+      "description": ["Enter Command-line mode"],
+      "mode": "normal"
+    },
     { "keys": ["slash"], "description": ["Search forward"], "mode": "normal" },
-    { "keys": ["shift-left", "slash"], "description": ["Search backward"], "mode": "normal" },
+    {
+      "keys": ["shift-left", "slash"],
+      "description": ["Search backward"],
+      "mode": "normal"
+    },
     { "keys": ["n"], "description": ["Repeat last search"], "mode": "normal" },
-    { "keys": ["shift-left", "n"], "description": ["Repeat last search in opposite direction"], "mode": "normal" },
-    { "keys": ["shift-left", "j"], "description": ["Join current line with next line"], "mode": "normal" },
-    { "keys": ["shift-left", "period"], "description": ["Indent line (>>)"], "mode": "normal" },
-    { "keys": ["shift-left", "comma"], "description": ["Outdent line (<<)"], "mode": "normal" },
-    { "keys": ["ctrl-left", "w"], "description": ["Window commands prefix (split/resize/navigate)"], "mode": "normal" },
-    { "keys": ["shift-left", "z"], "description": ["ZZ: save and quit (press twice)"], "mode": "normal" },
-    { "keys": ["ctrl-left", "a"], "description": ["Increment number under cursor"], "mode": "normal" },
-    { "keys": ["ctrl-left", "x"], "description": ["Decrement number under cursor"], "mode": "normal" },
-    { "keys": ["z"], "description": ["Scroll commands prefix (zz/zt/zb)"], "mode": "normal" },
+    {
+      "keys": ["shift-left", "n"],
+      "description": ["Repeat last search in opposite direction"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "j"],
+      "description": ["Join current line with next line"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "period"],
+      "description": ["Indent line (>>)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "comma"],
+      "description": ["Outdent line (<<)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["ctrl-left", "w"],
+      "description": ["Window commands prefix (split/resize/navigate)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["shift-left", "z"],
+      "description": ["ZZ: save and quit (press twice)"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["ctrl-left", "a"],
+      "description": ["Increment number under cursor"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["ctrl-left", "x"],
+      "description": ["Decrement number under cursor"],
+      "mode": "normal"
+    },
+    {
+      "keys": ["z"],
+      "description": ["Scroll commands prefix (zz/zt/zb)"],
+      "mode": "normal"
+    },
 
-    { "keys": ["esc"], "description": ["Exit Insert mode, return to Normal mode"], "mode": "insert" },
-    { "keys": ["ctrl-left", "w"], "description": ["Delete word before cursor"], "mode": "insert" },
-    { "keys": ["ctrl-left", "u"], "description": ["Delete all entered text before cursor (back to start of insert)"], "mode": "insert" },
-    { "keys": ["ctrl-left", "t"], "description": ["Indent current line"], "mode": "insert" },
-    { "keys": ["ctrl-left", "d"], "description": ["Outdent current line"], "mode": "insert" },
-    { "keys": ["ctrl-left", "r"], "description": ["Insert contents of a register"], "mode": "insert" },
-    { "keys": ["ctrl-left", "o"], "description": ["Execute one Normal-mode command, then return to Insert"], "mode": "insert" },
-    { "keys": ["ctrl-left", "n"], "description": ["Autocomplete: next suggestion"], "mode": "insert" },
-    { "keys": ["ctrl-left", "p"], "description": ["Autocomplete: previous suggestion"], "mode": "insert" },
-    { "keys": ["backspace"], "description": ["Delete character before cursor"], "mode": "insert" },
-    { "keys": ["enter"], "description": ["Insert a new line"], "mode": "insert" },
-    { "keys": ["tab"], "description": ["Insert indentation"], "mode": "insert" },
-    { "keys": ["arrow-up"], "description": ["Move cursor up (still in Insert mode)"], "mode": "insert" },
-    { "keys": ["arrow-down"], "description": ["Move cursor down (still in Insert mode)"], "mode": "insert" },
+    {
+      "keys": ["esc"],
+      "description": ["Exit Insert mode, return to Normal mode"],
+      "mode": "insert"
+    },
+    {
+      "keys": ["ctrl-left", "w"],
+      "description": ["Delete word before cursor"],
+      "mode": "insert"
+    },
+    {
+      "keys": ["ctrl-left", "u"],
+      "description": [
+        "Delete all entered text before cursor (back to start of insert)"
+      ],
+      "mode": "insert"
+    },
+    {
+      "keys": ["ctrl-left", "t"],
+      "description": ["Indent current line"],
+      "mode": "insert"
+    },
+    {
+      "keys": ["ctrl-left", "d"],
+      "description": ["Outdent current line"],
+      "mode": "insert"
+    },
+    {
+      "keys": ["ctrl-left", "r"],
+      "description": ["Insert contents of a register"],
+      "mode": "insert"
+    },
+    {
+      "keys": ["ctrl-left", "o"],
+      "description": ["Execute one Normal-mode command, then return to Insert"],
+      "mode": "insert"
+    },
+    {
+      "keys": ["ctrl-left", "n"],
+      "description": ["Autocomplete: next suggestion"],
+      "mode": "insert"
+    },
+    {
+      "keys": ["ctrl-left", "p"],
+      "description": ["Autocomplete: previous suggestion"],
+      "mode": "insert"
+    },
+    {
+      "keys": ["backspace"],
+      "description": ["Delete character before cursor"],
+      "mode": "insert"
+    },
+    {
+      "keys": ["enter"],
+      "description": ["Insert a new line"],
+      "mode": "insert"
+    },
+    {
+      "keys": ["tab"],
+      "description": ["Insert indentation"],
+      "mode": "insert"
+    },
+    {
+      "keys": ["arrow-up"],
+      "description": ["Move cursor up (still in Insert mode)"],
+      "mode": "insert"
+    },
+    {
+      "keys": ["arrow-down"],
+      "description": ["Move cursor down (still in Insert mode)"],
+      "mode": "insert"
+    },
 
-    { "keys": ["esc"], "description": ["Exit Visual mode, return to Normal mode"], "mode": "visual" },
-    { "keys": ["v"], "description": ["Toggle off Visual mode (return to Normal)"], "mode": "visual" },
-    { "keys": ["y"], "description": ["Yank (copy) selection"], "mode": "visual" },
+    {
+      "keys": ["esc"],
+      "description": ["Exit Visual mode, return to Normal mode"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["v"],
+      "description": ["Toggle off Visual mode (return to Normal)"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["y"],
+      "description": ["Yank (copy) selection"],
+      "mode": "visual"
+    },
     { "keys": ["d"], "description": ["Delete selection"], "mode": "visual" },
     { "keys": ["x"], "description": ["Delete selection"], "mode": "visual" },
     { "keys": ["u"], "description": ["Lowercase selection"], "mode": "visual" },
-    { "keys": ["shift-left", "u"], "description": ["Uppercase selection"], "mode": "visual" },
-    { "keys": ["shift-left", "grave"], "description": ["Toggle case of selection (~)"], "mode": "visual" },
-    { "keys": ["r"], "description": ["Replace selection with typed character"], "mode": "visual" },
-    { "keys": ["o"], "description": ["Swap cursor to other end of selection"], "mode": "visual" },
-    { "keys": ["g"], "description": ["gv: reselect last visual selection"], "mode": "visual" },
-    { "keys": ["ctrl-left", "a"], "description": ["Increment all numbers in selection"], "mode": "visual" },
-    { "keys": ["ctrl-left", "x"], "description": ["Decrement all numbers in selection"], "mode": "visual" },
-    { "keys": ["shift-left", "i"], "description": ["Insert at start of each selected line (block insert)"], "mode": "visual" },
-    { "keys": ["shift-left", "g"], "description": ["Extend selection to bottom of file"], "mode": "visual" },
-    { "keys": ["shift-left", "period"], "description": ["Indent selection (>>)"], "mode": "visual" },
-    { "keys": ["shift-left", "comma"], "description": ["Outdent selection (<<)"], "mode": "visual" },
-    { "keys": ["shift-left", "semicolon"], "description": ["Enter Command-line mode with visual range"], "mode": "visual" },
+    {
+      "keys": ["shift-left", "u"],
+      "description": ["Uppercase selection"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["shift-left", "grave"],
+      "description": ["Toggle case of selection (~)"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["r"],
+      "description": ["Replace selection with typed character"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["o"],
+      "description": ["Swap cursor to other end of selection"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["g"],
+      "description": ["gv: reselect last visual selection"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["ctrl-left", "a"],
+      "description": ["Increment all numbers in selection"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["ctrl-left", "x"],
+      "description": ["Decrement all numbers in selection"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["shift-left", "i"],
+      "description": ["Insert at start of each selected line (block insert)"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["shift-left", "g"],
+      "description": ["Extend selection to bottom of file"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["shift-left", "period"],
+      "description": ["Indent selection (>>)"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["shift-left", "comma"],
+      "description": ["Outdent selection (<<)"],
+      "mode": "visual"
+    },
+    {
+      "keys": ["shift-left", "semicolon"],
+      "description": ["Enter Command-line mode with visual range"],
+      "mode": "visual"
+    },
 
-    { "keys": ["enter"], "description": ["Execute command"], "mode": "command" },
-    { "keys": ["esc"], "description": ["Cancel command, return to Normal mode"], "mode": "command" },
-    { "keys": ["ctrl-left", "c"], "description": ["Cancel command (alternative to Esc)"], "mode": "command" },
-    { "keys": ["backspace"], "description": ["Delete character in command line (exits Command-line mode if empty)"], "mode": "command" },
-    { "keys": ["ctrl-left", "r"], "description": ["Insert contents of a register into the command line"], "mode": "command" },
-    { "keys": ["tab"], "description": ["Command-line completion"], "mode": "command" },
-    { "keys": ["arrow-up"], "description": ["Previous command in history"], "mode": "command" },
-    { "keys": ["arrow-down"], "description": ["Next command in history"], "mode": "command" },
+    {
+      "keys": ["enter"],
+      "description": ["Execute command"],
+      "mode": "command"
+    },
+    {
+      "keys": ["esc"],
+      "description": ["Cancel command, return to Normal mode"],
+      "mode": "command"
+    },
+    {
+      "keys": ["ctrl-left", "c"],
+      "description": ["Cancel command (alternative to Esc)"],
+      "mode": "command"
+    },
+    {
+      "keys": ["backspace"],
+      "description": [
+        "Delete character in command line (exits Command-line mode if empty)"
+      ],
+      "mode": "command"
+    },
+    {
+      "keys": ["ctrl-left", "r"],
+      "description": ["Insert contents of a register into the command line"],
+      "mode": "command"
+    },
+    {
+      "keys": ["tab"],
+      "description": ["Command-line completion"],
+      "mode": "command"
+    },
+    {
+      "keys": ["arrow-up"],
+      "description": ["Previous command in history"],
+      "mode": "command"
+    },
+    {
+      "keys": ["arrow-down"],
+      "description": ["Next command in history"],
+      "mode": "command"
+    },
 
-    { "keys": ["esc"], "description": ["Exit Replace mode, return to Normal mode"], "mode": "replace" },
-    { "keys": ["backspace"], "description": ["Restore the original character (undo one replace)"], "mode": "replace" },
-    { "keys": ["arrow-left"], "description": ["Move cursor left without replacing"], "mode": "replace" },
-    { "keys": ["arrow-right"], "description": ["Move cursor right without replacing"], "mode": "replace" },
+    {
+      "keys": ["esc"],
+      "description": ["Exit Replace mode, return to Normal mode"],
+      "mode": "replace"
+    },
+    {
+      "keys": ["backspace"],
+      "description": ["Restore the original character (undo one replace)"],
+      "mode": "replace"
+    },
+    {
+      "keys": ["arrow-left"],
+      "description": ["Move cursor left without replacing"],
+      "mode": "replace"
+    },
+    {
+      "keys": ["arrow-right"],
+      "description": ["Move cursor right without replacing"],
+      "mode": "replace"
+    },
 
-    { "keys": ["1"], "description": ["This shortcut has no mode set — it only shows under \"All modes\""], "tags": ["tutorial"] },
-    { "keys": ["2"], "description": ["Switch modes above to see mode-specific shortcuts filter in and out"], "tags": ["tutorial"] }
+    {
+      "keys": ["1"],
+      "description": [
+        "This shortcut has no mode set — it only shows under \"All modes\""
+      ],
+      "tags": ["tutorial"]
+    },
+    {
+      "keys": ["2"],
+      "description": [
+        "Switch modes above to see mode-specific shortcuts filter in and out"
+      ],
+      "tags": ["tutorial"]
+    }
   ]
 }

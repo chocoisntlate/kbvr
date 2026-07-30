@@ -2,7 +2,10 @@
 
 import useSWR from "swr";
 import { useAuth } from "@/features/auth/AuthContext";
-import { getLibraryDataAction, type LibraryData } from "@/features/posts/readActions";
+import {
+  getLibraryDataAction,
+  type LibraryData,
+} from "@/features/posts/readActions";
 import { DiagramLibraryItem } from "./DiagramLibraryItem";
 import { LayoutLibraryItem } from "./LayoutLibraryItem";
 import { RefreshButton } from "@/features/ui/RefreshButton";
@@ -20,10 +23,7 @@ export function LibraryList({ initialData }: { initialData: LibraryData }) {
   return (
     <>
       <div className="flex justify-end">
-        <RefreshButton
-          onRefresh={() => mutate()}
-          isValidating={isValidating}
-        />
+        <RefreshButton onRefresh={() => mutate()} isValidating={isValidating} />
       </div>
 
       <section className="flex flex-col gap-2">

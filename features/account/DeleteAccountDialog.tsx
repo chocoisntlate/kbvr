@@ -43,8 +43,8 @@ export function DeleteAccountDialog({ displayName }: { displayName: string }) {
         Danger zone
       </h2>
       <p className="mt-1 mb-3 text-xs text-red-700">
-        Deleting your account permanently removes every diagram and layout
-        you own, along with your saved items. This can&apos;t be undone.
+        Deleting your account permanently removes every diagram and layout you
+        own, along with your saved items. This can&apos;t be undone.
       </p>
       <button
         onClick={() => setOpen(true)}
@@ -57,8 +57,8 @@ export function DeleteAccountDialog({ displayName }: { displayName: string }) {
         <ModalShell>
           <h3 className="mb-2 text-sm font-semibold">Delete your account?</h3>
           <p className="mb-3 text-xs text-gray-600">
-            Type your display name (<strong>{displayName}</strong>) to
-            confirm. This can&apos;t be undone.
+            Type your display name (<strong>{displayName}</strong>) to confirm.
+            This can&apos;t be undone.
           </p>
           <input
             type="text"

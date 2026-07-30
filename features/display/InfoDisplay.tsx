@@ -72,9 +72,11 @@ export function KeyboardPanel() {
             <MetaRow label="Name" value={keyDiagram.name} />
             <MetaRow label="Description" value={keyDiagram.description} />
             <MetaRow label="Shortcuts" value={keyDiagram.shortcuts.length} />
-            <MetaRow label="Tags" value={
-              new Set(
-                keyDiagram.shortcuts
+            <MetaRow
+              label="Tags"
+              value={
+                new Set(
+                  keyDiagram.shortcuts
                     .flatMap((s) => s.tags ?? [])
                     .filter(Boolean),
                 ).size
@@ -88,7 +90,7 @@ export function KeyboardPanel() {
               title="Import"
               onFileSelect={(file) =>
                 handleImport(file, setKeyDiagram, () =>
-                  setCurrentDiagramMeta(null)
+                  setCurrentDiagramMeta(null),
                 )
               }
             />
@@ -118,9 +120,13 @@ export function KeyboardPanel() {
             <MetaRow label="Rows" value={keyLayout.rows.length} />
             <MetaRow
               label="Keys"
-              value={new Set(
-                keyLayout.rows.flatMap((r) => r.map((k) => k.id).filter(Boolean))
-              ).size}
+              value={
+                new Set(
+                  keyLayout.rows.flatMap((r) =>
+                    r.map((k) => k.id).filter(Boolean),
+                  ),
+                ).size
+              }
             />
           </>
         }

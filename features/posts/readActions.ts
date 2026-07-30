@@ -49,14 +49,19 @@ export type LibraryData = {
 };
 
 export async function getLibraryDataAction(): Promise<LibraryData> {
-  const [ownedDiagrams, ownedLayouts, savedDiagrams, savedLayouts, defaultLayoutId] =
-    await Promise.all([
-      getUserOwnedDiagrams(),
-      getUserOwnedLayouts(),
-      getUserSavedDiagrams(),
-      getUserSavedLayouts(),
-      getUserDefaultLayoutId(),
-    ]);
+  const [
+    ownedDiagrams,
+    ownedLayouts,
+    savedDiagrams,
+    savedLayouts,
+    defaultLayoutId,
+  ] = await Promise.all([
+    getUserOwnedDiagrams(),
+    getUserOwnedLayouts(),
+    getUserSavedDiagrams(),
+    getUserSavedLayouts(),
+    getUserDefaultLayoutId(),
+  ]);
   return {
     diagrams: dedupeById(ownedDiagrams, savedDiagrams),
     layouts: dedupeById(ownedLayouts, savedLayouts),

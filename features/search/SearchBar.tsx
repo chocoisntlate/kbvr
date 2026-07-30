@@ -1,7 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useKeyboardContent, useKeyboardUI, usePressedKeys } from "../keyboard/KeyboardContext";
+import {
+  useKeyboardContent,
+  useKeyboardUI,
+  usePressedKeys,
+} from "../keyboard/KeyboardContext";
 import { searchShortcuts } from "./searchShortcuts";
 
 function isTypingTarget(el: Element | null): boolean {

@@ -44,6 +44,7 @@ Feature folders under `features/`:
 - `navbar/` — top-level nav bar.
 
 Two interaction modes driven by `isInspectMode`:
+
 1. **Normal mode** — clicking a key toggles it in/out of `pressedKeys`; `Key.tsx` shows the matched shortcut description and a tooltip listing all descriptions if there's a conflict.
 2. **Inspect mode** — clicking a key opens `InspectModal` to view/add/edit/delete shortcuts whose derived display key matches that key.
 

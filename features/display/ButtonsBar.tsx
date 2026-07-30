@@ -219,9 +219,7 @@ export default function ButtonsBar() {
                     const currentIndex = modeItems.findIndex(
                       (item) => item.value === activeMode,
                     );
-                    setHighlightedIndex(
-                      currentIndex === -1 ? 0 : currentIndex,
-                    );
+                    setHighlightedIndex(currentIndex === -1 ? 0 : currentIndex);
                   }
                   return next;
                 })
@@ -231,7 +229,9 @@ export default function ButtonsBar() {
             >
               {activeMode ?? "All modes"}
               <span className="ml-1 opacity-60">▾</span>
-              <HoverTooltip>Press M to open • 0-9 to jump directly</HoverTooltip>
+              <HoverTooltip>
+                Press M to open • 0-9 to jump directly
+              </HoverTooltip>
             </button>
 
             {isModeMenuOpen && (
