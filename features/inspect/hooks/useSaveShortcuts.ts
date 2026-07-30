@@ -18,6 +18,7 @@ export function useSaveShortcuts(
   draft: EditableShortcut[],
   validKeyIds: string[],
   keyId: string,
+  activeMode: string | null,
 ) {
   const { setKeyDiagram } = useKeyboardContent();
 
@@ -51,12 +52,16 @@ export function useSaveShortcuts(
       setKeyDiagram((d: Diagram) => ({
         ...d,
         shortcuts: [
-          ...d.shortcuts.filter((s) => getDisplayKey(s) !== keyId),
+          ...d.shortcuts.filter(
+            (s) =>
+              getDisplayKey(s) !== keyId ||
+              (activeMode !== null && s.mode !== activeMode),
+          ),
           ...validShortcuts,
         ],
       }));
     },
-    [setKeyDiagram, keyId],
+    [setKeyDiagram, keyId, activeMode],
   );
 
   return { validate, save };

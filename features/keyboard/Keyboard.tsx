@@ -105,13 +105,15 @@ export function Keyboard() {
       if (!keyId || !keyDiagram) return;
 
       const shortcutsForKey = keyDiagram.shortcuts.filter(
-        (s) => getDisplayKey(s) === keyId,
+        (s) =>
+          getDisplayKey(s) === keyId &&
+          (activeMode === null || s.mode === activeMode),
       );
 
       setEditingKey(keyId);
       setEditingShortcuts(shortcutsForKey);
     },
-    [keyDiagram],
+    [keyDiagram, activeMode],
   );
 
   // reset interaction state when toggling modes
@@ -168,6 +170,7 @@ export function Keyboard() {
         <InspectModal
           keyId={editingKey}
           shortcuts={editingShortcuts}
+          activeMode={activeMode}
           onClose={() => {
             setEditingKey(null);
             setEditingShortcuts([]);

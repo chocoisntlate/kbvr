@@ -16,6 +16,7 @@ import { Shortcut } from "../spec/diagramSchema";
 export type InspectModalProps = {
   keyId: string;
   shortcuts: Shortcut[];
+  activeMode: string | null;
   onClose: () => void;
 };
 
@@ -24,6 +25,7 @@ export type InspectModalProps = {
 export default function InspectModal({
   keyId,
   shortcuts,
+  activeMode,
   onClose,
 }: InspectModalProps) {
   const { keyLayout } = useKeyboardContent();
@@ -38,17 +40,16 @@ export default function InspectModal({
   /* ---------- Hooks ---------- */
 
   const { draft, update, remove, add } = useShortcutDraft(shortcuts);
-  const {
-    errors,
-    setErrors,
-    clearError,
-    clearAllErrors,
-    shiftErrorsAfterDelete,
-  } = useShortcutErrors();
-  const { isEditMode, editingIndex, enterEditMode, setEditing, collapseEdit } =
-    useEditMode();
+  const { errors, setErrors, clearError, shiftErrorsAfterDelete } =
+    useShortcutErrors();
+  const { editingIndex, setEditing, collapseEdit } = useEditMode();
   const { scrollToRow, setRowRef } = useScrollToRow();
-  const { validate, save } = useSaveShortcuts(draft, validKeyIds, keyId);
+  const { validate, save } = useSaveShortcuts(
+    draft,
+    validKeyIds,
+    keyId,
+    activeMode,
+  );
 
   /* ---------- Actions ---------- */
 
@@ -57,7 +58,6 @@ export default function InspectModal({
 
     if (hasErrors) {
       setErrors(nextErrors);
-      enterEditMode();
       const firstErrorIndex = Number(Object.keys(nextErrors)[0]);
       setEditing(firstErrorIndex);
       scrollToRow(firstErrorIndex);
@@ -66,15 +66,7 @@ export default function InspectModal({
 
     save(valid);
     onClose();
-  }, [
-    validate,
-    setErrors,
-    enterEditMode,
-    setEditing,
-    scrollToRow,
-    save,
-    onClose,
-  ]);
+  }, [validate, setErrors, setEditing, scrollToRow, save, onClose]);
 
   const handleDelete = useCallback(
     (index: number) => {
@@ -92,16 +84,12 @@ export default function InspectModal({
       triggerKey: keyId,
       description: "",
       tags: "",
+      mode: activeMode ?? undefined,
     });
 
     setEditing(index);
     scrollToRow(index, true);
-  }, [draft.length, keyId, add, setEditing, scrollToRow]);
-
-  const handleEnterEditMode = useCallback(() => {
-    enterEditMode();
-    clearAllErrors();
-  }, [enterEditMode, clearAllErrors]);
+  }, [draft.length, keyId, activeMode, add, setEditing, scrollToRow]);
 
   const handleCollapse = useCallback(
     (index: number) => {
@@ -130,20 +118,12 @@ export default function InspectModal({
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-sm font-semibold">Keybinds for &quot;{keyId}&quot;</h3>
 
-          <div className="flex gap-2">
-            <button
-              className="text-xs text-blue-600 hover:underline"
-              onClick={handleEnterEditMode}
-            >
-              Edit keybinds
-            </button>
-            <button
-              className="text-xs text-gray-500 hover:text-gray-700"
-              onClick={onClose}
-            >
-              Close
-            </button>
-          </div>
+          <button
+            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors"
+            onClick={onClose}
+          >
+            Close
+          </button>
         </div>
 
         {/* Content */}
@@ -153,8 +133,7 @@ export default function InspectModal({
               key={i}
               shortcut={s}
               index={i}
-              isEditMode={isEditMode}
-              isEditing={isEditMode && editingIndex === i}
+              isEditing={editingIndex === i}
               error={errors[i]}
               onEdit={setEditing}
               onDelete={handleDelete}
@@ -164,32 +143,28 @@ export default function InspectModal({
             />
           ))}
 
-          {isEditMode && (
-            <button
-              className="mt-2 text-xs text-green-600 hover:underline"
-              onClick={handleAddKeybind}
-            >
-              + Add keybind
-            </button>
-          )}
+          <button
+            className="mt-2 self-start rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-green-600 hover:bg-green-50 transition-colors"
+            onClick={handleAddKeybind}
+          >
+            + Add keybind
+          </button>
         </div>
 
-        {isEditMode && (
-          <div className="mt-4 flex justify-end gap-2">
-            <button
-              className="text-xs text-gray-600 hover:underline"
-              onClick={onClose}
-            >
-              Cancel
-            </button>
-            <button
-              className="text-xs text-blue-600 hover:underline font-medium"
-              onClick={handleSaveAll}
-            >
-              Save
-            </button>
-          </div>
-        )}
+        <div className="mt-4 flex justify-end gap-2">
+          <button
+            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 transition-colors"
+            onClick={handleSaveAll}
+          >
+            Save
+          </button>
+        </div>
       </div>
     </div>
   );

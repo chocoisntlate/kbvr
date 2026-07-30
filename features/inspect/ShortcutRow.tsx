@@ -4,7 +4,6 @@ import { Field, Input } from "./ShortcutFormFields";
 type ShortcutRowProps = {
   shortcut: EditableShortcut;
   index: number;
-  isEditMode: boolean;
   isEditing: boolean;
   error?: FieldErrors;
   onEdit: (index: number) => void;
@@ -17,7 +16,6 @@ type ShortcutRowProps = {
 export function ShortcutRow({
   shortcut,
   index,
-  isEditMode,
   isEditing,
   error = {},
   onEdit,
@@ -39,7 +37,6 @@ export function ShortcutRow({
         <ShortcutRowCollapsed
           shortcut={shortcut}
           hasError={hasError}
-          isEditMode={isEditMode}
           onEdit={() => onEdit(index)}
           onDelete={() => onDelete(index)}
         />
@@ -58,13 +55,11 @@ export function ShortcutRow({
 function ShortcutRowCollapsed({
   shortcut,
   hasError,
-  isEditMode,
   onEdit,
   onDelete,
 }: {
   shortcut: EditableShortcut;
   hasError: boolean;
-  isEditMode: boolean;
   onEdit: () => void;
   onDelete: () => void;
 }) {
@@ -109,16 +104,20 @@ function ShortcutRowCollapsed({
         </div>
       )}
 
-      {isEditMode && (
-        <div className="mt-2 flex gap-2">
-          <button className="text-blue-600 hover:underline" onClick={onEdit}>
-            Edit
-          </button>
-          <button className="text-red-600 hover:underline" onClick={onDelete}>
-            Delete
-          </button>
-        </div>
-      )}
+      <div className="mt-2 flex gap-2">
+        <button
+          className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 transition-colors"
+          onClick={onEdit}
+        >
+          Edit
+        </button>
+        <button
+          className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
+          onClick={onDelete}
+        >
+          Delete
+        </button>
+      </div>
     </>
   );
 }
@@ -188,7 +187,7 @@ function ShortcutRowExpanded({
       </Field>
 
       <button
-        className="self-start text-blue-600 hover:underline"
+        className="self-start rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 transition-colors"
         onClick={onCollapse}
       >
         Collapse
