@@ -10,6 +10,22 @@ function isTypingTarget(el: Element | null): boolean {
   return (el as HTMLElement).isContentEditable ?? false;
 }
 
+function highlightMatch(description: string, trimmedQuery: string) {
+  if (!trimmedQuery) return description;
+
+  const start = description.toLowerCase().indexOf(trimmedQuery);
+  if (start === -1) return description;
+
+  const end = start + trimmedQuery.length;
+  return (
+    <>
+      {description.slice(0, start)}
+      <span className="font-semibold">{description.slice(start, end)}</span>
+      {description.slice(end)}
+    </>
+  );
+}
+
 export default function SearchBar() {
   const { keyDiagram, keyLayout } = useKeyboardContent();
   const { isInspectMode, isSearchVisible, keyboardHeight, activeMode } =
@@ -27,6 +43,8 @@ export default function SearchBar() {
     const id = setTimeout(() => setDebouncedQuery(query), 275);
     return () => clearTimeout(id);
   }, [query]);
+
+  const trimmedQuery = debouncedQuery.trim().toLowerCase();
 
   const results = useMemo(
     () => searchShortcuts(keyDiagram, debouncedQuery, activeMode),
@@ -65,17 +83,22 @@ export default function SearchBar() {
     [results, setPressedKeys],
   );
 
-  const revertToBaseline = useCallback(() => {
+  const revertPreview = useCallback(() => {
     setPressedKeys(focusBaselineRef.current ?? new Set());
     setActiveIndex(null);
-    setIsFocused(false);
   }, [setPressedKeys]);
 
+  const revertToBaseline = useCallback(() => {
+    revertPreview();
+    setIsFocused(false);
+  }, [revertPreview]);
+
   // a new search invalidates whatever was being previewed from the old list;
-  // deliberately only reacts to debouncedQuery, not activeIndex/revertToBaseline,
-  // otherwise every arrow-key preview would immediately revert itself
+  // deliberately only reacts to debouncedQuery, not activeIndex/revertPreview,
+  // otherwise every arrow-key preview would immediately revert itself.
+  // Only clears the preview, not focus - the input is still focused while typing.
   useEffect(() => {
-    if (activeIndex !== null) revertToBaseline();
+    if (activeIndex !== null) revertPreview();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery]);
 
@@ -181,7 +204,9 @@ export default function SearchBar() {
                 activeIndex === index ? "bg-gray-100" : ""
               }`}
             >
-              <span className="truncate">{result.description}</span>
+              <span className="truncate">
+                {highlightMatch(result.description, trimmedQuery)}
+              </span>
               <span className="shrink-0 whitespace-nowrap text-[10px] text-gray-400">
                 {formatKeys(result.shortcut.keys)}
               </span>

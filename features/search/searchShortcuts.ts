@@ -12,7 +12,6 @@ export function searchShortcuts(
   activeMode: string | null,
 ): SearchResult[] {
   const trimmed = query.trim().toLowerCase();
-  if (!trimmed) return [];
 
   const results: SearchResult[] = [];
 
@@ -20,7 +19,7 @@ export function searchShortcuts(
     if (activeMode !== null && shortcut.mode !== activeMode) return;
 
     shortcut.description.forEach((description, index) => {
-      if (description.toLowerCase().includes(trimmed)) {
+      if (trimmed === "" || description.toLowerCase().includes(trimmed)) {
         results.push({
           key: `${shortcutIndex}-${index}`,
           shortcut,
