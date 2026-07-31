@@ -92,6 +92,8 @@ export default function ButtonsBar() {
         return;
       }
 
+      if (isInspectMode) return;
+
       if (isModeMenuOpen) {
         if (e.key === "ArrowDown") {
           e.preventDefault();
