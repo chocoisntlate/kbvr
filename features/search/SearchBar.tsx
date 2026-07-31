@@ -105,6 +105,11 @@ export default function SearchBar() {
     [results, setPressedKeys, isInspectMode, setEditingKey],
   );
 
+  const clearSearch = useCallback(() => {
+    setQuery('');
+    setDebouncedQuery('');
+  }, []);
+
   const revertPreview = useCallback(() => {
     setPressedKeys(focusBaselineRef.current ?? new Set());
     setActiveIndex(null);
@@ -112,6 +117,7 @@ export default function SearchBar() {
 
   const revertToBaseline = useCallback(() => {
     revertPreview();
+    clearSearch();
     setIsFocused(false);
   }, [revertPreview]);
 
@@ -213,8 +219,7 @@ export default function SearchBar() {
         >
           {results.map((result, index) => (
             <li
-              key={result.key}
-              ref={(el) => {
+              key={result.key} ref={(el) => {
                 itemRefs.current[index] = el;
               }}
               onMouseEnter={() => previewResult(index)}
