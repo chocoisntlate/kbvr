@@ -42,7 +42,7 @@ export function DisplayNameForm({ initialName }: { initialName: string }) {
             setSaved(false);
           }}
           maxLength={30}
-          className="flex-1 rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
+          className="flex-1 rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:border-teal-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-teal-400"
         />
         <Button
           type="submit"
@@ -56,7 +56,7 @@ export function DisplayNameForm({ initialName }: { initialName: string }) {
         <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
       )}
       {saved && !error && (
-        <p className="text-xs text-green-600 dark:text-green-400">Saved.</p>
+        <p className="text-xs text-teal-600 dark:text-teal-400">Saved.</p>
       )}
     </form>
   );

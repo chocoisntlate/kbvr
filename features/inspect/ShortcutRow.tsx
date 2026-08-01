@@ -165,7 +165,7 @@ function ShortcutRowExpanded({
       <Field label="*Descriptions" error={error.description}>
         <textarea
           rows={3}
-          className={`rounded-md border px-2 py-1 text-xs resize-none dark:bg-neutral-800 dark:text-neutral-100 ${
+          className={`rounded-md border px-2 py-1 text-xs resize-none dark:bg-neutral-800 dark:text-neutral-100 focus:outline-none focus:border-teal-500 dark:focus:border-teal-400 ${
             error.description
               ? "border-red-500 dark:border-red-500"
               : "border-neutral-300 dark:border-neutral-700"

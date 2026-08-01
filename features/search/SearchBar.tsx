@@ -209,7 +209,7 @@ export default function SearchBar() {
         }}
         onBlur={revertToBaseline}
         placeholder="Search shortcuts... (press s to focus)"
-        className="w-full rounded-md border border-neutral-300 px-2 py-1 text-xs dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
+        className="w-full rounded-md border border-neutral-300 px-2 py-1 text-xs focus:outline-none focus:border-teal-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-teal-400"
       />
 
       {isFocused && results.length > 0 && (
@@ -227,8 +227,8 @@ export default function SearchBar() {
                 setActiveIndex((prev) => (prev === index ? null : prev))
               }
               onClick={() => selectResult(index)}
-              className={`flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1 text-xs hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
-                activeIndex === index ? "bg-neutral-100 dark:bg-neutral-700" : ""
+              className={`flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1 text-xs hover:bg-teal-50 dark:hover:bg-teal-950/40 ${
+                activeIndex === index ? "bg-teal-50 dark:bg-teal-950/40" : ""
               }`}
             >
               <span className="truncate">

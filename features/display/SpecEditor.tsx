@@ -7,9 +7,9 @@ import { LayoutSchema } from "../spec/layoutSchema";
 import { useJsonDraft } from "./hooks/useJsonDraft";
 
 const TAB_BASE =
-  "rounded-md border px-3 py-1.5 text-xs font-medium shadow-sm transition-colors";
+  "rounded-md border px-3 py-1.5 text-xs font-medium shadow-sm transition-colors outline-none focus-visible:border-teal-500 dark:focus-visible:border-teal-400";
 const TAB_ACTIVE =
-  "border-neutral-300 bg-neutral-100 font-semibold dark:border-neutral-700 dark:bg-neutral-700";
+  "border-teal-500 bg-teal-50 font-semibold dark:border-teal-400 dark:bg-teal-950/40";
 const TAB_INACTIVE =
   "border-neutral-300 bg-white hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-neutral-700";
 
@@ -65,7 +65,7 @@ function JsonEditorPane({ target }: { target: Target }) {
         spellCheck={false}
         value={text}
         onChange={(e) => onChange(e.target.value)}
-        className={`h-80 w-full resize-y rounded-md border px-3 py-2 font-mono text-xs leading-relaxed dark:bg-neutral-800 dark:text-neutral-100 ${
+        className={`h-80 w-full resize-y rounded-md border px-3 py-2 font-mono text-xs leading-relaxed dark:bg-neutral-800 dark:text-neutral-100 focus:outline-none focus:border-teal-500 dark:focus:border-teal-400 ${
           error
             ? "border-red-500 dark:border-red-500"
             : "border-neutral-300 dark:border-neutral-700"

@@ -13,6 +13,18 @@ function useHasMounted() {
   );
 }
 
+// Toggling `.dark` normally makes every transition-colors element on the
+// page fade in sync, which reads as sluggish. Suspend transitions for one
+// frame so the theme flips instantly instead.
+function switchThemeInstantly(apply: () => void) {
+  const style = document.createElement("style");
+  style.textContent = "*, *::before, *::after { transition: none !important; }";
+  document.head.appendChild(style);
+  apply();
+  void window.getComputedStyle(document.body).opacity;
+  requestAnimationFrame(() => style.remove());
+}
+
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useHasMounted();
@@ -26,9 +38,11 @@ export function ThemeToggle() {
   return (
     <button
       type="button"
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      onClick={() =>
+        switchThemeInstantly(() => setTheme(isDark ? "light" : "dark"))
+      }
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      className="flex h-8 w-8 items-center justify-center rounded-md border border-neutral-300 bg-white text-neutral-600 shadow-sm hover:bg-neutral-50 transition-colors dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+      className="flex h-8 w-8 items-center justify-center rounded-md border border-neutral-300 bg-white text-neutral-600 shadow-sm hover:bg-neutral-50 transition-colors outline-none focus-visible:border-teal-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus-visible:border-teal-400"
     >
       {isDark ? (
         <svg

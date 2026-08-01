@@ -23,20 +23,20 @@ export default async function BrowsePage({
       <div className="flex items-center gap-2 text-xs">
         <Link
           href={tabHref("diagram")}
-          className={`rounded-md border border-neutral-300 px-3 py-1.5 font-medium transition-colors dark:border-neutral-700 ${
+          className={`rounded-md border px-3 py-1.5 font-medium transition-colors outline-none focus-visible:border-teal-500 dark:focus-visible:border-teal-400 ${
             activeType === "diagram"
-              ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
-              : "bg-white text-neutral-700 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+              ? "border-teal-500 bg-teal-50 text-teal-700 dark:border-teal-400 dark:bg-teal-950/40 dark:text-teal-300"
+              : "border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
           }`}
         >
           Diagrams
         </Link>
         <Link
           href={tabHref("layout")}
-          className={`rounded-md border border-neutral-300 px-3 py-1.5 font-medium transition-colors dark:border-neutral-700 ${
+          className={`rounded-md border px-3 py-1.5 font-medium transition-colors outline-none focus-visible:border-teal-500 dark:focus-visible:border-teal-400 ${
             activeType === "layout"
-              ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
-              : "bg-white text-neutral-700 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+              ? "border-teal-500 bg-teal-50 text-teal-700 dark:border-teal-400 dark:bg-teal-950/40 dark:text-teal-300"
+              : "border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
           }`}
         >
           Layouts

@@ -57,7 +57,7 @@ export function LayoutLibraryItem({
         <p className="truncate font-medium text-neutral-900 dark:text-neutral-100">
           {post.data.name}
           {isDefault && (
-            <span className="ml-1 text-xs text-green-600 dark:text-green-400">
+            <span className="ml-1 text-xs text-teal-600 dark:text-teal-400">
               (Default)
             </span>
           )}

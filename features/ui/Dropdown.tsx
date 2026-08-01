@@ -62,8 +62,8 @@ export function Dropdown<T>({
             onOpenChange(false);
           }}
           onMouseEnter={() => onHighlightChange(index)}
-          className={`flex items-center justify-between gap-4 whitespace-nowrap rounded px-2 py-1 text-left text-xs ${
-            index === highlightedIndex ? "bg-neutral-100 dark:bg-neutral-700" : ""
+          className={`flex items-center justify-between gap-4 whitespace-nowrap rounded border border-transparent px-2 py-1 text-left text-xs outline-none focus-visible:border-teal-500 dark:focus-visible:border-teal-400 ${
+            index === highlightedIndex ? "bg-teal-50 dark:bg-teal-950/40" : ""
           } ${value === item.value ? "font-semibold" : ""}`}
         >
           <span>{item.label}</span>
