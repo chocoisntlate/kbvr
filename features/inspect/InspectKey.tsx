@@ -4,6 +4,8 @@ import { useCallback, useMemo, useEffect } from "react";
 import { ShortcutRow } from "./ShortcutRow";
 import { getValidKeyIds } from "../diagram/shortcut";
 import { useKeyboardContent } from "../keyboard/KeyboardContext";
+import { Button } from "../ui/Button";
+import { ModalShell } from "../ui/Modal";
 import { useShortcutDraft } from "./hooks/useShortcutDraft";
 import { useShortcutErrors } from "./hooks/useShortcutErrors";
 import { useEditMode } from "./hooks/useEditMode";
@@ -112,62 +114,46 @@ export default function InspectModal({
   /* ---------- Render ---------- */
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-      <div className="w-full max-w-md max-h-[90vh] rounded-lg bg-white p-4 shadow-lg flex flex-col">
-        {/* Header */}
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-sm font-semibold">
-            Keybinds for &quot;{keyId}&quot;
-          </h3>
+    <ModalShell size="md" scroll>
+      {/* Header */}
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-sm font-semibold">
+          Keybinds for &quot;{keyId}&quot;
+        </h3>
 
-          <button
-            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-50 transition-colors"
-            onClick={onClose}
-          >
-            Close
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto pr-4 flex flex-col gap-2">
-          {draft.map((s, i) => (
-            <ShortcutRow
-              key={i}
-              shortcut={s}
-              index={i}
-              isEditing={editingIndex === i}
-              error={errors[i]}
-              onEdit={setEditing}
-              onDelete={handleDelete}
-              onUpdate={update}
-              onCollapse={handleCollapse}
-              rowRef={(el) => setRowRef(i, el)}
-            />
-          ))}
-
-          <button
-            className="mt-2 self-start rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-green-600 hover:bg-green-50 transition-colors"
-            onClick={handleAddKeybind}
-          >
-            + Add keybind
-          </button>
-        </div>
-
-        <div className="mt-4 flex justify-end gap-2">
-          <button
-            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-          <button
-            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 transition-colors"
-            onClick={handleSaveAll}
-          >
-            Save
-          </button>
-        </div>
+        <Button tone="neutral" onClick={onClose}>
+          Close
+        </Button>
       </div>
-    </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto pr-4 flex flex-col gap-2">
+        {draft.map((s, i) => (
+          <ShortcutRow
+            key={i}
+            shortcut={s}
+            index={i}
+            isEditing={editingIndex === i}
+            error={errors[i]}
+            onEdit={setEditing}
+            onDelete={handleDelete}
+            onUpdate={update}
+            onCollapse={handleCollapse}
+            rowRef={(el) => setRowRef(i, el)}
+          />
+        ))}
+
+        <Button tone="success" className="mt-2 self-start" onClick={handleAddKeybind}>
+          + Add keybind
+        </Button>
+      </div>
+
+      <div className="mt-4 flex justify-end gap-2">
+        <Button onClick={onClose}>Cancel</Button>
+        <Button tone="primary" onClick={handleSaveAll}>
+          Save
+        </Button>
+      </div>
+    </ModalShell>
   );
 }

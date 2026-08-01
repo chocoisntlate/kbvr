@@ -33,11 +33,13 @@ export default async function PublicProfilePage({
       <h1 className="text-lg font-semibold">{displayName}</h1>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           Diagrams
         </h2>
         {diagrams.length === 0 && (
-          <p className="text-sm text-gray-500">No public diagrams.</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            No public diagrams.
+          </p>
         )}
         {diagrams.map((post) => (
           <DiagramPostCard key={post.id} post={post} />
@@ -45,11 +47,13 @@ export default async function PublicProfilePage({
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           Layouts
         </h2>
         {layouts.length === 0 && (
-          <p className="text-sm text-gray-500">No public layouts.</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            No public layouts.
+          </p>
         )}
         {layouts.map((post) => (
           <LayoutPostCard

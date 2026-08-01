@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import { Button } from "@/features/ui/Button";
 import { ModalShell } from "@/features/ui/Modal";
 import { deleteAccount } from "./actions";
 
@@ -38,17 +39,17 @@ export function DeleteAccountDialog({ displayName }: { displayName: string }) {
   };
 
   return (
-    <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-      <h2 className="text-xs font-semibold uppercase tracking-wide text-red-700">
+    <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/40">
+      <h2 className="text-xs font-semibold uppercase tracking-wide text-red-700 dark:text-red-400">
         Danger zone
       </h2>
-      <p className="mt-1 mb-3 text-xs text-red-700">
+      <p className="mt-1 mb-3 text-xs text-red-700 dark:text-red-400">
         Deleting your account permanently removes every diagram and layout you
         own, along with your saved items. This can&apos;t be undone.
       </p>
       <button
         onClick={() => setOpen(true)}
-        className="rounded-md border border-red-300 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-100 transition-colors"
+        className="rounded-md border border-red-300 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-100 transition-colors dark:border-red-800 dark:bg-neutral-900 dark:text-red-400 dark:hover:bg-red-950/60"
       >
         Delete account
       </button>
@@ -56,7 +57,7 @@ export function DeleteAccountDialog({ displayName }: { displayName: string }) {
       {open && (
         <ModalShell>
           <h3 className="mb-2 text-sm font-semibold">Delete your account?</h3>
-          <p className="mb-3 text-xs text-gray-600">
+          <p className="mb-3 text-xs text-neutral-600 dark:text-neutral-400">
             Type your display name (<strong>{displayName}</strong>) to confirm.
             This can&apos;t be undone.
           </p>
@@ -66,24 +67,25 @@ export function DeleteAccountDialog({ displayName }: { displayName: string }) {
             onChange={(e) => setConfirmText(e.target.value)}
             placeholder={displayName}
             autoFocus
-            className="mb-2 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-400"
+            className="mb-2 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-red-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
           />
-          {error && <p className="mb-2 text-xs text-red-600">{error}</p>}
+          {error && (
+            <p className="mb-2 text-xs text-red-600 dark:text-red-400">
+              {error}
+            </p>
+          )}
           <div className="flex justify-end gap-2">
-            <button
-              className="text-xs text-gray-600 hover:underline"
-              onClick={closeDialog}
-              disabled={busy}
-            >
+            <Button variant="ghost" onClick={closeDialog} disabled={busy}>
               Cancel
-            </button>
-            <button
-              className="text-xs font-medium text-red-600 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+            </Button>
+            <Button
+              variant="ghost"
+              tone="danger"
               onClick={handleDelete}
               disabled={!canConfirm || busy}
             >
               {busy ? "Deleting…" : "Delete my account"}
-            </button>
+            </Button>
           </div>
         </ModalShell>
       )}

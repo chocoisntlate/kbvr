@@ -7,15 +7,14 @@ import {
   usePressedKeys,
 } from "../keyboard/KeyboardContext";
 import { HoverTooltip } from "../keyboard/HoverTooltip";
+import { Button } from "../ui/Button";
+import { Dropdown } from "../ui/Dropdown";
 
 function isTypingTarget(el: Element | null): boolean {
   if (!el) return false;
   if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") return true;
   return (el as HTMLElement).isContentEditable ?? false;
 }
-
-const BUTTON_CLASS =
-  "relative group rounded-md border border-gray-300 px-3 py-2 text-xs font-medium shadow-sm bg-white hover:bg-gray-100 transition-colors";
 
 export default function ButtonsBar() {
   const { keyDiagram } = useKeyboardContent();
@@ -33,7 +32,6 @@ export default function ButtonsBar() {
 
   const [isModeMenuOpen, setIsModeMenuOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
-  const modeMenuRef = useRef<HTMLDivElement>(null);
   const modeTriggerRef = useRef<HTMLButtonElement>(null);
 
   const declaredModes = keyDiagram.modes;
@@ -57,19 +55,6 @@ export default function ButtonsBar() {
     setPrevInspectMode(isInspectMode);
     if (isInspectMode) setIsModeMenuOpen(false);
   }
-
-  useEffect(() => {
-    if (!isModeMenuOpen) return;
-
-    function handleMouseDown(e: MouseEvent) {
-      if (!modeMenuRef.current?.contains(e.target as Node)) {
-        setIsModeMenuOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleMouseDown);
-    return () => document.removeEventListener("mousedown", handleMouseDown);
-  }, [isModeMenuOpen]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -175,41 +160,46 @@ export default function ButtonsBar() {
       className="inline-flex items-center gap-2 my-2"
       style={{ background: "none", minHeight: 0 }}
     >
-      <button
-        className={BUTTON_CLASS}
+      <Button
+        size="md"
+        className="relative group"
         onClick={() => setInspectMode((prev) => !prev)}
         aria-pressed={isInspectMode}
       >
         {isInspectMode ? "Exit Inspection" : "Inspect Keys"}
         <HoverTooltip>Press I to toggle</HoverTooltip>
-      </button>
-      <button
-        className={BUTTON_CLASS}
+      </Button>
+      <Button
+        size="md"
+        className="relative group"
         onClick={() => setJsonEditorVisible((prev) => !prev)}
         aria-pressed={isJsonEditorVisible}
       >
         {isJsonEditorVisible ? "Hide JSON" : "Show JSON"}
         <HoverTooltip>Press J to toggle</HoverTooltip>
-      </button>
-      <button
-        className={BUTTON_CLASS}
+      </Button>
+      <Button
+        size="md"
+        className="relative group"
         onClick={() => setSearchVisible((prev) => !prev)}
         aria-pressed={isSearchVisible}
       >
         {isSearchVisible ? "Hide Search" : "Show Search"}
         <HoverTooltip>Press / to toggle</HoverTooltip>
-      </button>
-      <button
-        className={BUTTON_CLASS}
+      </Button>
+      <Button
+        size="md"
+        className="relative group"
         onClick={() => setPressedKeys(new Set())}
       >
         Reset Pressed Keys
         <HoverTooltip>Press Escape to reset</HoverTooltip>
-      </button>
-      <div ref={modeMenuRef} className="relative">
-        <button
+      </Button>
+      <div className="relative">
+        <Button
           ref={modeTriggerRef}
-          className={BUTTON_CLASS}
+          size="md"
+          className="relative group"
           onClick={() =>
             setIsModeMenuOpen((prev) => {
               const next = !prev;
@@ -228,35 +218,19 @@ export default function ButtonsBar() {
           {activeMode ?? "All modes"}
           <span className="ml-1 opacity-60">▾</span>
           <HoverTooltip>Press M to open • 0-9 to jump directly</HoverTooltip>
-        </button>
+        </Button>
 
-        {isModeMenuOpen && (
-          <div
-            role="listbox"
-            className="absolute left-0 top-full z-20 mt-1 flex min-w-full flex-col gap-0.5 rounded-md border border-gray-300 bg-white p-1 shadow-lg"
-          >
-            {modeItems.map((item, index) => (
-              <button
-                key={item.value ?? "__all__"}
-                role="option"
-                aria-selected={activeMode === item.value}
-                onClick={() => {
-                  setActiveMode(item.value);
-                  setIsModeMenuOpen(false);
-                }}
-                onMouseEnter={() => setHighlightedIndex(index)}
-                className={`flex items-center justify-between gap-4 whitespace-nowrap rounded px-2 py-1 text-left text-xs ${
-                  index === highlightedIndex ? "bg-gray-100" : ""
-                } ${activeMode === item.value ? "font-semibold" : ""}`}
-              >
-                <span>{item.label}</span>
-                {index <= 9 && (
-                  <span className="text-[10px] opacity-50">{index}</span>
-                )}
-              </button>
-            ))}
-          </div>
-        )}
+        <Dropdown
+          items={modeItems}
+          value={activeMode}
+          onChange={setActiveMode}
+          isOpen={isModeMenuOpen}
+          onOpenChange={setIsModeMenuOpen}
+          highlightedIndex={highlightedIndex}
+          onHighlightChange={setHighlightedIndex}
+          triggerRef={modeTriggerRef}
+          renderBadge={(index) => (index <= 9 ? index : null)}
+        />
       </div>
     </div>
   );

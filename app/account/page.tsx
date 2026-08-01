@@ -15,7 +15,11 @@ export default function AccountPage() {
   return (
     <main className="mx-auto flex max-w-xl flex-col gap-6 p-4">
       <h1 className="text-lg font-semibold">Account</h1>
-      <Suspense fallback={<p className="text-sm text-gray-500">Loading…</p>}>
+      <Suspense
+        fallback={
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Loading…</p>
+        }
+      >
         <AccountContent />
       </Suspense>
     </main>
@@ -46,7 +50,11 @@ async function AccountContent() {
   }
 
   if (!displayName) {
-    return <p className="text-sm text-gray-500">Setting up your account…</p>;
+    return (
+      <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        Setting up your account…
+      </p>
+    );
   }
 
   const [ownedDiagrams, ownedLayouts, savedDiagrams, savedLayouts] =
@@ -59,46 +67,59 @@ async function AccountContent() {
 
   return (
     <>
-      <section className="rounded-lg border border-gray-200 bg-white p-4">
-        <p className="mb-3 text-xs text-gray-500">
-          Signed in as <span className="text-gray-700">{email}</span>
+      <section className="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-900">
+        <p className="mb-3 text-xs text-neutral-500 dark:text-neutral-400">
+          Signed in as{" "}
+          <span className="text-neutral-700 dark:text-neutral-300">{email}</span>
         </p>
         <DisplayNameForm initialName={displayName} />
       </section>
 
-      <section className="rounded-lg border border-gray-200 bg-white p-4">
-        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+      <section className="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-900">
+        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           Stats
         </h2>
         <dl className="grid grid-cols-2 gap-3 text-sm">
           <div>
-            <dt className="text-xs text-gray-500">Diagrams created</dt>
-            <dd className="font-medium text-gray-900">
+            <dt className="text-xs text-neutral-500 dark:text-neutral-400">
+              Diagrams created
+            </dt>
+            <dd className="font-medium text-neutral-900 dark:text-neutral-100">
               {ownedDiagrams.length}
             </dd>
           </div>
           <div>
-            <dt className="text-xs text-gray-500">Layouts created</dt>
-            <dd className="font-medium text-gray-900">{ownedLayouts.length}</dd>
+            <dt className="text-xs text-neutral-500 dark:text-neutral-400">
+              Layouts created
+            </dt>
+            <dd className="font-medium text-neutral-900 dark:text-neutral-100">
+              {ownedLayouts.length}
+            </dd>
           </div>
           <div>
-            <dt className="text-xs text-gray-500">Diagrams saved</dt>
-            <dd className="font-medium text-gray-900">
+            <dt className="text-xs text-neutral-500 dark:text-neutral-400">
+              Diagrams saved
+            </dt>
+            <dd className="font-medium text-neutral-900 dark:text-neutral-100">
               {savedDiagrams.length}
             </dd>
           </div>
           <div>
-            <dt className="text-xs text-gray-500">Layouts saved</dt>
-            <dd className="font-medium text-gray-900">{savedLayouts.length}</dd>
+            <dt className="text-xs text-neutral-500 dark:text-neutral-400">
+              Layouts saved
+            </dt>
+            <dd className="font-medium text-neutral-900 dark:text-neutral-100">
+              {savedLayouts.length}
+            </dd>
           </div>
         </dl>
       </section>
 
-      <section className="rounded-lg border border-gray-200 bg-white p-4">
-        <h2 className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
+      <section className="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-900">
+        <h2 className="mb-1 text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           Export
         </h2>
-        <p className="mb-3 text-xs text-gray-500">
+        <p className="mb-3 text-xs text-neutral-500 dark:text-neutral-400">
           Download every diagram and layout you own as a single JSON file.
         </p>
         <ExportDataButton

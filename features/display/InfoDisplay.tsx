@@ -171,23 +171,25 @@ type InfoRowProps = {
 
 function InfoRow({ title, name, description, meta, actions }: InfoRowProps) {
   return (
-    <div className="flex items-center gap-x-3 rounded-lg border border-gray-200 bg-white px-5 py-4 shadow-sm relative flex-1 min-w-0">
+    <div className="flex items-center gap-x-3 rounded-lg border border-neutral-200 bg-white px-5 py-4 shadow-sm relative flex-1 min-w-0 dark:border-neutral-700 dark:bg-neutral-900">
       {meta && (
         <div className="absolute top-3 left-3">
           <InfoHover>{meta}</InfoHover>
         </div>
       )}
 
-      <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500 justify-self-start w-max">
+      <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-500 justify-self-start w-max dark:text-neutral-400">
         {title}
       </h2>
 
       <div className="flex min-w-0 flex-col gap-1 mr-auto">
-        <span className="truncate text-sm font-medium text-gray-900">
+        <span className="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
           {name}
         </span>
         {description && (
-          <span className="truncate text-xs text-gray-500">{description}</span>
+          <span className="truncate text-xs text-neutral-500 dark:text-neutral-400">
+            {description}
+          </span>
         )}
       </div>
 
@@ -201,8 +203,10 @@ function InfoRow({ title, name, description, meta, actions }: InfoRowProps) {
 function MetaRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex gap-1.5">
-      <span className="font-semibold text-gray-500">{label}:</span>
-      <span className="text-gray-900">{value}</span>
+      <span className="font-semibold text-neutral-500 dark:text-neutral-400">
+        {label}:
+      </span>
+      <span className="text-neutral-900 dark:text-neutral-100">{value}</span>
     </div>
   );
 }
@@ -212,7 +216,7 @@ function InfoHover({ children }: { children: React.ReactNode }) {
     <div className="group relative shrink-0">
       <button
         type="button"
-        className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-white text-[10px] font-semibold text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+        className="flex h-6 w-6 items-center justify-center rounded-full border border-neutral-300 bg-white text-[10px] font-semibold text-neutral-500 hover:bg-neutral-100 hover:text-neutral-700 transition-colors dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200"
         aria-label="More information"
       >
         i
@@ -226,7 +230,7 @@ function InfoHover({ children }: { children: React.ReactNode }) {
                 opacity-0 pointer-events-none transition-all duration-150
                 group-hover:translate-y-0 group-hover:opacity-100 group-hover:pointer-events-auto"
       >
-        <div className="rounded-md border border-gray-200 bg-white p-4 text-sm text-gray-700 shadow-lg">
+        <div className="rounded-md border border-neutral-200 bg-white p-4 text-sm text-neutral-700 shadow-lg dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
           <div className="flex flex-col gap-2">{children}</div>
         </div>
       </div>

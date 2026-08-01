@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { Button } from "@/features/ui/Button";
 
 type ImportExportButtonProps<T> = {
   title: string;
@@ -37,13 +38,9 @@ export function ImportExportButton<T>({
 
   return (
     <>
-      <button
-        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-        onClick={handleClick}
-        disabled={disabled}
-      >
+      <Button size="md" onClick={handleClick} disabled={disabled}>
         {title}
-      </button>
+      </Button>
       {onFileSelect && (
         <input
           type="file"

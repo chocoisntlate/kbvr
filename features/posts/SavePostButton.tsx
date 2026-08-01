@@ -132,7 +132,9 @@ export function SavePostButton(props: SavePostButtonProps) {
         disabled={status === "saving" || alreadySavedReference}
       />
       {status === "error" && (
-        <span className="text-[10px] text-red-600">Save failed</span>
+        <span className="text-[10px] text-red-600 dark:text-red-400">
+          Save failed
+        </span>
       )}
 
       {step === "visibility-new" && (

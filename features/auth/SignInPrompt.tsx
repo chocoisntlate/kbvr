@@ -1,6 +1,7 @@
 "use client";
 
 import { signInWithGoogle } from "@/features/auth/signInWithGoogle";
+import { Button } from "@/features/ui/Button";
 
 export function SignInPrompt({
   message = "Sign in to continue.",
@@ -8,14 +9,11 @@ export function SignInPrompt({
   message?: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-lg border border-gray-200 bg-white p-8 text-center">
-      <p className="text-sm text-gray-600">{message}</p>
-      <button
-        onClick={() => signInWithGoogle()}
-        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-medium shadow-sm hover:bg-gray-50 transition-colors"
-      >
+    <div className="flex flex-col items-center gap-3 rounded-lg border border-neutral-200 bg-white p-8 text-center dark:border-neutral-700 dark:bg-neutral-900">
+      <p className="text-sm text-neutral-600 dark:text-neutral-400">{message}</p>
+      <Button size="md" onClick={() => signInWithGoogle()}>
         Sign in with Google
-      </button>
+      </Button>
     </div>
   );
 }

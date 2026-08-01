@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "./Button";
+
 export function RefreshButton({
   onRefresh,
   isValidating,
@@ -8,14 +10,8 @@ export function RefreshButton({
   isValidating: boolean;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onRefresh}
-      disabled={isValidating}
-      title="Refresh"
-      className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-    >
+    <Button onClick={onRefresh} disabled={isValidating} title="Refresh">
       {isValidating ? "Refreshing…" : "Refresh"}
-    </button>
+    </Button>
   );
 }

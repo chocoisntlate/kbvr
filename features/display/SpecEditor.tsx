@@ -8,8 +8,10 @@ import { useJsonDraft } from "./hooks/useJsonDraft";
 
 const TAB_BASE =
   "rounded-md border px-3 py-1.5 text-xs font-medium shadow-sm transition-colors";
-const TAB_ACTIVE = "border-gray-300 bg-gray-100 font-semibold";
-const TAB_INACTIVE = "border-gray-300 bg-white hover:bg-gray-100";
+const TAB_ACTIVE =
+  "border-neutral-300 bg-neutral-100 font-semibold dark:border-neutral-700 dark:bg-neutral-700";
+const TAB_INACTIVE =
+  "border-neutral-300 bg-white hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-neutral-700";
 
 type Target = "diagram" | "layout";
 
@@ -20,9 +22,9 @@ export default function SpecEditor() {
   if (!isJsonEditorVisible) return null;
 
   return (
-    <div className="mt-4 w-full rounded-lg border border-gray-300 p-4 space-y-3 text-sm">
+    <div className="mt-4 w-full rounded-lg border border-neutral-300 p-4 space-y-3 text-sm dark:border-neutral-700">
       <div className="flex items-center justify-between">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           Raw JSON
         </h2>
         <div className="flex gap-2">
@@ -63,11 +65,17 @@ function JsonEditorPane({ target }: { target: Target }) {
         spellCheck={false}
         value={text}
         onChange={(e) => onChange(e.target.value)}
-        className={`h-80 w-full resize-y rounded-md border px-3 py-2 font-mono text-xs leading-relaxed ${
-          error ? "border-red-500" : "border-gray-300"
+        className={`h-80 w-full resize-y rounded-md border px-3 py-2 font-mono text-xs leading-relaxed dark:bg-neutral-800 dark:text-neutral-100 ${
+          error
+            ? "border-red-500 dark:border-red-500"
+            : "border-neutral-300 dark:border-neutral-700"
         }`}
       />
-      {error && <p className="mt-1 text-[11px] text-red-600">{error}</p>}
+      {error && (
+        <p className="mt-1 text-[11px] text-red-600 dark:text-red-400">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

@@ -209,13 +209,13 @@ export default function SearchBar() {
         }}
         onBlur={revertToBaseline}
         placeholder="Search shortcuts... (press s to focus)"
-        className="w-full rounded-md border border-gray-300 px-2 py-1 text-xs"
+        className="w-full rounded-md border border-neutral-300 px-2 py-1 text-xs dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
       />
 
       {isFocused && results.length > 0 && (
         <ul
           onMouseDown={(e) => e.preventDefault()}
-          className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto rounded-md border border-gray-200 bg-white shadow-sm"
+          className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto rounded-md border border-neutral-200 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-900"
         >
           {results.map((result, index) => (
             <li
@@ -227,14 +227,14 @@ export default function SearchBar() {
                 setActiveIndex((prev) => (prev === index ? null : prev))
               }
               onClick={() => selectResult(index)}
-              className={`flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1 text-xs hover:bg-gray-100 ${
-                activeIndex === index ? "bg-gray-100" : ""
+              className={`flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1 text-xs hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
+                activeIndex === index ? "bg-neutral-100 dark:bg-neutral-700" : ""
               }`}
             >
               <span className="truncate">
                 {highlightMatch(result.description, trimmedQuery)}
               </span>
-              <span className="shrink-0 whitespace-nowrap text-[10px] text-gray-400">
+              <span className="shrink-0 whitespace-nowrap text-[10px] text-neutral-400 dark:text-neutral-500">
                 {formatKeys(result.shortcut.keys)}
               </span>
             </li>

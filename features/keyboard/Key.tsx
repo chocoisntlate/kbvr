@@ -36,10 +36,14 @@ export function Key({
         "shadow-sm",
         "transition-all select-none flex-none",
         isPressed
-          ? "bg-blue-500 border-blue-500 text-white shadow-inner"
-          : "border-gray-300 text-gray-800 hover:bg-gray-100",
-        description && !isInspectMode ? "ring ring-blue-500" : "",
-        candidateCount > 0 && isInspectMode ? "ring ring-blue-500" : "",
+          ? "bg-teal-500 border-teal-500 text-white shadow-inner dark:bg-teal-600 dark:border-teal-600"
+          : "bg-white border-neutral-300 text-neutral-800 hover:bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700",
+        description && !isInspectMode
+          ? "ring ring-teal-500 dark:ring-teal-400/50"
+          : "",
+        candidateCount > 0 && isInspectMode
+          ? "ring ring-teal-500 dark:ring-teal-400/50"
+          : "",
       ].join(" ")}
       style={{
         width: width + "px",

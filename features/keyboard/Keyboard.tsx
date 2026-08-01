@@ -127,7 +127,7 @@ export function Keyboard() {
     <>
       <div
         ref={keyboardRef}
-        className="flex flex-col gap-1 rounded-xl p-3 shadow-md border border-gray-300 w-fit"
+        className="flex flex-col gap-1 rounded-xl p-3 shadow-md border border-neutral-300 w-fit dark:border-neutral-700 dark:bg-neutral-900"
       >
         {layout.map((row, rowIndex) => (
           <div key={rowIndex} className="flex" style={{ gap: GAP }}>

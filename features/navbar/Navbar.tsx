@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useAuth } from "@/features/auth/AuthContext";
 import { signInWithGoogle } from "@/features/auth/signInWithGoogle";
+import { Button } from "@/features/ui/Button";
+import { ThemeToggle } from "@/features/theme/ThemeToggle";
 import { createClient } from "@/utils/supabase/client";
 
 export default function Navbar() {
@@ -21,21 +23,21 @@ export default function Navbar() {
   };
 
   return (
-    <div className="p-4 bg-gray-100 shadow-md flex items-center justify-between">
+    <div className="p-4 bg-neutral-100 shadow-md flex items-center justify-between dark:bg-neutral-800">
       <div className="flex items-center gap-4">
         <Link className="font-mono" href="/">
           key-diagram
         </Link>
-        <nav className="flex items-center gap-3 text-xs text-gray-600">
+        <nav className="flex items-center gap-3 text-xs text-neutral-600 dark:text-neutral-400">
           <Link
             href="/browse"
-            className="hover:text-gray-900 transition-colors"
+            className="hover:text-neutral-900 transition-colors dark:hover:text-neutral-100"
           >
             Browse
           </Link>
           <Link
             href="/library"
-            className="hover:text-gray-900 transition-colors"
+            className="hover:text-neutral-900 transition-colors dark:hover:text-neutral-100"
           >
             Library
           </Link>
@@ -46,26 +48,18 @@ export default function Navbar() {
         <div className="flex items-center gap-3 text-xs">
           <Link
             href="/account"
-            className="text-gray-600 hover:text-gray-900 transition-colors"
+            className="text-neutral-600 hover:text-neutral-900 transition-colors dark:text-neutral-400 dark:hover:text-neutral-100"
           >
             {displayName ?? user.user_metadata?.full_name ?? user.email}
           </Link>
-          <button
-            type="button"
-            onClick={signOut}
-            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 font-medium shadow-sm hover:bg-gray-50 transition-colors"
-          >
-            Sign out
-          </button>
+          <Button onClick={signOut}>Sign out</Button>
+          <ThemeToggle />
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={() => signInWithGoogle()}
-          className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium shadow-sm hover:bg-gray-50 transition-colors"
-        >
-          Sign in with Google
-        </button>
+        <div className="flex items-center gap-3">
+          <Button onClick={() => signInWithGoogle()}>Sign in with Google</Button>
+          <ThemeToggle />
+        </div>
       )}
     </div>
   );

@@ -18,7 +18,13 @@ export default function Home({
 }) {
   return (
     <main className="overflow-hidden p-2 flex flex-col items-center gap-4 my-4">
-      <Suspense fallback={<p className="text-sm text-gray-500">Loading…</p>}>
+      <Suspense
+        fallback={
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            Loading…
+          </p>
+        }
+      >
         <HomeContent searchParams={searchParams} />
       </Suspense>
     </main>

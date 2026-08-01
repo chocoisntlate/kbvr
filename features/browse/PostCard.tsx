@@ -28,16 +28,24 @@ export function PostCard({
       title={name}
       expanded={expanded}
       onToggle={() => setExpanded((e) => !e)}
-      details={<div className="text-xs text-gray-600">{details}</div>}
+      details={
+        <div className="text-xs text-neutral-600 dark:text-neutral-400">
+          {details}
+        </div>
+      }
     >
       <div className="flex flex-col gap-2">
-        {description && <p className="text-xs text-gray-600">{description}</p>}
-        <p className="text-xs text-gray-500">
+        {description && (
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">
+            {description}
+          </p>
+        )}
+        <p className="text-xs text-neutral-500 dark:text-neutral-400">
           By{" "}
           {ownerDisplayName ? (
             <Link
               href={`/u/${encodeURIComponent(ownerDisplayName)}`}
-              className="hover:text-gray-900 hover:underline"
+              className="hover:text-neutral-900 hover:underline dark:hover:text-neutral-100"
             >
               {ownerDisplayName}
             </Link>

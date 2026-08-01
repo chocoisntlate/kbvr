@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/features/ui/Button";
 import { ModalShell } from "@/features/ui/Modal";
 
 export function VisibilityDialog({
@@ -36,18 +37,12 @@ export function VisibilityDialog({
         </label>
       </div>
       <div className="flex justify-end gap-2">
-        <button
-          className="text-xs text-gray-600 hover:underline"
-          onClick={onCancel}
-        >
+        <Button variant="ghost" onClick={onCancel}>
           Cancel
-        </button>
-        <button
-          className="text-xs font-medium text-blue-600 hover:underline"
-          onClick={() => onConfirm(isPublic)}
-        >
+        </Button>
+        <Button variant="ghost" tone="primary" onClick={() => onConfirm(isPublic)}>
           Save
-        </button>
+        </Button>
       </div>
     </ModalShell>
   );
@@ -69,29 +64,20 @@ export function ForkChoiceDialog({
       <h3 className="mb-3 text-sm font-semibold">
         This {kind} was created by someone else
       </h3>
-      <p className="mb-4 text-xs text-gray-600">
+      <p className="mb-4 text-xs text-neutral-600 dark:text-neutral-400">
         Save the original to keep it in sync with the author&apos;s future
         changes, or save a duplicate to make your own independent copy.
       </p>
       <div className="flex flex-col gap-2">
-        <button
-          className="rounded-md border border-gray-300 bg-white px-3 py-2 text-xs font-medium hover:bg-gray-50 transition-colors"
-          onClick={onChooseOriginal}
-        >
+        <Button size="md" onClick={onChooseOriginal}>
           Save the original
-        </button>
-        <button
-          className="rounded-md border border-gray-300 bg-white px-3 py-2 text-xs font-medium hover:bg-gray-50 transition-colors"
-          onClick={onChooseDuplicate}
-        >
+        </Button>
+        <Button size="md" onClick={onChooseDuplicate}>
           Save as duplicate
-        </button>
-        <button
-          className="text-xs text-gray-600 hover:underline"
-          onClick={onCancel}
-        >
+        </Button>
+        <Button variant="ghost" onClick={onCancel}>
           Cancel
-        </button>
+        </Button>
       </div>
     </ModalShell>
   );

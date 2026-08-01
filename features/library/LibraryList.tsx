@@ -27,11 +27,11 @@ export function LibraryList({ initialData }: { initialData: LibraryData }) {
       </div>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           Diagrams
         </h2>
         {diagrams.length === 0 && (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
             No diagrams yet — save one from Browse or the keyboard page.
           </p>
         )}
@@ -41,11 +41,11 @@ export function LibraryList({ initialData }: { initialData: LibraryData }) {
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           Layouts
         </h2>
         {layouts.length === 0 && (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
             No layouts yet — save one from Browse.
           </p>
         )}

@@ -9,6 +9,7 @@ import {
   deleteLayout,
 } from "@/features/posts/actions";
 import { VisibilityDialog } from "@/features/posts/SaveDialog";
+import { Button } from "@/features/ui/Button";
 import { ConfirmDialog } from "@/features/ui/Modal";
 import { useLibraryItemActions } from "./useLibraryItemActions";
 
@@ -46,68 +47,54 @@ export function LayoutLibraryItem({
   const handleSetDefault = () => run(() => setDefaultLayout(post.id));
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm">
+    <div className="flex items-center justify-between gap-3 rounded-lg border border-neutral-200 bg-white px-4 py-3 text-sm dark:border-neutral-700 dark:bg-neutral-900">
       <button
         type="button"
         onClick={handleSetDefault}
         disabled={busy || isDefault}
         className="min-w-0 text-left hover:opacity-80 disabled:cursor-not-allowed"
       >
-        <p className="truncate font-medium text-gray-900">
+        <p className="truncate font-medium text-neutral-900 dark:text-neutral-100">
           {post.data.name}
           {isDefault && (
-            <span className="ml-1 text-xs text-green-600">(Default)</span>
+            <span className="ml-1 text-xs text-green-600 dark:text-green-400">
+              (Default)
+            </span>
           )}
         </p>
-        <p className="truncate text-xs text-gray-500">
+        <p className="truncate text-xs text-neutral-500 dark:text-neutral-400">
           By {post.ownerDisplayName ?? "Unknown"} ·{" "}
           {isOwned ? (isPublic ? "Public" : "Private") : "Saved"}
         </p>
       </button>
       <div className="flex shrink-0 flex-wrap justify-end gap-2">
-        <button
-          onClick={handleSetDefault}
-          disabled={busy || isDefault}
-          className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-        >
+        <Button onClick={handleSetDefault} disabled={busy || isDefault}>
           {isDefault ? "Default" : "Set as default"}
-        </button>
+        </Button>
         {isOwned ? (
           <>
-            <button
-              onClick={handleToggleVisibility}
-              disabled={busy}
-              className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-            >
+            <Button onClick={handleToggleVisibility} disabled={busy}>
               Make {isPublic ? "private" : "public"}
-            </button>
-            <button
+            </Button>
+            <Button
+              tone="danger"
               onClick={() => setShowDeleteDialog(true)}
               disabled={busy || isDefault}
               title={
                 isDefault ? "Set a different default layout first" : undefined
               }
-              className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               Delete
-            </button>
+            </Button>
           </>
         ) : (
           <>
-            <button
-              onClick={() => setShowDuplicateDialog(true)}
-              disabled={busy}
-              className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-            >
+            <Button onClick={() => setShowDuplicateDialog(true)} disabled={busy}>
               Duplicate
-            </button>
-            <button
-              onClick={handleRemove}
-              disabled={busy || isDefault}
-              className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-            >
+            </Button>
+            <Button onClick={handleRemove} disabled={busy || isDefault}>
               Remove
-            </button>
+            </Button>
           </>
         )}
       </div>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { mutate } from "swr";
 import { useAuth } from "@/features/auth/AuthContext";
 import { signInWithGoogle } from "@/features/auth/signInWithGoogle";
+import { Button } from "@/features/ui/Button";
 import {
   saveLayoutReference,
   setDefaultLayout,
@@ -66,20 +67,12 @@ export function LayoutActions({
 
   return (
     <>
-      <button
-        onClick={handleSave}
-        disabled={busy || saved}
-        className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-      >
+      <Button onClick={handleSave} disabled={busy || saved}>
         {saved ? "Saved" : "Save"}
-      </button>
-      <button
-        onClick={handleSetDefault}
-        disabled={busy || isDefault}
-        className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-      >
+      </Button>
+      <Button onClick={handleSetDefault} disabled={busy || isDefault}>
         {isDefault ? "Default" : "Set as default"}
-      </button>
+      </Button>
     </>
   );
 }

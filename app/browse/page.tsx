@@ -23,20 +23,20 @@ export default async function BrowsePage({
       <div className="flex items-center gap-2 text-xs">
         <Link
           href={tabHref("diagram")}
-          className={`rounded-md border border-gray-300 px-3 py-1.5 font-medium transition-colors ${
+          className={`rounded-md border border-neutral-300 px-3 py-1.5 font-medium transition-colors dark:border-neutral-700 ${
             activeType === "diagram"
-              ? "bg-gray-900 text-white"
-              : "bg-white text-gray-700 hover:bg-gray-50"
+              ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
+              : "bg-white text-neutral-700 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
           }`}
         >
           Diagrams
         </Link>
         <Link
           href={tabHref("layout")}
-          className={`rounded-md border border-gray-300 px-3 py-1.5 font-medium transition-colors ${
+          className={`rounded-md border border-neutral-300 px-3 py-1.5 font-medium transition-colors dark:border-neutral-700 ${
             activeType === "layout"
-              ? "bg-gray-900 text-white"
-              : "bg-white text-gray-700 hover:bg-gray-50"
+              ? "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900"
+              : "bg-white text-neutral-700 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
           }`}
         >
           Layouts
@@ -47,7 +47,11 @@ export default async function BrowsePage({
 
       <Suspense
         key={`${activeType}:${q}`}
-        fallback={<p className="text-sm text-gray-500">Loading…</p>}
+        fallback={
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            Loading…
+          </p>
+        }
       >
         <BrowseResults activeType={activeType} q={q} />
       </Suspense>

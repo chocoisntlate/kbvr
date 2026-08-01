@@ -1,4 +1,5 @@
 import { EditableShortcut, FieldErrors, parseKeys } from "../diagram/shortcut";
+import { Button } from "../ui/Button";
 import { Field, Input } from "./ShortcutFormFields";
 
 type ShortcutRowProps = {
@@ -30,7 +31,9 @@ export function ShortcutRow({
     <div
       ref={rowRef}
       className={`rounded-md border p-3 text-xs ${
-        hasError ? "border-red-500 bg-red-50" : "border-gray-200"
+        hasError
+          ? "border-red-500 bg-red-50 dark:border-red-500 dark:bg-red-950/40"
+          : "border-neutral-200 dark:border-neutral-700"
       }`}
     >
       {!isEditing ? (
@@ -72,7 +75,7 @@ function ShortcutRowCollapsed({
       </div>
 
       {shortcut.description && (
-        <ul className="mt-1 list-disc pl-4 text-gray-500">
+        <ul className="mt-1 list-disc pl-4 text-neutral-500 dark:text-neutral-400">
           {shortcut.description.split("\n").map((d, idx) => (
             <li key={idx}>{d}</li>
           ))}
@@ -84,7 +87,7 @@ function ShortcutRowCollapsed({
           {shortcut.tags.split(/[,\s]+/).map((tag, idx) => (
             <span
               key={idx}
-              className="inline-block px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[11px]"
+              className="inline-block px-2 py-0.5 bg-neutral-100 text-neutral-600 rounded text-[11px] dark:bg-neutral-700 dark:text-neutral-300"
             >
               {tag}
             </span>
@@ -93,30 +96,24 @@ function ShortcutRowCollapsed({
       )}
 
       {shortcut.mode && (
-        <div className="mt-1 text-[11px] text-gray-500">
+        <div className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400">
           Mode: {shortcut.mode}
         </div>
       )}
 
       {hasError && (
-        <div className="mt-1 text-[11px] text-red-600">
+        <div className="mt-1 text-[11px] text-red-600 dark:text-red-400">
           Invalid fields — expand to fix
         </div>
       )}
 
       <div className="mt-2 flex gap-2">
-        <button
-          className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 transition-colors"
-          onClick={onEdit}
-        >
+        <Button tone="primary" onClick={onEdit}>
           Edit
-        </button>
-        <button
-          className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
-          onClick={onDelete}
-        >
+        </Button>
+        <Button tone="danger" onClick={onDelete}>
           Delete
-        </button>
+        </Button>
       </div>
     </>
   );
@@ -144,7 +141,7 @@ function ShortcutRowExpanded({
           error={!!error.modifierKeys}
         />
       </Field>
-      <p className="-mt-2 text-[11px] text-gray-500">
+      <p className="-mt-2 text-[11px] text-neutral-500 dark:text-neutral-400">
         Space separated combination of keys held down with the trigger key
       </p>
 
@@ -155,12 +152,12 @@ function ShortcutRowExpanded({
           disabled
         />
       </Field>
-      <p className="-mt-2 text-[11px] text-gray-500">
+      <p className="-mt-2 text-[11px] text-neutral-500 dark:text-neutral-400">
         The key that completes the shortcut. The description will display on
         this key.
       </p>
 
-      <p className="text-[11px] text-gray-500">
+      <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
         Combination:{" "}
         <span className="font-medium">{keys.join(" + ") || "—"}</span>
       </p>
@@ -168,8 +165,10 @@ function ShortcutRowExpanded({
       <Field label="*Descriptions" error={error.description}>
         <textarea
           rows={3}
-          className={`rounded-md border px-2 py-1 text-xs resize-none ${
-            error.description ? "border-red-500" : "border-gray-300"
+          className={`rounded-md border px-2 py-1 text-xs resize-none dark:bg-neutral-800 dark:text-neutral-100 ${
+            error.description
+              ? "border-red-500 dark:border-red-500"
+              : "border-neutral-300 dark:border-neutral-700"
           }`}
           value={shortcut.description}
           onChange={(ev) => onUpdate({ description: ev.target.value })}
@@ -192,12 +191,9 @@ function ShortcutRowExpanded({
         />
       </Field>
 
-      <button
-        className="self-start rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 transition-colors"
-        onClick={onCollapse}
-      >
+      <Button tone="primary" className="self-start" onClick={onCollapse}>
         Collapse
-      </button>
+      </Button>
     </div>
   );
 }

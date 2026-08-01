@@ -2,6 +2,7 @@
 
 import { Diagram } from "@/features/spec/diagramSchema";
 import { Layout } from "@/features/spec/layoutSchema";
+import { Button } from "@/features/ui/Button";
 
 export function ExportDataButton({
   diagrams,
@@ -23,12 +24,5 @@ export function ExportDataButton({
     URL.revokeObjectURL(url);
   };
 
-  return (
-    <button
-      onClick={handleExport}
-      className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-gray-50 transition-colors"
-    >
-      Export my data
-    </button>
-  );
+  return <Button onClick={handleExport}>Export my data</Button>;
 }

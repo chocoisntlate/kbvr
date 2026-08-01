@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/features/auth/AuthContext";
+import { Button } from "@/features/ui/Button";
 import { updateDisplayName } from "./actions";
 
 export function DisplayNameForm({ initialName }: { initialName: string }) {
@@ -29,7 +30,7 @@ export function DisplayNameForm({ initialName }: { initialName: string }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-      <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+      <label className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
         Display name
       </label>
       <div className="flex gap-2">
@@ -41,18 +42,22 @@ export function DisplayNameForm({ initialName }: { initialName: string }) {
             setSaved(false);
           }}
           maxLength={30}
-          className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
+          className="flex-1 rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
         />
-        <button
+        <Button
           type="submit"
+          size="md"
           disabled={busy || name.trim().length === 0}
-          className="rounded-md border border-gray-300 bg-white px-3 py-2 text-xs font-medium hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
           {busy ? "Saving…" : "Save"}
-        </button>
+        </Button>
       </div>
-      {error && <p className="text-xs text-red-600">{error}</p>}
-      {saved && !error && <p className="text-xs text-green-600">Saved.</p>}
+      {error && (
+        <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+      )}
+      {saved && !error && (
+        <p className="text-xs text-green-600 dark:text-green-400">Saved.</p>
+      )}
     </form>
   );
 }

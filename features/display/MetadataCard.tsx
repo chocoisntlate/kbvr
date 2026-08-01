@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import { Button } from "@/features/ui/Button";
 
 type MetadataCardProps = {
   title: string;
@@ -18,9 +19,9 @@ export function MetadataCard({
   onToggle,
 }: MetadataCardProps) {
   return (
-    <div className="rounded-lg border border-gray-300 p-4 space-y-3 text-sm">
+    <div className="rounded-lg border border-neutral-300 p-4 space-y-3 text-sm dark:border-neutral-700">
       <div className="space-y-1">
-        <h1 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <h1 className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           {title}
         </h1>
         {children}
@@ -29,13 +30,9 @@ export function MetadataCard({
       {expanded && details}
 
       {details && (
-        <button
-          type="button"
-          onClick={onToggle}
-          className="text-xs font-medium text-gray-500 hover:text-gray-700"
-        >
+        <Button variant="ghost" onClick={onToggle}>
           {expanded ? "Hide details" : "Show more"}
-        </button>
+        </Button>
       )}
     </div>
   );

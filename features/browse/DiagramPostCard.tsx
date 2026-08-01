@@ -13,7 +13,7 @@ export function DiagramPostCard({ post }: { post: DiagramPost }) {
       actions={
         <Link
           href={`/?diagram=${post.id}`}
-          className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-gray-50 transition-colors"
+          className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium shadow-sm hover:bg-neutral-50 transition-colors dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
         >
           View
         </Link>

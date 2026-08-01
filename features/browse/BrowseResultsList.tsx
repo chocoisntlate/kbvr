@@ -10,6 +10,7 @@ import {
 import type { SearchPostsResult } from "@/features/posts/queries";
 import { DiagramPostCard } from "./DiagramPostCard";
 import { LayoutPostCard } from "./LayoutPostCard";
+import { Button } from "@/features/ui/Button";
 import { RefreshButton } from "@/features/ui/RefreshButton";
 import { DiagramPost, LayoutPost } from "@/features/posts/types";
 
@@ -72,7 +73,9 @@ export function BrowseResultsList({
       </div>
 
       {posts.length === 0 && !isValidating && (
-        <p className="text-sm text-gray-500">No public {activeType}s found.</p>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          No public {activeType}s found.
+        </p>
       )}
       {activeType === "diagram"
         ? (posts as DiagramPost[]).map((post) => (
@@ -88,13 +91,13 @@ export function BrowseResultsList({
           ))}
 
       {hasMore && (
-        <button
+        <Button
+          className="self-center"
           onClick={() => setSize(size + 1)}
           disabled={isValidating}
-          className="self-center rounded-md border border-gray-300 bg-white px-4 py-1.5 text-xs font-medium hover:bg-gray-50 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isValidating ? "Loading…" : "Load more"}
-        </button>
+        </Button>
       )}
     </div>
   );
