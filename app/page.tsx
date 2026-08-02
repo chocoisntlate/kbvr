@@ -10,6 +10,26 @@ import { ensureDefaultLayoutSeeded } from "@/features/posts/actions";
 import { PostMeta } from "@/features/posts/types";
 import { Diagram } from "@/features/spec/diagramSchema";
 import { Layout } from "@/features/spec/layoutSchema";
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ diagram?: string }>;
+}): Promise<Metadata> {
+  const { diagram: diagramId } = await searchParams;
+  if (!diagramId) return {};
+
+  const result = await getDiagramById(diagramId);
+  if (!result) return {};
+
+  const { name, description } = result.post.data;
+  return {
+    title: name,
+    description,
+    openGraph: { title: name, description },
+  };
+}
 
 export default function Home({
   searchParams,

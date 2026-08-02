@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { getServerAuthContext } from "@/utils/supabase/server";
 import { isSupabaseConfigured } from "@/utils/supabase/config";
 import { Diagram } from "@/features/spec/diagramSchema";
@@ -111,7 +112,9 @@ export async function searchPosts(
   });
 }
 
-export async function getDiagramById(
+// Memoized per request: generateMetadata and the page component both call
+// this for the same ?diagram= id, so share one Supabase round-trip.
+export const getDiagramById = cache(async function getDiagramById(
   id: string,
 ): Promise<{ post: DiagramPost; isSavedByMe: boolean } | null> {
   return safely(null, async () => {
@@ -138,7 +141,7 @@ export async function getDiagramById(
 
     return { post: mapRow<Diagram>(data as PostRow), isSavedByMe };
   });
-}
+});
 
 export async function getLayoutById(
   id: string,
