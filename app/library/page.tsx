@@ -6,7 +6,10 @@ import { SignInPrompt } from "@/features/auth/SignInPrompt";
 import { LibraryList } from "@/features/library/LibraryList";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Library" };
+export const metadata: Metadata = {
+  title: "Library",
+  robots: { index: false, follow: false },
+};
 
 export default function LibraryPage() {
   return (

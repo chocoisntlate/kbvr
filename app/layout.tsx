@@ -4,17 +4,30 @@ import { DisplayNameGate } from "@/features/account/DisplayNameGate";
 import { SWRProvider } from "@/features/swr/SWRProvider";
 import { ThemeProvider } from "@/features/theme/ThemeProvider";
 import { getServerAuthContext } from "@/utils/supabase/server";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+const DESCRIPTION =
+  "Design and browse interactive keyboard shortcut diagrams and layouts.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "kbvr",
     template: "%s | kbvr",
   },
-  description:
-    "Design and browse interactive keyboard shortcut diagrams and layouts.",
+  description: DESCRIPTION,
+  openGraph: {
+    type: "website",
+    siteName: "kbvr",
+    title: "kbvr",
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default async function RootLayout({

@@ -16,7 +16,12 @@ export async function generateMetadata({
   params: Promise<{ displayName: string }>;
 }): Promise<Metadata> {
   const { displayName: encoded } = await params;
-  return { title: decodeURIComponent(encoded) };
+  const displayName = decodeURIComponent(encoded);
+  return {
+    title: displayName,
+    description: `Public keyboard shortcut diagrams and layouts shared by ${displayName} on kbvr.`,
+    openGraph: { type: "profile" },
+  };
 }
 
 export default async function PublicProfilePage({

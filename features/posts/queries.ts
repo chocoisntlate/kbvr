@@ -306,6 +306,39 @@ export async function getPublicPostsByDisplayName(
   });
 }
 
+export async function getPublicDisplayNames(): Promise<string[]> {
+  return safely([], async () => {
+    const { supabase } = await getServerContext();
+
+    const [
+      { data: diagramNames, error: diagramsError },
+      { data: layoutNames, error: layoutsError },
+    ] = await Promise.all([
+      supabase
+        .from("diagrams")
+        .select("owner_display_name")
+        .eq("is_public", true)
+        .not("owner_display_name", "is", null),
+      supabase
+        .from("layouts")
+        .select("owner_display_name")
+        .eq("is_public", true)
+        .not("owner_display_name", "is", null),
+    ]);
+    if (diagramsError) throw diagramsError;
+    if (layoutsError) throw layoutsError;
+
+    const names = new Set<string>();
+    for (const row of diagramNames as { owner_display_name: string }[]) {
+      names.add(row.owner_display_name);
+    }
+    for (const row of layoutNames as { owner_display_name: string }[]) {
+      names.add(row.owner_display_name);
+    }
+    return [...names];
+  });
+}
+
 export async function getUserDefaultLayoutId(): Promise<string | null> {
   return safely(null, async () => {
     const { supabase, user } = await getServerContext();

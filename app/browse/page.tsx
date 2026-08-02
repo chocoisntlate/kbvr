@@ -6,7 +6,11 @@ import { BrowseSearchInput } from "@/features/browse/BrowseSearchInput";
 import { BrowseResultsList } from "@/features/browse/BrowseResultsList";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Browse" };
+export const metadata: Metadata = {
+  title: "Browse",
+  description:
+    "Browse public keyboard shortcut diagrams and layouts shared by the kbvr community.",
+};
 
 export default async function BrowsePage({
   searchParams,
