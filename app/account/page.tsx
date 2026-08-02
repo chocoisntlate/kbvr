@@ -23,7 +23,9 @@ export default function AccountPage() {
       <h1 className="text-lg font-semibold">Account</h1>
       <Suspense
         fallback={
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">Loading…</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            Loading…
+          </p>
         }
       >
         <AccountContent />
@@ -76,7 +78,9 @@ async function AccountContent() {
       <section className="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-900">
         <p className="mb-3 text-xs text-neutral-500 dark:text-neutral-400">
           Signed in as{" "}
-          <span className="text-neutral-700 dark:text-neutral-300">{email}</span>
+          <span className="text-neutral-700 dark:text-neutral-300">
+            {email}
+          </span>
         </p>
         <DisplayNameForm initialName={displayName} />
       </section>

@@ -44,8 +44,7 @@ export function Key({
   isInspectMode,
 }: KeyProps) {
   const isHighlighted =
-    (!!description && !isInspectMode) ||
-    (candidateCount > 0 && isInspectMode);
+    (!!description && !isInspectMode) || (candidateCount > 0 && isInspectMode);
 
   return (
     <button

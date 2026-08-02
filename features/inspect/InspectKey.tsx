@@ -143,7 +143,11 @@ export default function InspectModal({
           />
         ))}
 
-        <Button tone="primary" className="mt-2 self-start" onClick={handleAddKeybind}>
+        <Button
+          tone="primary"
+          className="mt-2 self-start"
+          onClick={handleAddKeybind}
+        >
           + Add keybind
         </Button>
       </div>

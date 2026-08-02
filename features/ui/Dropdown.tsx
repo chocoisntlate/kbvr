@@ -68,9 +68,7 @@ export function Dropdown<T>({
         >
           <span>{item.label}</span>
           {renderBadge && (
-            <span className="text-[10px] opacity-50">
-              {renderBadge(index)}
-            </span>
+            <span className="text-[10px] opacity-50">{renderBadge(index)}</span>
           )}
         </button>
       ))}

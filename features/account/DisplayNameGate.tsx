@@ -33,8 +33,8 @@ export function DisplayNameGate() {
       <form onSubmit={handleSubmit}>
         <h3 className="mb-2 text-sm font-semibold">Choose a display name</h3>
         <p className="mb-3 text-xs text-neutral-600 dark:text-neutral-400">
-          This is how you&apos;ll appear to others on kbvr — on saved
-          diagrams, layouts, and your profile. It must be unique.
+          This is how you&apos;ll appear to others on kbvr — on saved diagrams,
+          layouts, and your profile. It must be unique.
         </p>
         <input
           type="text"
@@ -46,9 +46,7 @@ export function DisplayNameGate() {
           className="mb-2 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:border-teal-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-teal-400"
         />
         {error && (
-          <p className="mb-2 text-xs text-red-600 dark:text-red-400">
-            {error}
-          </p>
+          <p className="mb-2 text-xs text-red-600 dark:text-red-400">{error}</p>
         )}
         <div className="flex justify-end">
           <Button type="submit" disabled={busy || name.trim().length === 0}>

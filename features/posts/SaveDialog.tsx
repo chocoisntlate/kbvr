@@ -40,7 +40,11 @@ export function VisibilityDialog({
         <Button variant="ghost" onClick={onCancel}>
           Cancel
         </Button>
-        <Button variant="ghost" tone="primary" onClick={() => onConfirm(isPublic)}>
+        <Button
+          variant="ghost"
+          tone="primary"
+          onClick={() => onConfirm(isPublic)}
+        >
           Save
         </Button>
       </div>

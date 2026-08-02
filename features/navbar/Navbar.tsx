@@ -62,7 +62,9 @@ export default function Navbar() {
         </div>
       ) : (
         <div className="flex items-center gap-3">
-          <Button onClick={() => signInWithGoogle()}>Sign in with Google</Button>
+          <Button onClick={() => signInWithGoogle()}>
+            Sign in with Google
+          </Button>
           <ThemeToggle />
         </div>
       )}

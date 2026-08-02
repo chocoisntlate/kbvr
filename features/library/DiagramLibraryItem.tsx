@@ -74,7 +74,10 @@ export function DiagramLibraryItem({
           </>
         ) : (
           <>
-            <Button onClick={() => setShowDuplicateDialog(true)} disabled={busy}>
+            <Button
+              onClick={() => setShowDuplicateDialog(true)}
+              disabled={busy}
+            >
               Duplicate
             </Button>
             <Button onClick={handleRemove} disabled={busy}>

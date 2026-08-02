@@ -106,8 +106,8 @@ export default function SearchBar() {
   );
 
   const clearSearch = useCallback(() => {
-    setQuery('');
-    setDebouncedQuery('');
+    setQuery("");
+    setDebouncedQuery("");
   }, []);
 
   const revertPreview = useCallback(() => {
@@ -219,7 +219,8 @@ export default function SearchBar() {
         >
           {results.map((result, index) => (
             <li
-              key={result.key} ref={(el) => {
+              key={result.key}
+              ref={(el) => {
                 itemRefs.current[index] = el;
               }}
               onMouseEnter={() => previewResult(index)}
