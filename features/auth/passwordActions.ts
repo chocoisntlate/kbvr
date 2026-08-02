@@ -26,17 +26,24 @@ function slugifyUsername(username: string): string {
 }
 
 /*
- * profiles RLS only permits owner reads, so resolving "username -> auth email"
- * has to go through the service-role admin client rather than a normal query.
- * Never expose the resolved email to the client — only use it to drive a
- * server-side sign-in/reset call.
+ * profiles RLS only permits owner reads, so resolving "identifier -> auth
+ * email" has to go through the service-role admin client rather than a
+ * normal query. Never expose the resolved email to the client — only use it
+ * to drive a server-side sign-in/reset call.
+ *
+ * `identifier` may be either a username (display_name) or, for accounts that
+ * gave a real email at signup, that email (login_email) — either resolves to
+ * the same stored login_email used for the actual Supabase auth call.
  */
-async function resolveLoginEmail(username: string): Promise<string | null> {
+async function resolveLoginEmail(identifier: string): Promise<string | null> {
+  const safe = identifier.replace(/[,()%]/g, " ").trim();
+  if (!safe) return null;
+
   const admin = createAdminClient();
   const { data } = await admin
     .from("profiles")
     .select("login_email")
-    .ilike("display_name", username)
+    .or(`display_name.ilike.${safe},login_email.ilike.${safe}`)
     .maybeSingle();
   return data?.login_email ?? null;
 }
@@ -114,10 +121,10 @@ export async function signUpWithPassword({
 }
 
 export async function signInWithUsername(
-  username: string,
+  identifier: string,
   password: string,
 ): Promise<AuthResult> {
-  const loginEmail = await resolveLoginEmail(username);
+  const loginEmail = await resolveLoginEmail(identifier);
   if (!loginEmail) return { ok: false, error: GENERIC_SIGN_IN_ERROR };
 
   const supabase = createClient(await cookies());
@@ -131,16 +138,16 @@ export async function signInWithUsername(
 }
 
 export async function requestPasswordReset(
-  username: string,
+  identifier: string,
   origin: string,
 ): Promise<void> {
-  const loginEmail = await resolveLoginEmail(username);
+  const loginEmail = await resolveLoginEmail(identifier);
   if (loginEmail) {
     const supabase = createClient(await cookies());
     await supabase.auth.resetPasswordForEmail(loginEmail, {
       redirectTo: `${origin}/auth/callback?next=/reset-password`,
     });
   }
-  // Always resolve the same way regardless of whether the username existed,
+  // Always resolve the same way regardless of whether the account existed,
   // so this can't be used to enumerate accounts.
 }

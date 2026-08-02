@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { unstable_rethrow } from "next/navigation";
 import { Button } from "@/features/ui/Button";
 import {
   signUpWithPassword,
@@ -44,7 +45,10 @@ export function PasswordAuthForm() {
         setError(result.error);
         setBusy(false);
       }
-    } catch {
+    } catch (err) {
+      // redirect() throws internally; it must be rethrown here so Next.js
+      // can handle the navigation instead of this treating it as a failure.
+      unstable_rethrow(err);
       setError("Something went wrong. Please try again.");
       setBusy(false);
     }
@@ -111,7 +115,7 @@ export function PasswordAuthForm() {
         type="text"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
+        placeholder={mode === "sign-up" ? "Username" : "Username or email"}
         autoComplete="username"
         maxLength={30}
         className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:border-teal-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-teal-400"
