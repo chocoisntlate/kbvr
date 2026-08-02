@@ -1,4 +1,5 @@
 import Navbar from "@/features/navbar/Navbar";
+import Footer from "@/features/footer/Footer";
 import { AuthProvider } from "@/features/auth/AuthContext";
 import { DisplayNameGate } from "@/features/account/DisplayNameGate";
 import { SWRProvider } from "@/features/swr/SWRProvider";
@@ -59,9 +60,12 @@ export default async function RootLayout({
         <ThemeProvider>
           <AuthProvider initialUser={user} initialDisplayName={displayName}>
             <SWRProvider>
-              <Navbar />
-              <DisplayNameGate />
-              {children}
+              <div className="flex min-h-screen flex-col">
+                <Navbar />
+                <DisplayNameGate />
+                <div className="flex-1">{children}</div>
+                <Footer />
+              </div>
             </SWRProvider>
           </AuthProvider>
         </ThemeProvider>
