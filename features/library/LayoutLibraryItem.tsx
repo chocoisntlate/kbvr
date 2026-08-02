@@ -1,14 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { LayoutPost } from "@/features/posts/types";
 import {
   toggleLayoutVisibility,
   duplicateLayout,
   removeSavedLayout,
   setDefaultLayout,
+  setSeedDefaultLayout,
   deleteLayout,
 } from "@/features/posts/actions";
 import { VisibilityDialog } from "@/features/posts/SaveDialog";
+import { OfficialBadge } from "@/features/browse/PostCard";
 import { Button } from "@/features/ui/Button";
 import { ConfirmDialog } from "@/features/ui/Modal";
 import { useLibraryItemActions } from "./useLibraryItemActions";
@@ -17,11 +20,16 @@ export function LayoutLibraryItem({
   post,
   isOwned,
   isDefault,
+  isSeedDefault,
+  canSetSeedDefault,
 }: {
   post: LayoutPost;
   isOwned: boolean;
   isDefault: boolean;
+  isSeedDefault: boolean;
+  canSetSeedDefault: boolean;
 }) {
+  const [seedBusy, setSeedBusy] = useState(false);
   const {
     isPublic,
     removed,
@@ -45,6 +53,16 @@ export function LayoutLibraryItem({
   if (removed) return null;
 
   const handleSetDefault = () => run(() => setDefaultLayout(post.id));
+  const handleSetSeedDefault = async () => {
+    setSeedBusy(true);
+    try {
+      await setSeedDefaultLayout(post.id);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSeedBusy(false);
+    }
+  };
 
   return (
     <div className="flex items-center justify-between gap-3 rounded-lg border border-neutral-200 bg-white px-4 py-3 text-sm dark:border-neutral-700 dark:bg-neutral-900">
@@ -54,11 +72,17 @@ export function LayoutLibraryItem({
         disabled={busy || isDefault}
         className="min-w-0 text-left hover:opacity-80 disabled:cursor-not-allowed"
       >
-        <p className="truncate font-medium text-neutral-900 dark:text-neutral-100">
+        <p className="flex items-center gap-2 truncate font-medium text-neutral-900 dark:text-neutral-100">
           {post.data.name}
+          {post.isOfficial && <OfficialBadge />}
           {isDefault && (
-            <span className="ml-1 text-xs text-teal-600 dark:text-teal-400">
+            <span className="text-xs text-teal-600 dark:text-teal-400">
               (Default)
+            </span>
+          )}
+          {isSeedDefault && (
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+              (Starter)
             </span>
           )}
         </p>
@@ -71,6 +95,14 @@ export function LayoutLibraryItem({
         <Button onClick={handleSetDefault} disabled={busy || isDefault}>
           {isDefault ? "Default" : "Set as default"}
         </Button>
+        {isOwned && canSetSeedDefault && (
+          <Button
+            onClick={handleSetSeedDefault}
+            disabled={seedBusy || isSeedDefault}
+          >
+            {isSeedDefault ? "Starter" : "Set as starter"}
+          </Button>
+        )}
         {isOwned ? (
           <>
             <Button onClick={handleToggleVisibility} disabled={busy}>

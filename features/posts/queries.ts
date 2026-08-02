@@ -11,6 +11,7 @@ type PostRow = {
   owner_display_name: string | null;
   data: unknown;
   is_public: boolean;
+  is_official: boolean;
   forked_from_id: string | null;
   created_at: string;
   updated_at: string;
@@ -22,6 +23,7 @@ function mapRow<T>(row: PostRow): {
   ownerDisplayName: string | null;
   data: T;
   isPublic: boolean;
+  isOfficial: boolean;
   forkedFromId: string | null;
   createdAt: string;
   updatedAt: string;
@@ -32,6 +34,7 @@ function mapRow<T>(row: PostRow): {
     ownerDisplayName: row.owner_display_name,
     data: row.data as T,
     isPublic: row.is_public,
+    isOfficial: row.is_official,
     forkedFromId: row.forked_from_id,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -169,6 +172,18 @@ export async function getLayoutById(
     }
 
     return { post: mapRow<Layout>(data as PostRow), isSavedByMe };
+  });
+}
+
+export async function getSeedDefaultLayoutId(): Promise<string | null> {
+  return safely(null, async () => {
+    const { supabase } = await getServerContext();
+    const { data } = await supabase
+      .from("layouts")
+      .select("id")
+      .eq("is_seed_default", true)
+      .maybeSingle();
+    return data?.id ?? null;
   });
 }
 

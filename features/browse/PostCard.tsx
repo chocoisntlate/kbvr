@@ -8,15 +8,25 @@ type PostCardProps = {
   name: string;
   description?: string;
   ownerDisplayName: string | null;
+  isOfficial?: boolean;
   createdAt: string;
   details?: React.ReactNode;
   actions: React.ReactNode;
 };
 
+export function OfficialBadge() {
+  return (
+    <span className="rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-medium text-teal-700 dark:bg-teal-950/50 dark:text-teal-300">
+      Official
+    </span>
+  );
+}
+
 export function PostCard({
   name,
   description,
   ownerDisplayName,
+  isOfficial,
   createdAt,
   details,
   actions,
@@ -25,7 +35,12 @@ export function PostCard({
 
   return (
     <MetadataCard
-      title={name}
+      title={
+        <span className="flex items-center gap-2">
+          {name}
+          {isOfficial && <OfficialBadge />}
+        </span>
+      }
       expanded={expanded}
       onToggle={() => setExpanded((e) => !e)}
       details={

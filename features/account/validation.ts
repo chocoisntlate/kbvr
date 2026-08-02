@@ -10,3 +10,7 @@ export const DisplayNameSchema = z
   .refine((name) => !RESERVED_DISPLAY_NAMES.has(name.toLowerCase()), {
     message: "That display name is reserved",
   });
+
+export const PasswordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters");

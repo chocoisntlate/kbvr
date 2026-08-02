@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { mutate } from "swr";
 import { useAuth } from "@/features/auth/AuthContext";
-import { signInWithGoogle } from "@/features/auth/signInWithGoogle";
 import { Button } from "@/features/ui/Button";
 import {
   saveLayoutReference,
@@ -28,7 +27,7 @@ export function LayoutActions({
 
   const handleSave = async () => {
     if (!user) {
-      signInWithGoogle();
+      router.push("/login");
       return;
     }
     setBusy(true);
@@ -47,7 +46,7 @@ export function LayoutActions({
 
   const handleSetDefault = async () => {
     if (!user) {
-      signInWithGoogle();
+      router.push("/login");
       return;
     }
     setBusy(true);

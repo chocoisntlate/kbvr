@@ -1,8 +1,15 @@
 /*
- * One-time seed: creates a "kbvr" system account and publishes the
+ * One-time seed: creates a "kbvr" system/official account and publishes the
  * canonical starter diagram/layout owned by it, so they're browsable by
  * everyone and new users can be auto-seeded with the layout as their
  * default (see ensureDefaultLayoutSeeded in features/posts/actions.ts).
+ *
+ * This account also doubles as the official account (see
+ * OFFICIAL_ACCOUNT_EMAIL / isOfficialAccount in features/posts/actions.ts):
+ * if ADMIN_PASSWORD is set in .env.local, this script gives it a password
+ * so it can be signed into (username "kbvr") through the normal /login page
+ * and used to publish further official content via the app's own Save flow.
+ * Rerun this script after changing ADMIN_PASSWORD to rotate it.
  *
  * Run manually: npm run seed:defaults
  * Requires SUPABASE_SERVICE_ROLE_KEY in .env.local (never expose this to
@@ -17,6 +24,7 @@ import { QWERTY_US_80 } from "../examples/default.layout";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   console.error(
@@ -36,16 +44,36 @@ async function findOrCreateSystemUser(): Promise<string> {
   if (listError) throw listError;
 
   const found = existing.users.find((u) => u.email === SYSTEM_EMAIL);
-  if (found) return found.id;
 
-  const { data: created, error: createError } =
-    await supabase.auth.admin.createUser({
-      email: SYSTEM_EMAIL,
-      email_confirm: true,
-      user_metadata: { full_name: SYSTEM_DISPLAY_NAME },
-    });
-  if (createError) throw createError;
-  return created.user.id;
+  let userId: string;
+  if (found) {
+    userId = found.id;
+    if (ADMIN_PASSWORD) {
+      const { error } = await supabase.auth.admin.updateUserById(userId, {
+        password: ADMIN_PASSWORD,
+      });
+      if (error) throw error;
+    }
+  } else {
+    const { data: created, error: createError } =
+      await supabase.auth.admin.createUser({
+        email: SYSTEM_EMAIL,
+        password: ADMIN_PASSWORD,
+        email_confirm: true,
+        user_metadata: { full_name: SYSTEM_DISPLAY_NAME },
+      });
+    if (createError) throw createError;
+    userId = created.user.id;
+  }
+
+  const { error: profileError } = await supabase.from("profiles").upsert({
+    id: userId,
+    display_name: SYSTEM_DISPLAY_NAME,
+    login_email: SYSTEM_EMAIL,
+  });
+  if (profileError) throw profileError;
+
+  return userId;
 }
 
 async function upsertSeedLayout(ownerId: string): Promise<string> {
@@ -65,6 +93,7 @@ async function upsertSeedLayout(ownerId: string): Promise<string> {
         owner_id: ownerId,
         owner_display_name: SYSTEM_DISPLAY_NAME,
         data,
+        is_official: true,
       })
       .eq("id", existing.id);
     if (error) throw error;
@@ -78,6 +107,7 @@ async function upsertSeedLayout(ownerId: string): Promise<string> {
       owner_display_name: SYSTEM_DISPLAY_NAME,
       data,
       is_public: true,
+      is_official: true,
       is_seed_default: true,
     })
     .select("id")
@@ -100,7 +130,7 @@ async function upsertSeedDiagram(ownerId: string): Promise<string> {
   if (existing) {
     const { error } = await supabase
       .from("diagrams")
-      .update({ owner_display_name: SYSTEM_DISPLAY_NAME, data })
+      .update({ owner_display_name: SYSTEM_DISPLAY_NAME, data, is_official: true })
       .eq("id", existing.id);
     if (error) throw error;
     return existing.id;
@@ -113,6 +143,7 @@ async function upsertSeedDiagram(ownerId: string): Promise<string> {
       owner_display_name: SYSTEM_DISPLAY_NAME,
       data,
       is_public: true,
+      is_official: true,
     })
     .select("id")
     .single();

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { KeySquare } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
-import { signInWithGoogle } from "@/features/auth/signInWithGoogle";
 import { Button } from "@/features/ui/Button";
 import { ThemeToggle } from "@/features/theme/ThemeToggle";
 import { createClient } from "@/utils/supabase/client";
@@ -62,9 +61,12 @@ export default function Navbar() {
         </div>
       ) : (
         <div className="flex items-center gap-3">
-          <Button onClick={() => signInWithGoogle()}>
-            Sign in with Google
-          </Button>
+          <Link
+            href="/login"
+            className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-neutral-50 transition-colors outline-none focus-visible:border-teal-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700 dark:focus-visible:border-teal-400"
+          >
+            Sign in
+          </Link>
           <ThemeToggle />
         </div>
       )}
