@@ -5,7 +5,17 @@ import { SWRProvider } from "@/features/swr/SWRProvider";
 import { ThemeProvider } from "@/features/theme/ThemeProvider";
 import { getServerAuthContext } from "@/utils/supabase/server";
 import "./globals.css";
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
+
+export const metadata: Metadata = {
+  title: {
+    default: "kbvr",
+    template: "%s | kbvr",
+  },
+  description:
+    "Design and browse interactive keyboard shortcut diagrams and layouts.",
+};
 
 export default async function RootLayout({
   children,

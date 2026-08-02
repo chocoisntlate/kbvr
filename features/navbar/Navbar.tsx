@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { KeySquare } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { signInWithGoogle } from "@/features/auth/signInWithGoogle";
 import { Button } from "@/features/ui/Button";
@@ -25,8 +26,12 @@ export default function Navbar() {
   return (
     <div className="p-4 bg-neutral-100 shadow-md flex items-center justify-between dark:bg-neutral-800">
       <div className="flex items-center gap-4">
-        <Link className="font-mono" href="/">
-          key-diagram
+        <Link className="flex items-center gap-1.5 font-mono" href="/">
+          <KeySquare
+            className="h-4 w-4 text-teal-500 dark:text-teal-400"
+            aria-hidden="true"
+          />
+          kbvr
         </Link>
         <nav className="flex items-center gap-3 text-xs text-neutral-600 dark:text-neutral-400">
           <Link

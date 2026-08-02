@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-const RESERVED_DISPLAY_NAMES = new Set(["key-diagram"]);
+const RESERVED_DISPLAY_NAMES = new Set(["kbvr"]);
 
 export const DisplayNameSchema = z
   .string()

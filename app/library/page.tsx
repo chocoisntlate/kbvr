@@ -4,6 +4,9 @@ import { getLibraryDataAction } from "@/features/posts/readActions";
 import { ensureDefaultLayoutSeeded } from "@/features/posts/actions";
 import { SignInPrompt } from "@/features/auth/SignInPrompt";
 import { LibraryList } from "@/features/library/LibraryList";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Library" };
 
 export default function LibraryPage() {
   return (

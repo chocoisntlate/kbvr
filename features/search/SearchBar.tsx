@@ -234,12 +234,25 @@ export default function SearchBar() {
               <span className="truncate">
                 {highlightMatch(result.description, trimmedQuery)}
               </span>
-              <span className="shrink-0 whitespace-nowrap text-[10px] text-neutral-400 dark:text-neutral-500">
-                {formatKeys(result.shortcut.keys)}
+              <span className="flex shrink-0 items-center gap-1.5">
+                {activeMode === null && result.shortcut.mode && (
+                  <span className="rounded bg-neutral-100 px-1 text-[10px] text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+                    {result.shortcut.mode}
+                  </span>
+                )}
+                <span className="whitespace-nowrap text-[10px] text-neutral-400 dark:text-neutral-500">
+                  {formatKeys(result.shortcut.keys)}
+                </span>
               </span>
             </li>
           ))}
         </ul>
+      )}
+
+      {isFocused && results.length === 0 && trimmedQuery && (
+        <div className="rounded-md border border-neutral-200 bg-white px-2 py-3 text-center text-xs text-neutral-400 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-500">
+          No shortcuts found
+        </div>
       )}
     </div>
   );

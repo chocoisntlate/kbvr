@@ -2,7 +2,7 @@ import { Diagram } from "@/features/spec/diagramSchema";
 
 export const INTRODUCTION_DIAGRAM: Diagram = {
   name: "Default Introduction Diagram",
-  description: "Hover over keys to learn about key-diagram",
+  description: "Hover over keys to learn about kbvr",
   shortcuts: [
     {
       keys: ["ctrl-left", "w"],

@@ -1,5 +1,5 @@
 /*
- * One-time seed: creates a "key-diagram" system account and publishes the
+ * One-time seed: creates a "kbvr" system account and publishes the
  * canonical starter diagram/layout owned by it, so they're browsable by
  * everyone and new users can be auto-seeded with the layout as their
  * default (see ensureDefaultLayoutSeeded in features/posts/actions.ts).
@@ -25,8 +25,8 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   process.exit(1);
 }
 
-const SYSTEM_EMAIL = "system@key-diagram.local";
-const SYSTEM_DISPLAY_NAME = "key-diagram";
+const SYSTEM_EMAIL = "system@kbvr.local";
+const SYSTEM_DISPLAY_NAME = "kbvr";
 
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 

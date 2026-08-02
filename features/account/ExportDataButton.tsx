@@ -19,7 +19,7 @@ export function ExportDataButton({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "key-diagram-export.json";
+    link.download = "kbvr-export.json";
     link.click();
     URL.revokeObjectURL(url);
   };

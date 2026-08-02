@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-key-diagram is a Next.js (App Router) app for creating, viewing, importing, and exporting interactive keyboard shortcut visualizations ("Diagrams" overlaid on keyboard "Layouts"). Preview: https://key-diagram.vercel.app/
+kbvr is a Next.js (App Router) app for creating, viewing, importing, and exporting interactive keyboard shortcut visualizations ("Diagrams" overlaid on keyboard "Layouts"). Preview: https://kbvr.dev/
 
 ## Commands
 

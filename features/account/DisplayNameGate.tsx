@@ -33,7 +33,7 @@ export function DisplayNameGate() {
       <form onSubmit={handleSubmit}>
         <h3 className="mb-2 text-sm font-semibold">Choose a display name</h3>
         <p className="mb-3 text-xs text-neutral-600 dark:text-neutral-400">
-          This is how you&apos;ll appear to others on key-diagram — on saved
+          This is how you&apos;ll appear to others on kbvr — on saved
           diagrams, layouts, and your profile. It must be unique.
         </p>
         <input

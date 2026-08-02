@@ -6,8 +6,18 @@ import {
 } from "@/features/posts/queries";
 import { DiagramPostCard } from "@/features/browse/DiagramPostCard";
 import { LayoutPostCard } from "@/features/browse/LayoutPostCard";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ displayName: string }>;
+}): Promise<Metadata> {
+  const { displayName: encoded } = await params;
+  return { title: decodeURIComponent(encoded) };
+}
 
 export default async function PublicProfilePage({
   params,

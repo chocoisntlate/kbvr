@@ -10,6 +10,9 @@ import { SignInPrompt } from "@/features/auth/SignInPrompt";
 import { DisplayNameForm } from "@/features/account/DisplayNameForm";
 import { ExportDataButton } from "@/features/account/ExportDataButton";
 import { DeleteAccountDialog } from "@/features/account/DeleteAccountDialog";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Account" };
 
 export default function AccountPage() {
   return (

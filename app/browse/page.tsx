@@ -4,6 +4,9 @@ import { searchPosts } from "@/features/posts/queries";
 import { getBrowseLayoutFlagsAction } from "@/features/posts/readActions";
 import { BrowseSearchInput } from "@/features/browse/BrowseSearchInput";
 import { BrowseResultsList } from "@/features/browse/BrowseResultsList";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Browse" };
 
 export default async function BrowsePage({
   searchParams,
