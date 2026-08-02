@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { PostCard } from "./PostCard";
-import { DiagramPost } from "@/features/posts/types";
+import { DiagramPostSummary } from "@/features/posts/types";
 
-export function DiagramPostCard({ post }: { post: DiagramPost }) {
+export function DiagramPostCard({ post }: { post: DiagramPostSummary }) {
   return (
     <PostCard
-      name={post.data.name}
-      description={post.data.description}
+      name={post.name}
+      description={post.description ?? undefined}
       ownerDisplayName={post.ownerDisplayName}
       isOfficial={post.isOfficial}
       createdAt={post.createdAt}
-      details={<div>{post.data.shortcuts.length} shortcuts</div>}
+      details={<div>{post.shortcutCount} shortcuts</div>}
       actions={
         <Link
           href={`/?diagram=${post.id}`}

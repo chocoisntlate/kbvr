@@ -3,7 +3,12 @@ import { getServerAuthContext } from "@/utils/supabase/server";
 import { isSupabaseConfigured } from "@/utils/supabase/config";
 import { Diagram } from "@/features/spec/diagramSchema";
 import { Layout } from "@/features/spec/layoutSchema";
-import { DiagramPost, LayoutPost } from "./types";
+import {
+  DiagramPost,
+  DiagramPostSummary,
+  LayoutPost,
+  LayoutPostSummary,
+} from "./types";
 
 type PostRow = {
   id: string;
@@ -33,6 +38,80 @@ function mapRow<T>(row: PostRow): {
     ownerId: row.owner_id,
     ownerDisplayName: row.owner_display_name,
     data: row.data as T,
+    isPublic: row.is_public,
+    isOfficial: row.is_official,
+    forkedFromId: row.forked_from_id,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+/*
+ * List views (browse, library) only ever render name/description/counts, so
+ * their queries select these generated columns instead of the full `data`
+ * jsonb blob (see 0006_post_list_counts.sql).
+ */
+const LIST_COLUMNS = {
+  diagrams:
+    "id, owner_id, owner_display_name, name, description, shortcut_count, is_public, is_official, forked_from_id, created_at, updated_at",
+  layouts:
+    "id, owner_id, owner_display_name, name, description, row_count, key_count, is_public, is_official, forked_from_id, created_at, updated_at",
+};
+
+type DiagramListRow = {
+  id: string;
+  owner_id: string;
+  owner_display_name: string | null;
+  name: string;
+  description: string | null;
+  shortcut_count: number;
+  is_public: boolean;
+  is_official: boolean;
+  forked_from_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+type LayoutListRow = {
+  id: string;
+  owner_id: string;
+  owner_display_name: string | null;
+  name: string;
+  description: string | null;
+  row_count: number;
+  key_count: number;
+  is_public: boolean;
+  is_official: boolean;
+  forked_from_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+function mapDiagramListRow(row: DiagramListRow): DiagramPostSummary {
+  return {
+    id: row.id,
+    ownerId: row.owner_id,
+    ownerDisplayName: row.owner_display_name,
+    name: row.name,
+    description: row.description,
+    shortcutCount: row.shortcut_count,
+    isPublic: row.is_public,
+    isOfficial: row.is_official,
+    forkedFromId: row.forked_from_id,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function mapLayoutListRow(row: LayoutListRow): LayoutPostSummary {
+  return {
+    id: row.id,
+    ownerId: row.owner_id,
+    ownerDisplayName: row.owner_display_name,
+    name: row.name,
+    description: row.description,
+    rowCount: row.row_count,
+    keyCount: row.key_count,
     isPublic: row.is_public,
     isOfficial: row.is_official,
     forkedFromId: row.forked_from_id,
@@ -72,7 +151,7 @@ async function safely<T>(fallback: T, run: () => Promise<T>): Promise<T> {
 export const PAGE_SIZE = 20;
 
 export type SearchPostsResult = {
-  posts: (DiagramPost | LayoutPost)[];
+  posts: (DiagramPostSummary | LayoutPostSummary)[];
   hasMore: boolean;
 };
 
@@ -92,7 +171,7 @@ export async function searchPosts(
 
     let builder = supabase
       .from(table)
-      .select("*")
+      .select(LIST_COLUMNS[table])
       .eq("is_public", true)
       .order("created_at", { ascending: false });
 
@@ -106,11 +185,13 @@ export async function searchPosts(
     const { data, error } = await builder.range(from, to);
     if (error) throw error;
 
-    const rows = data as PostRow[];
-    const hasMore = rows.length > PAGE_SIZE;
-    const posts = (hasMore ? rows.slice(0, PAGE_SIZE) : rows).map((row) =>
-      mapRow<Diagram | Layout>(row),
-    ) as (DiagramPost | LayoutPost)[];
+    const hasMore = data.length > PAGE_SIZE;
+    const rows = hasMore ? data.slice(0, PAGE_SIZE) : data;
+    const posts = (
+      type === "diagram"
+        ? (rows as unknown as DiagramListRow[]).map(mapDiagramListRow)
+        : (rows as unknown as LayoutListRow[]).map(mapLayoutListRow)
+    ) as (DiagramPostSummary | LayoutPostSummary)[];
     return { posts, hasMore };
   });
 }
@@ -209,6 +290,10 @@ export async function getDefaultLayout(): Promise<LayoutPost | null> {
   });
 }
 
+// Full `data` is required here: app/account/page.tsx's export-everything
+// feature round-trips these straight into a downloadable JSON file. Use
+// getUserOwnedDiagramSummaries/getUserOwnedLayoutSummaries below for list
+// views (library) that only render name/description/counts.
 export async function getUserOwnedDiagrams(): Promise<DiagramPost[]> {
   return safely([], async () => {
     const { supabase, user } = await getServerContext();
@@ -239,43 +324,77 @@ export async function getUserOwnedLayouts(): Promise<LayoutPost[]> {
   });
 }
 
-export async function getUserSavedDiagrams(): Promise<DiagramPost[]> {
+export async function getUserOwnedDiagramSummaries(): Promise<
+  DiagramPostSummary[]
+> {
+  return safely([], async () => {
+    const { supabase, user } = await getServerContext();
+    if (!user) return [];
+
+    const { data, error } = await supabase
+      .from("diagrams")
+      .select(LIST_COLUMNS.diagrams)
+      .eq("owner_id", user.id)
+      .order("updated_at", { ascending: false });
+    if (error) throw error;
+    return (data as unknown as DiagramListRow[]).map(mapDiagramListRow);
+  });
+}
+
+export async function getUserOwnedLayoutSummaries(): Promise<
+  LayoutPostSummary[]
+> {
+  return safely([], async () => {
+    const { supabase, user } = await getServerContext();
+    if (!user) return [];
+
+    const { data, error } = await supabase
+      .from("layouts")
+      .select(LIST_COLUMNS.layouts)
+      .eq("owner_id", user.id)
+      .order("updated_at", { ascending: false });
+    if (error) throw error;
+    return (data as unknown as LayoutListRow[]).map(mapLayoutListRow);
+  });
+}
+
+export async function getUserSavedDiagrams(): Promise<DiagramPostSummary[]> {
   return safely([], async () => {
     const { supabase, user } = await getServerContext();
     if (!user) return [];
 
     const { data, error } = await supabase
       .from("saved_diagrams")
-      .select("diagrams(*)")
+      .select(`diagrams(${LIST_COLUMNS.diagrams})`)
       .eq("user_id", user.id);
     if (error) throw error;
-    return (data as unknown as { diagrams: PostRow }[])
+    return (data as unknown as { diagrams: DiagramListRow }[])
       .filter((row) => row.diagrams)
-      .map((row) => mapRow<Diagram>(row.diagrams));
+      .map((row) => mapDiagramListRow(row.diagrams));
   });
 }
 
-export async function getUserSavedLayouts(): Promise<LayoutPost[]> {
+export async function getUserSavedLayouts(): Promise<LayoutPostSummary[]> {
   return safely([], async () => {
     const { supabase, user } = await getServerContext();
     if (!user) return [];
 
     const { data, error } = await supabase
       .from("saved_layouts")
-      .select("layouts(*)")
+      .select(`layouts(${LIST_COLUMNS.layouts})`)
       .eq("user_id", user.id);
     if (error) throw error;
-    return (data as unknown as { layouts: PostRow }[])
+    return (data as unknown as { layouts: LayoutListRow }[])
       .filter((row) => row.layouts)
-      .map((row) => mapRow<Layout>(row.layouts));
+      .map((row) => mapLayoutListRow(row.layouts));
   });
 }
 
 export async function getPublicPostsByDisplayName(
   displayName: string,
 ): Promise<{
-  diagrams: DiagramPost[];
-  layouts: LayoutPost[];
+  diagrams: DiagramPostSummary[];
+  layouts: LayoutPostSummary[];
 } | null> {
   return safely(null, async () => {
     const { supabase } = await getServerContext();
@@ -288,12 +407,12 @@ export async function getPublicPostsByDisplayName(
 
     const diagramsQuery = supabase
       .from("diagrams")
-      .select("*")
+      .select(LIST_COLUMNS.diagrams)
       .eq("is_public", true)
       .order("created_at", { ascending: false });
     const layoutsQuery = supabase
       .from("layouts")
-      .select("*")
+      .select(LIST_COLUMNS.layouts)
       .eq("is_public", true)
       .order("created_at", { ascending: false });
 
@@ -318,8 +437,10 @@ export async function getPublicPostsByDisplayName(
     if (!profile && diagrams.length === 0 && layouts.length === 0) return null;
 
     return {
-      diagrams: (diagrams as PostRow[]).map((row) => mapRow<Diagram>(row)),
-      layouts: (layouts as PostRow[]).map((row) => mapRow<Layout>(row)),
+      diagrams: (diagrams as unknown as DiagramListRow[]).map(
+        mapDiagramListRow,
+      ),
+      layouts: (layouts as unknown as LayoutListRow[]).map(mapLayoutListRow),
     };
   });
 }

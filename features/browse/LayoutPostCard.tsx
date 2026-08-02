@@ -1,30 +1,26 @@
 import { PostCard } from "./PostCard";
 import { LayoutActions } from "./LayoutActions";
-import { LayoutPost } from "@/features/posts/types";
+import { LayoutPostSummary } from "@/features/posts/types";
 
 export function LayoutPostCard({
   post,
   isSaved,
   isDefault,
 }: {
-  post: LayoutPost;
+  post: LayoutPostSummary;
   isSaved: boolean;
   isDefault: boolean;
 }) {
-  const keyCount = new Set(
-    post.data.rows.flatMap((row) => row.map((key) => key.id).filter(Boolean)),
-  ).size;
-
   return (
     <PostCard
-      name={post.data.name}
-      description={post.data.description}
+      name={post.name}
+      description={post.description ?? undefined}
       ownerDisplayName={post.ownerDisplayName}
       isOfficial={post.isOfficial}
       createdAt={post.createdAt}
       details={
         <div>
-          {post.data.rows.length} rows · {keyCount} keys
+          {post.rowCount} rows · {post.keyCount} keys
         </div>
       }
       actions={

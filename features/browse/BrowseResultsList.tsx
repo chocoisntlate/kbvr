@@ -12,7 +12,7 @@ import { DiagramPostCard } from "./DiagramPostCard";
 import { LayoutPostCard } from "./LayoutPostCard";
 import { Button } from "@/features/ui/Button";
 import { RefreshButton } from "@/features/ui/RefreshButton";
-import { DiagramPost, LayoutPost } from "@/features/posts/types";
+import { DiagramPostSummary, LayoutPostSummary } from "@/features/posts/types";
 
 type LayoutFlags = { savedLayoutIds: string[]; defaultLayoutId: string | null };
 
@@ -78,10 +78,10 @@ export function BrowseResultsList({
         </p>
       )}
       {activeType === "diagram"
-        ? (posts as DiagramPost[]).map((post) => (
+        ? (posts as DiagramPostSummary[]).map((post) => (
             <DiagramPostCard key={post.id} post={post} />
           ))
-        : (posts as LayoutPost[]).map((post) => (
+        : (posts as LayoutPostSummary[]).map((post) => (
             <LayoutPostCard
               key={post.id}
               post={post}

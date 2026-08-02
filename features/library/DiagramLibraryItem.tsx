@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { DiagramPost } from "@/features/posts/types";
+import { DiagramPostSummary } from "@/features/posts/types";
 import {
   toggleDiagramVisibility,
   duplicateDiagram,
@@ -18,7 +18,7 @@ export function DiagramLibraryItem({
   post,
   isOwned,
 }: {
-  post: DiagramPost;
+  post: DiagramPostSummary;
   isOwned: boolean;
 }) {
   const {
@@ -46,7 +46,7 @@ export function DiagramLibraryItem({
     <div className="flex items-center justify-between gap-3 rounded-lg border border-neutral-200 bg-white px-4 py-3 text-sm dark:border-neutral-700 dark:bg-neutral-900">
       <Link href={`/?diagram=${post.id}`} className="min-w-0 hover:opacity-80">
         <p className="flex items-center gap-2 truncate font-medium text-neutral-900 dark:text-neutral-100">
-          {post.data.name}
+          {post.name}
           {post.isOfficial && <OfficialBadge />}
         </p>
         <p className="truncate text-xs text-neutral-500 dark:text-neutral-400">
@@ -98,7 +98,7 @@ export function DiagramLibraryItem({
       {showDeleteDialog && (
         <ConfirmDialog
           title="Delete this diagram?"
-          message={`"${post.data.name}" will be permanently deleted. This can't be undone.`}
+          message={`"${post.name}" will be permanently deleted. This can't be undone.`}
           confirmLabel="Delete"
           danger
           onCancel={() => setShowDeleteDialog(false)}

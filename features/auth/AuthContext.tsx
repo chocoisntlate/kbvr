@@ -44,9 +44,8 @@ export function AuthProvider({
   const [displayName, setDisplayName] = useState<string | null>(
     initialDisplayName,
   );
-  const [prevInitialDisplayName, setPrevInitialDisplayName] = useState(
-    initialDisplayName,
-  );
+  const [prevInitialDisplayName, setPrevInitialDisplayName] =
+    useState(initialDisplayName);
 
   // RootLayout re-executes server-side (and sends fresh props) after a
   // Server Action redirect, e.g. sign-in, but this provider stays mounted

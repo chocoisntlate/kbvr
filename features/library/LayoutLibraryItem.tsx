@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LayoutPost } from "@/features/posts/types";
+import { LayoutPostSummary } from "@/features/posts/types";
 import {
   toggleLayoutVisibility,
   duplicateLayout,
@@ -23,7 +23,7 @@ export function LayoutLibraryItem({
   isSeedDefault,
   canSetSeedDefault,
 }: {
-  post: LayoutPost;
+  post: LayoutPostSummary;
   isOwned: boolean;
   isDefault: boolean;
   isSeedDefault: boolean;
@@ -73,7 +73,7 @@ export function LayoutLibraryItem({
         className="min-w-0 text-left hover:opacity-80 disabled:cursor-not-allowed"
       >
         <p className="flex items-center gap-2 truncate font-medium text-neutral-900 dark:text-neutral-100">
-          {post.data.name}
+          {post.name}
           {post.isOfficial && <OfficialBadge />}
           {isDefault && (
             <span className="text-xs text-teal-600 dark:text-teal-400">
@@ -143,7 +143,7 @@ export function LayoutLibraryItem({
       {showDeleteDialog && (
         <ConfirmDialog
           title="Delete this layout?"
-          message={`"${post.data.name}" will be permanently deleted. This can't be undone.`}
+          message={`"${post.name}" will be permanently deleted. This can't be undone.`}
           confirmLabel="Delete"
           danger
           onCancel={() => setShowDeleteDialog(false)}

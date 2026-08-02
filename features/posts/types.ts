@@ -33,3 +33,37 @@ export type LayoutPost = {
   createdAt: string;
   updatedAt: string;
 };
+
+/*
+ * Scalar-only counterparts to DiagramPost/LayoutPost, for list views (browse,
+ * library) that only ever render name/description/counts and never need the
+ * full validated Diagram/Layout `data` blob.
+ */
+export type DiagramPostSummary = {
+  id: string;
+  ownerId: string;
+  ownerDisplayName: string | null;
+  name: string;
+  description: string | null;
+  shortcutCount: number;
+  isPublic: boolean;
+  isOfficial: boolean;
+  forkedFromId: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type LayoutPostSummary = {
+  id: string;
+  ownerId: string;
+  ownerDisplayName: string | null;
+  name: string;
+  description: string | null;
+  rowCount: number;
+  keyCount: number;
+  isPublic: boolean;
+  isOfficial: boolean;
+  forkedFromId: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
