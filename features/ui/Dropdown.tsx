@@ -50,7 +50,7 @@ export function Dropdown<T>({
     <div
       ref={menuRef}
       role="listbox"
-      className="absolute left-0 top-full z-20 mt-1 flex min-w-full flex-col gap-0.5 rounded-md border border-neutral-300 bg-white p-1 shadow-lg dark:border-neutral-700 dark:bg-neutral-800"
+      className="absolute left-0 top-full z-20 mt-1 flex min-w-full flex-col gap-0.5 rounded-md border border-neutral-300 bg-white p-1 dark:border-neutral-700 dark:bg-neutral-800"
     >
       {items.map((item, index) => (
         <button

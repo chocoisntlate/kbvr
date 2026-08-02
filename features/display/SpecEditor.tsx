@@ -7,7 +7,7 @@ import { LayoutSchema } from "../spec/layoutSchema";
 import { useJsonDraft } from "./hooks/useJsonDraft";
 
 const TAB_BASE =
-  "rounded-md border px-3 py-1.5 text-xs font-medium shadow-sm transition-colors outline-none focus-visible:border-teal-500 dark:focus-visible:border-teal-400";
+  "rounded-md border px-3 py-1.5 text-xs font-medium transition-colors outline-none focus-visible:border-teal-500 dark:focus-visible:border-teal-400";
 const TAB_ACTIVE =
   "border-teal-500 bg-teal-50 font-semibold dark:border-teal-400 dark:bg-teal-950/40";
 const TAB_INACTIVE =

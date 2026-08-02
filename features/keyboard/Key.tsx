@@ -54,11 +54,10 @@ export function Key({
         "relative flex items-center justify-center group",
         "rounded-md",
         "text-xs font-medium",
-        "shadow-sm",
-        "transition-colors select-none flex-none",
+        "transition-[background-color,border-color] select-none flex-none",
         "outline-none focus-visible:border-teal-500 dark:focus-visible:border-teal-400",
         isPressed
-          ? "border bg-teal-500 border-teal-500 text-white shadow-inner dark:bg-teal-600 dark:border-teal-600"
+          ? "border bg-teal-500 border-teal-500 text-white dark:bg-teal-600 dark:border-teal-600"
           : isHighlighted
             ? "border-2 bg-white border-teal-500 text-neutral-800 hover:bg-neutral-100 dark:bg-neutral-800 dark:border-teal-400 dark:text-neutral-200 dark:hover:bg-neutral-700"
             : "border bg-white border-neutral-300 text-neutral-800 hover:bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-700",
@@ -80,7 +79,7 @@ export function Key({
 
       {!isInspectMode && description && (
         <>
-          <span className="absolute left-1 right-1 top-1/2 origin-top text-[0.6rem] leading-tight text-center px-0.5 font-medium line-clamp-2">
+          <span className="absolute left-1 right-1 top-1/2 origin-top text-[0.6rem] leading-[1.35] text-center px-0.5 font-medium line-clamp-2">
             {description.length > 1 ? (
               <>
                 <span className="ml-1 opacity-75">+{description.length}</span>

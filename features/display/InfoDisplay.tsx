@@ -171,7 +171,7 @@ type InfoRowProps = {
 
 function InfoRow({ title, name, description, meta, actions }: InfoRowProps) {
   return (
-    <div className="flex items-center gap-x-3 rounded-lg border border-neutral-200 bg-white px-5 py-4 shadow-sm relative flex-1 min-w-0 dark:border-neutral-700 dark:bg-neutral-900">
+    <div className="flex items-center gap-x-3 rounded-lg border border-neutral-200 bg-white px-5 py-4 relative flex-1 min-w-0 dark:border-neutral-700 dark:bg-neutral-900">
       {meta && (
         <div className="absolute top-3 left-3">
           <InfoHover>{meta}</InfoHover>
@@ -230,7 +230,7 @@ function InfoHover({ children }: { children: React.ReactNode }) {
                 opacity-0 pointer-events-none transition-all duration-150
                 group-hover:translate-y-0 group-hover:opacity-100 group-hover:pointer-events-auto"
       >
-        <div className="rounded-md border border-neutral-200 bg-white p-4 text-sm text-neutral-700 shadow-lg dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+        <div className="rounded-md border border-neutral-200 bg-white p-4 text-sm text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
           <div className="flex flex-col gap-2">{children}</div>
         </div>
       </div>

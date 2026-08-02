@@ -46,7 +46,7 @@ export function Button({
     "rounded-md border font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 outline-none focus-visible:border-teal-500 dark:focus-visible:border-teal-400";
   const variantClasses =
     variant === "outline"
-      ? `border-neutral-300 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-800 ${outlineToneClasses[tone]}`
+      ? `border-neutral-300 bg-white dark:border-neutral-700 dark:bg-neutral-800 ${outlineToneClasses[tone]}`
       : `border-transparent ${ghostToneClasses[tone]}`;
 
   return (

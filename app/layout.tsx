@@ -7,8 +7,18 @@ import { ThemeProvider } from "@/features/theme/ThemeProvider";
 import { getServerAuthContext } from "@/utils/supabase/server";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
+import { Open_Sans, Roboto_Slab } from "next/font/google";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  variable: "--font-open-sans",
+});
+const robotoSlab = Roboto_Slab({
+  subsets: ["latin"],
+  variable: "--font-roboto-slab",
+});
 
 const DESCRIPTION =
   "Design and browse interactive keyboard shortcut diagrams and layouts.";
@@ -52,7 +62,11 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${openSans.variable} ${robotoSlab.variable}`}
+    >
       <body
         suppressHydrationWarning
         className="bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100"

@@ -4,9 +4,19 @@
 
 @theme {
   --default-transition-duration: 100ms;
+  --font-sans: var(--font-open-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
   --key-unit: 52px;
   --keyboard-gap: 6px;
+  font-size: 103%;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-roboto-slab), serif;
 }

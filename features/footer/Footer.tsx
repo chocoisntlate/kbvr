@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { KeySquare } from "lucide-react";
 
 export default function Footer() {
   return (
-    <div className="p-4 flex items-center justify-between border-t border-neutral-200 text-xs text-neutral-600 dark:border-neutral-800 dark:text-neutral-400">
+    <div className="p-4 bg-neutral-100 flex items-center justify-between text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
       <div className="flex items-center gap-1.5">
         <span>Interactive shortcut visualisation</span>
       </div>

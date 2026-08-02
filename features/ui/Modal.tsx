@@ -15,7 +15,7 @@ export function ModalShell({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 dark:bg-black/50">
       <div
-        className={`w-full ${maxWidth} rounded-lg bg-white p-4 shadow-lg dark:bg-neutral-900 dark:text-neutral-100 ${
+        className={`w-full ${maxWidth} rounded-lg bg-white p-4 dark:bg-neutral-900 dark:text-neutral-100 ${
           scroll ? "max-h-[90vh] flex flex-col" : ""
         }`}
       >

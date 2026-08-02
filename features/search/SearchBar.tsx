@@ -215,7 +215,7 @@ export default function SearchBar() {
       {isFocused && results.length > 0 && (
         <ul
           onMouseDown={(e) => e.preventDefault()}
-          className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto rounded-md border border-neutral-200 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-900"
+          className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto rounded-md border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900"
         >
           {results.map((result, index) => (
             <li

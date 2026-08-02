@@ -24,7 +24,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="p-4 bg-neutral-100 shadow-md flex items-center justify-between dark:bg-neutral-800">
+    <div className="p-4 bg-neutral-100 flex items-center justify-between dark:bg-neutral-800">
       <div className="flex items-center gap-4">
         <Link className="flex items-center gap-1.5 font-mono" href="/">
           <KeySquare
