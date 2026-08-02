@@ -20,6 +20,7 @@ export function LayoutPostCard({
       name={post.data.name}
       description={post.data.description}
       ownerDisplayName={post.ownerDisplayName}
+      isOfficial={post.isOfficial}
       createdAt={post.createdAt}
       details={
         <div>

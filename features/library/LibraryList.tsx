@@ -10,7 +10,13 @@ import { DiagramLibraryItem } from "./DiagramLibraryItem";
 import { LayoutLibraryItem } from "./LayoutLibraryItem";
 import { RefreshButton } from "@/features/ui/RefreshButton";
 
-export function LibraryList({ initialData }: { initialData: LibraryData }) {
+export function LibraryList({
+  initialData,
+  canSetSeedDefault,
+}: {
+  initialData: LibraryData;
+  canSetSeedDefault: boolean;
+}) {
   const { user } = useAuth();
   const { data, mutate, isValidating } = useSWR<LibraryData>(
     ["library", user?.id ?? null],
@@ -18,7 +24,8 @@ export function LibraryList({ initialData }: { initialData: LibraryData }) {
     { fallbackData: initialData },
   );
 
-  const { diagrams, layouts, defaultLayoutId } = data ?? initialData;
+  const { diagrams, layouts, defaultLayoutId, seedDefaultLayoutId } =
+    data ?? initialData;
 
   return (
     <>
@@ -55,6 +62,8 @@ export function LibraryList({ initialData }: { initialData: LibraryData }) {
             post={post}
             isOwned={isOwned}
             isDefault={defaultLayoutId === post.id}
+            isSeedDefault={seedDefaultLayoutId === post.id}
+            canSetSeedDefault={canSetSeedDefault}
           />
         ))}
       </section>

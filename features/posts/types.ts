@@ -7,6 +7,7 @@ export type PostMeta = {
   ownerDisplayName: string | null;
   isPublic: boolean;
   isSavedByMe: boolean;
+  isOfficial: boolean;
 };
 
 export type DiagramPost = {
@@ -15,6 +16,7 @@ export type DiagramPost = {
   ownerDisplayName: string | null;
   data: Diagram;
   isPublic: boolean;
+  isOfficial: boolean;
   forkedFromId: string | null;
   createdAt: string;
   updatedAt: string;
@@ -26,6 +28,7 @@ export type LayoutPost = {
   ownerDisplayName: string | null;
   data: Layout;
   isPublic: boolean;
+  isOfficial: boolean;
   forkedFromId: string | null;
   createdAt: string;
   updatedAt: string;

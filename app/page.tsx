@@ -72,6 +72,7 @@ async function HomeContent({
         ownerId: result.post.ownerId,
         ownerDisplayName: result.post.ownerDisplayName,
         isPublic: result.post.isPublic,
+        isOfficial: result.post.isOfficial,
         isSavedByMe: result.isSavedByMe,
       };
     }
@@ -88,6 +89,7 @@ async function HomeContent({
       ownerId: defaultLayout.ownerId,
       ownerDisplayName: defaultLayout.ownerDisplayName,
       isPublic: defaultLayout.isPublic,
+      isOfficial: defaultLayout.isOfficial,
       isSavedByMe: true,
     };
   }

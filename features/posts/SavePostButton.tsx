@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/AuthContext";
-import { signInWithGoogle } from "@/features/auth/signInWithGoogle";
 import { ImportExportButton } from "@/features/display/ImportExport";
 import { Diagram } from "@/features/spec/diagramSchema";
 import { Layout } from "@/features/spec/layoutSchema";
@@ -38,6 +38,7 @@ type DialogStep = "visibility-new" | "fork-choice" | "visibility-fork" | null;
 export function SavePostButton(props: SavePostButtonProps) {
   const { kind, meta, onMetaChange } = props;
   const { user } = useAuth();
+  const router = useRouter();
   const [step, setStep] = useState<DialogStep>(null);
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
 
@@ -47,7 +48,7 @@ export function SavePostButton(props: SavePostButtonProps) {
 
   const handleClick = async () => {
     if (!user) {
-      signInWithGoogle();
+      router.push("/login");
       return;
     }
     if (!meta) {

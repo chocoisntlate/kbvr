@@ -17,6 +17,23 @@ async function requireUser() {
   return { supabase, user };
 }
 
+/*
+ * There's no general role system — just one hardcoded official account
+ * (upgraded from the system@kbvr.local seed account created by
+ * scripts/seedDefaults.ts) whose posts get flagged is_official.
+ */
+const OFFICIAL_ACCOUNT_EMAIL =
+  process.env.OFFICIAL_ACCOUNT_EMAIL ?? "system@kbvr.local";
+
+function isOfficialAccount(user: User): boolean {
+  return user.email === OFFICIAL_ACCOUNT_EMAIL;
+}
+
+export async function isCurrentUserOfficial(): Promise<boolean> {
+  const { user } = await getServerAuthContext();
+  return !!user && isOfficialAccount(user);
+}
+
 async function ownerDisplayName(
   supabase: ReturnType<typeof createClient>,
   user: User,
@@ -51,6 +68,7 @@ async function insertPost<T>(
   const { supabase, user } = await requireUser();
   const parsed = schema.parse(data);
   const displayName = await ownerDisplayName(supabase, user);
+  const isOfficial = isOfficialAccount(user);
 
   const { data: row, error } = await supabase
     .from(table)
@@ -59,6 +77,7 @@ async function insertPost<T>(
       owner_display_name: displayName,
       data: parsed,
       is_public: isPublic,
+      is_official: isOfficial,
     })
     .select("id")
     .single();
@@ -71,6 +90,7 @@ async function insertPost<T>(
     ownerDisplayName: displayName,
     isPublic,
     isSavedByMe: false,
+    isOfficial,
   };
 }
 
@@ -111,6 +131,7 @@ async function duplicatePost<T>(
   // re-validate rather than trusting the stored row is still well-formed
   const parsed = schema.parse(source.data);
   const displayName = await ownerDisplayName(supabase, user);
+  const isOfficial = isOfficialAccount(user);
 
   const { data: row, error } = await supabase
     .from(table)
@@ -119,6 +140,7 @@ async function duplicatePost<T>(
       owner_display_name: displayName,
       data: parsed,
       is_public: isPublic,
+      is_official: isOfficial,
       forked_from_id: sourceId,
     })
     .select("id")
@@ -131,6 +153,7 @@ async function duplicatePost<T>(
     ownerId: user.id,
     ownerDisplayName: displayName,
     isPublic,
+    isOfficial,
     isSavedByMe: false,
   };
 }
@@ -281,6 +304,34 @@ export async function setDefaultLayout(layoutId: string): Promise<void> {
 
 export async function deleteLayout(id: string): Promise<void> {
   return deletePost("layouts", id);
+}
+
+/*
+ * Designates one of the official account's own layouts as the single
+ * canonical starter new users get auto-seeded with (see
+ * ensureDefaultLayoutSeeded below). Distinct from setDefaultLayout, which
+ * only bookmarks a personal default for the signed-in user.
+ */
+export async function setSeedDefaultLayout(layoutId: string): Promise<void> {
+  const { supabase, user } = await requireUser();
+  if (!isOfficialAccount(user)) {
+    throw new Error("Only the official account can set the starter layout.");
+  }
+
+  const { error: clearError } = await supabase
+    .from("layouts")
+    .update({ is_seed_default: false })
+    .eq("is_seed_default", true);
+  if (clearError) throw clearError;
+
+  const { error: setError } = await supabase
+    .from("layouts")
+    .update({ is_seed_default: true })
+    .eq("id", layoutId)
+    .eq("owner_id", user.id);
+  if (setError) throw setError;
+
+  revalidatePostPages();
 }
 
 /*

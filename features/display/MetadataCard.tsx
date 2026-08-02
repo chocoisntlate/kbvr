@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { Button } from "@/features/ui/Button";
 
 type MetadataCardProps = {
-  title: string;
+  title: ReactNode;
   children: ReactNode;
   details?: ReactNode;
   expanded: boolean;

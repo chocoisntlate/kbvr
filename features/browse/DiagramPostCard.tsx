@@ -8,6 +8,7 @@ export function DiagramPostCard({ post }: { post: DiagramPost }) {
       name={post.data.name}
       description={post.data.description}
       ownerDisplayName={post.ownerDisplayName}
+      isOfficial={post.isOfficial}
       createdAt={post.createdAt}
       details={<div>{post.data.shortcuts.length} shortcuts</div>}
       actions={
