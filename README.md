@@ -1,8 +1,6 @@
-# key-diagram
+# [keybind-viewer](https://kbvr.dev/)
 
 Interactive keyboard shortcut visualization tool. Create, view, import, and export [Diagrams](#diagram) and [Layouts](#layout).
-
-[Preview](https://key-diagram.vercel.app/)
 
 ## Diagram
 
