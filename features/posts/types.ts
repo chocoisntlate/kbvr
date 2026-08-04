@@ -46,6 +46,7 @@ export type DiagramPostSummary = {
   name: string;
   description: string | null;
   shortcutCount: number;
+  saveCount: number;
   isPublic: boolean;
   isOfficial: boolean;
   forkedFromId: string | null;
@@ -61,6 +62,7 @@ export type LayoutPostSummary = {
   description: string | null;
   rowCount: number;
   keyCount: number;
+  saveCount: number;
   isPublic: boolean;
   isOfficial: boolean;
   forkedFromId: string | null;

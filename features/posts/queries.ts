@@ -53,9 +53,9 @@ function mapRow<T>(row: PostRow): {
  */
 const LIST_COLUMNS = {
   diagrams:
-    "id, owner_id, owner_display_name, name, description, shortcut_count, is_public, is_official, forked_from_id, created_at, updated_at",
+    "id, owner_id, owner_display_name, name, description, shortcut_count, save_count, is_public, is_official, forked_from_id, created_at, updated_at",
   layouts:
-    "id, owner_id, owner_display_name, name, description, row_count, key_count, is_public, is_official, forked_from_id, created_at, updated_at",
+    "id, owner_id, owner_display_name, name, description, row_count, key_count, save_count, is_public, is_official, forked_from_id, created_at, updated_at",
 };
 
 type DiagramListRow = {
@@ -65,6 +65,7 @@ type DiagramListRow = {
   name: string;
   description: string | null;
   shortcut_count: number;
+  save_count: number;
   is_public: boolean;
   is_official: boolean;
   forked_from_id: string | null;
@@ -80,6 +81,7 @@ type LayoutListRow = {
   description: string | null;
   row_count: number;
   key_count: number;
+  save_count: number;
   is_public: boolean;
   is_official: boolean;
   forked_from_id: string | null;
@@ -95,6 +97,7 @@ function mapDiagramListRow(row: DiagramListRow): DiagramPostSummary {
     name: row.name,
     description: row.description,
     shortcutCount: row.shortcut_count,
+    saveCount: row.save_count,
     isPublic: row.is_public,
     isOfficial: row.is_official,
     forkedFromId: row.forked_from_id,
@@ -112,6 +115,7 @@ function mapLayoutListRow(row: LayoutListRow): LayoutPostSummary {
     description: row.description,
     rowCount: row.row_count,
     keyCount: row.key_count,
+    saveCount: row.save_count,
     isPublic: row.is_public,
     isOfficial: row.is_official,
     forkedFromId: row.forked_from_id,

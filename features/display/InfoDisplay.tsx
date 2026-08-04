@@ -4,6 +4,8 @@ import React from "react";
 import { ImportExportButton } from "./ImportExport";
 import { useKeyboardContent } from "../keyboard/KeyboardContext";
 import { SavePostButton } from "@/features/posts/SavePostButton";
+import { DiagramLayoutPairing } from "./DiagramLayoutPairing";
+import { MatchToLayoutButton } from "./MatchToLayoutButton";
 
 /* ------------------------------------------------------------------ */
 /* Keyboard panel with diagram + optional layout info                 */
@@ -61,99 +63,103 @@ export function KeyboardPanel() {
   };
 
   return (
-    <section className="flex justify-center w-full max-w-5xl gap-4 rounded-xl p-4">
-      {/* Diagram Info Row */}
-      <InfoRow
-        title="Diagram"
-        name={keyDiagram.name}
-        description={keyDiagram.description}
-        meta={
-          <>
-            <MetaRow label="Name" value={keyDiagram.name} />
-            <MetaRow label="Description" value={keyDiagram.description} />
-            <MetaRow label="Shortcuts" value={keyDiagram.shortcuts.length} />
-            <MetaRow
-              label="Tags"
-              value={
-                new Set(
-                  keyDiagram.shortcuts
-                    .flatMap((s) => s.tags ?? [])
-                    .filter(Boolean),
-                ).size
-              }
-            />
-          </>
-        }
-        actions={
-          <>
-            <ImportExportButton
-              title="Import"
-              onFileSelect={(file) =>
-                handleImport(file, setKeyDiagram, () =>
-                  setCurrentDiagramMeta(null),
-                )
-              }
-            />
-            <ImportExportButton
-              title="Export"
-              onClick={() => handleExport(keyDiagram.name, keyDiagram)}
-            />
-            <SavePostButton
-              kind="diagram"
-              data={keyDiagram}
-              meta={currentDiagramMeta}
-              onMetaChange={setCurrentDiagramMeta}
-            />
-          </>
-        }
-      />
+    <div className="flex flex-col gap-2 w-full max-w-5xl">
+      <DiagramLayoutPairing />
+      <section className="flex justify-center w-full gap-4 rounded-xl p-4">
+        {/* Diagram Info Row */}
+        <InfoRow
+          title="Diagram"
+          name={keyDiagram.name}
+          description={keyDiagram.description}
+          meta={
+            <>
+              <MetaRow label="Name" value={keyDiagram.name} />
+              <MetaRow label="Description" value={keyDiagram.description} />
+              <MetaRow label="Shortcuts" value={keyDiagram.shortcuts.length} />
+              <MetaRow
+                label="Tags"
+                value={
+                  new Set(
+                    keyDiagram.shortcuts
+                      .flatMap((s) => s.tags ?? [])
+                      .filter(Boolean),
+                  ).size
+                }
+              />
+            </>
+          }
+          actions={
+            <>
+              <ImportExportButton
+                title="Import"
+                onFileSelect={(file) =>
+                  handleImport(file, setKeyDiagram, () =>
+                    setCurrentDiagramMeta(null),
+                  )
+                }
+              />
+              <ImportExportButton
+                title="Export"
+                onClick={() => handleExport(keyDiagram.name, keyDiagram)}
+              />
+              <MatchToLayoutButton />
+              <SavePostButton
+                kind="diagram"
+                data={keyDiagram}
+                meta={currentDiagramMeta}
+                onMetaChange={setCurrentDiagramMeta}
+              />
+            </>
+          }
+        />
 
-      {/* Layout Info Row */}
-      <InfoRow
-        title="Layout"
-        name={keyLayout.name}
-        description={keyLayout.description}
-        meta={
-          <>
-            <MetaRow label="Name" value={keyLayout.name} />
-            <MetaRow label="Description" value={keyLayout.description} />
-            <MetaRow label="Rows" value={keyLayout.rows.length} />
-            <MetaRow
-              label="Keys"
-              value={
-                new Set(
-                  keyLayout.rows.flatMap((r) =>
-                    r.map((k) => k.id).filter(Boolean),
-                  ),
-                ).size
-              }
-            />
-          </>
-        }
-        actions={
-          <>
-            <ImportExportButton
-              title="Import"
-              onFileSelect={(file) =>
-                handleImport(file, setKeyLayout, () =>
-                  setCurrentLayoutMeta(null),
-                )
-              }
-            />
-            <ImportExportButton
-              title="Export"
-              onClick={() => handleExport(keyLayout.name, keyLayout)}
-            />
-            <SavePostButton
-              kind="layout"
-              data={keyLayout}
-              meta={currentLayoutMeta}
-              onMetaChange={setCurrentLayoutMeta}
-            />
-          </>
-        }
-      />
-    </section>
+        {/* Layout Info Row */}
+        <InfoRow
+          title="Layout"
+          name={keyLayout.name}
+          description={keyLayout.description}
+          meta={
+            <>
+              <MetaRow label="Name" value={keyLayout.name} />
+              <MetaRow label="Description" value={keyLayout.description} />
+              <MetaRow label="Rows" value={keyLayout.rows.length} />
+              <MetaRow
+                label="Keys"
+                value={
+                  new Set(
+                    keyLayout.rows.flatMap((r) =>
+                      r.map((k) => k.id).filter(Boolean),
+                    ),
+                  ).size
+                }
+              />
+            </>
+          }
+          actions={
+            <>
+              <ImportExportButton
+                title="Import"
+                onFileSelect={(file) =>
+                  handleImport(file, setKeyLayout, () =>
+                    setCurrentLayoutMeta(null),
+                  )
+                }
+              />
+              <ImportExportButton
+                title="Export"
+                onClick={() => handleExport(keyLayout.name, keyLayout)}
+              />
+              <SavePostButton
+                kind="layout"
+                data={keyLayout}
+                meta={currentLayoutMeta}
+                onMetaChange={setCurrentLayoutMeta}
+              />
+            </>
+          }
+        />
+      </section>
+    </div>
   );
 }
 

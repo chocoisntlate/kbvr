@@ -14,6 +14,12 @@ export const DiagramSchema = z.object({
   createdBy: z.string().max(100).optional(),
 
   modes: z.array(z.string().min(1).max(100)).optional(),
+  intendedLayout: z
+    .object({
+      name: z.string().min(1).max(100),
+      fingerprint: z.string().max(64),
+    })
+    .optional(),
   shortcuts: z.array(ShortcutSchema).min(1),
 });
 
