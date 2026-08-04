@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <div className="p-4 flex items-center justify-between text-xs text-neutral-600 dark:text-neutral-400">
+    <div className="p-4 flex items-center justify-end text-xs text-neutral-600 dark:text-neutral-400">
       <Link
         href="https://github.com/chocoisntlate/kbvr"
         target="_blank"

@@ -28,9 +28,10 @@ export function useLayoutPairing(): {
   const isMatched = intendedLayout?.fingerprint === liveFingerprint;
 
   const match = () => {
-    setKeyDiagram((d) => ({
-      ...d,
+    setKeyDiagram(({ shortcuts, ...rest }) => ({
+      ...rest,
       intendedLayout: { name: keyLayout.name, fingerprint: liveFingerprint },
+      shortcuts,
     }));
   };
 

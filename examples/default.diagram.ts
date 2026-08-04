@@ -3,6 +3,7 @@ import { Diagram } from "@/features/spec/diagramSchema";
 export const INTRODUCTION_DIAGRAM: Diagram = {
   name: "Default Introduction Diagram",
   description: "Hover over keys to learn about kbvr",
+  intendedLayout: { name: "QWERTY US 80%", fingerprint: "1ynpbrt" },
   shortcuts: [
     {
       keys: ["ctrl-left", "w"],
@@ -70,7 +71,7 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       tags: ["google chrome"],
     },
     {
-      keys: ["ctrl-left", "plus"],
+      keys: ["ctrl-left", "equals"],
       description: ["Zoom In"],
       tags: ["google chrome"],
     },
@@ -115,56 +116,52 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       tags: ["google chrome"],
     },
     {
+      keys: ["i"],
+      description: ["Toggle Inspect mode"],
+      tags: ["kbvr"],
+    },
+    {
+      keys: ["esc"],
+      description: ["Clear pressed keys, or close the mode menu"],
+      tags: ["kbvr"],
+    },
+    {
+      keys: ["s"],
+      description: ["Jump into the search bar"],
+      tags: ["kbvr"],
+    },
+    {
+      keys: ["slash"],
+      description: ["Toggle the search bar"],
+      tags: ["kbvr"],
+    },
+    {
+      keys: ["m"],
+      description: ["Open the mode menu"],
+      tags: ["kbvr"],
+    },
+    {
+      keys: ["j"],
+      description: ["Toggle the JSON editor"],
+      tags: ["kbvr"],
+    },
+    {
       keys: ["ctrl-left"],
-      description: ["🎯Click me"],
+      description: ["Click me"],
     },
     {
       keys: ["1"],
-      description: ["👋Hello!"],
+      description: ["👋 Hello!"],
       tags: ["tutorial"],
     },
     {
       keys: ["ctrl-left", "shift-left"],
-      description: ["🎯Click me"],
+      description: ["Click me"],
     },
     {
       keys: ["2"],
-      description: ["❓I'm an interactive key-bind visualizer and manager"],
-      tags: ["tutorial"],
-    },
-    {
-      keys: ["h"],
       description: [
-        "💾Export and Import functionality is supported for both diagrams and layouts.",
-      ],
-      tags: ["tutorial"],
-    },
-    {
-      keys: ["t"],
-      description: [
-        'ℹ️ "Diagrams" are groups of related key-binds that are displayed on a supported keyboard layout.',
-      ],
-      tags: ["tutorial"],
-    },
-    {
-      keys: ["u"],
-      description: [
-        "Key-binds with multiple descriptions look like this",
-        "Useful for conflicting key-binds",
-      ],
-      tags: ["tutorial"],
-    },
-    {
-      keys: ["g"],
-      description: [
-        '🔎 "Inspect Keys" lets you view all descriptions for each key and serves as the main interface for editing key-binds.',
-      ],
-      tags: ["tutorial"],
-    },
-    {
-      keys: ["y"],
-      description: [
-        "👓 Descriptions are revealed when they are within one key press of completion.",
+        "❓ kbvr is an interactive key-bind visualizer, editor, and library",
       ],
       tags: ["tutorial"],
     },
@@ -176,8 +173,32 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
       tags: ["tutorial"],
     },
     {
-      keys: ["j"],
-      description: ["🚧 More features coming soon"],
+      keys: ["4"],
+      description: [
+        'ℹ️ "Diagrams" are groups of related key-binds that are displayed on a supported keyboard "Layout".',
+      ],
+      tags: ["tutorial"],
+    },
+    {
+      keys: ["5"],
+      description: [
+        "👓 Descriptions are revealed when they are within one key press of completion.",
+      ],
+      tags: ["tutorial"],
+    },
+    {
+      keys: ["6"],
+      description: [
+        "🗨️ Key-binds with multiple descriptions look like this",
+        "Useful for conflicting key-binds",
+      ],
+      tags: ["tutorial"],
+    },
+    {
+      keys: ["7"],
+      description: [
+        '🔎 "Inspect Keys" lets you view all descriptions for each key and serves as the main interface for editing key-binds.',
+      ],
       tags: ["tutorial"],
     },
   ],
