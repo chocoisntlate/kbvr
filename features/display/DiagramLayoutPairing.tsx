@@ -16,7 +16,8 @@ export function DiagramLayoutPairing() {
 
       {intendedLayout && !isMatched && (
         <div className="rounded-md border border-amber-300 bg-amber-50 px-2 py-1.5 text-[10px] text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300">
-          Loaded diagram is intended for layout &quot;{intendedLayout.name}&quot; - Fingerprint of current layout key set does not match.
+          Loaded diagram is intended for layout &quot;{intendedLayout.name}
+          &quot; - Fingerprint of current layout key set does not match.
         </div>
       )}
     </div>

@@ -12,8 +12,8 @@ export function DiagramPostCard({ post }: { post: DiagramPostSummary }) {
       createdAt={post.createdAt}
       details={
         <div>
-          {post.shortcutCount} shortcuts ·{" "}
-          {post.saveCount} save{post.saveCount === 1 ? "" : "s"}
+          {post.shortcutCount} shortcuts · {post.saveCount} save
+          {post.saveCount === 1 ? "" : "s"}
         </div>
       }
       actions={

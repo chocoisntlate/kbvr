@@ -20,8 +20,8 @@ export function LayoutPostCard({
       createdAt={post.createdAt}
       details={
         <div>
-          {post.rowCount} rows · {post.keyCount} keys ·{" "}
-          {post.saveCount} save{post.saveCount === 1 ? "" : "s"}
+          {post.rowCount} rows · {post.keyCount} keys · {post.saveCount} save
+          {post.saveCount === 1 ? "" : "s"}
         </div>
       }
       actions={
