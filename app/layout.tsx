@@ -10,6 +10,7 @@ import "./globals.css";
 import { Open_Sans, Roboto_Slab } from "next/font/google";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const openSans = Open_Sans({
   subsets: ["latin"],
