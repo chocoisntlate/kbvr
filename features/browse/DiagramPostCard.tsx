@@ -10,12 +10,10 @@ export function DiagramPostCard({ post }: { post: DiagramPostSummary }) {
       ownerDisplayName={post.ownerDisplayName}
       isOfficial={post.isOfficial}
       createdAt={post.createdAt}
-      details={
-        <div>
-          {post.shortcutCount} shortcuts · {post.saveCount} save
-          {post.saveCount === 1 ? "" : "s"}
-        </div>
-      }
+      stats={[
+        `${post.shortcutCount} shortcuts`,
+        `${post.saveCount} save${post.saveCount === 1 ? "" : "s"}`,
+      ]}
       actions={
         <Link
           href={`/?diagram=${post.id}`}

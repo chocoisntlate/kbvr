@@ -18,12 +18,11 @@ export function LayoutPostCard({
       ownerDisplayName={post.ownerDisplayName}
       isOfficial={post.isOfficial}
       createdAt={post.createdAt}
-      details={
-        <div>
-          {post.rowCount} rows · {post.keyCount} keys · {post.saveCount} save
-          {post.saveCount === 1 ? "" : "s"}
-        </div>
-      }
+      stats={[
+        `${post.rowCount} rows`,
+        `${post.keyCount} keys`,
+        `${post.saveCount} save${post.saveCount === 1 ? "" : "s"}`,
+      ]}
       actions={
         <LayoutActions
           layoutId={post.id}

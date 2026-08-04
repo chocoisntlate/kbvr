@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import { MetadataCard } from "@/features/display/MetadataCard";
 
@@ -10,7 +7,7 @@ type PostCardProps = {
   ownerDisplayName: string | null;
   isOfficial?: boolean;
   createdAt: string;
-  details?: React.ReactNode;
+  stats: string[];
   actions: React.ReactNode;
 };
 
@@ -28,11 +25,9 @@ export function PostCard({
   ownerDisplayName,
   isOfficial,
   createdAt,
-  details,
+  stats,
   actions,
 }: PostCardProps) {
-  const [expanded, setExpanded] = useState(false);
-
   return (
     <MetadataCard
       title={
@@ -41,13 +36,6 @@ export function PostCard({
           {isOfficial && <OfficialBadge />}
         </span>
       }
-      expanded={expanded}
-      onToggle={() => setExpanded((e) => !e)}
-      details={
-        <div className="text-xs text-neutral-600 dark:text-neutral-400">
-          {details}
-        </div>
-      }
     >
       <div className="flex flex-col gap-2">
         {description && (
@@ -55,6 +43,16 @@ export function PostCard({
             {description}
           </p>
         )}
+        <div className="flex flex-wrap gap-1.5">
+          {stats.map((stat) => (
+            <span
+              key={stat}
+              className="rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
+            >
+              {stat}
+            </span>
+          ))}
+        </div>
         <p className="text-xs text-neutral-500 dark:text-neutral-400">
           By{" "}
           {ownerDisplayName ? (
