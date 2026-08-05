@@ -2,14 +2,15 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import {
   DisplayNameSchema,
   PasswordSchema,
+  EmailSchema,
 } from "@/features/account/validation";
 
-const SYNTHETIC_EMAIL_DOMAIN = "users.kbvr.local";
 const GENERIC_SIGN_IN_ERROR = "Incorrect username or password.";
 
 /*
@@ -20,10 +21,6 @@ const GENERIC_SIGN_IN_ERROR = "Incorrect username or password.";
  * instead of a throw. Only truly unexpected errors should still throw.
  */
 export type AuthResult = { ok: true } | { ok: false; error: string };
-
-function slugifyUsername(username: string): string {
-  return username.toLowerCase().replace(/[^a-z0-9]/g, "") || "user";
-}
 
 /*
  * profiles RLS only permits owner reads, so resolving "identifier -> auth
@@ -55,7 +52,7 @@ export async function signUpWithPassword({
 }: {
   username: string;
   password: string;
-  email?: string;
+  email: string;
 }): Promise<AuthResult> {
   const usernameResult = DisplayNameSchema.safeParse(username);
   if (!usernameResult.success) {
@@ -71,11 +68,15 @@ export async function signUpWithPassword({
       error: passwordResult.error.issues[0]?.message ?? "Invalid password.",
     };
   }
+  const emailResult = EmailSchema.safeParse(email);
+  if (!emailResult.success) {
+    return {
+      ok: false,
+      error: emailResult.error.issues[0]?.message ?? "Invalid email.",
+    };
+  }
   const displayName = usernameResult.data;
-
-  const authEmail =
-    email?.trim() ||
-    `${slugifyUsername(displayName)}@${SYNTHETIC_EMAIL_DOMAIN}`;
+  const authEmail = emailResult.data;
 
   const admin = createAdminClient();
   const { data: created, error: createError } =
@@ -117,6 +118,7 @@ export async function signUpWithPassword({
   });
   if (signInError) return { ok: false, error: signInError.message };
 
+  revalidatePath("/", "layout");
   redirect("/");
 }
 
@@ -134,6 +136,7 @@ export async function signInWithUsername(
   });
   if (error) return { ok: false, error: GENERIC_SIGN_IN_ERROR };
 
+  revalidatePath("/", "layout");
   redirect("/");
 }
 

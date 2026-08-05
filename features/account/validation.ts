@@ -14,3 +14,9 @@ export const DisplayNameSchema = z
 export const PasswordSchema = z
   .string()
   .min(8, "Password must be at least 8 characters");
+
+export const EmailSchema = z
+  .string()
+  .trim()
+  .min(1, "Email is required")
+  .email("Enter a valid email address");

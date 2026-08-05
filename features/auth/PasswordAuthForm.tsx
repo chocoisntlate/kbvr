@@ -35,7 +35,7 @@ export function PasswordAuthForm() {
           ? await signUpWithPassword({
               username,
               password,
-              email: email.trim() || undefined,
+              email: email.trim(),
             })
           : await signInWithUsername(username, password);
 
@@ -133,8 +133,9 @@ export function PasswordAuthForm() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email (optional, enables password reset)"
+          placeholder="Email"
           autoComplete="email"
+          required
           className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:border-teal-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-teal-400"
         />
       )}
@@ -164,7 +165,12 @@ export function PasswordAuthForm() {
         <Button
           type="submit"
           tone="primary"
-          disabled={busy || !username.trim() || !password}
+          disabled={
+            busy ||
+            !username.trim() ||
+            !password ||
+            (mode === "sign-up" && !email.trim())
+          }
         >
           {busy
             ? "Please wait…"
