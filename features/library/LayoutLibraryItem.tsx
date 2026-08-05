@@ -1,13 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { LayoutPostSummary } from "@/features/posts/types";
 import {
   toggleLayoutVisibility,
   duplicateLayout,
   removeSavedLayout,
   setDefaultLayout,
-  setSeedDefaultLayout,
   deleteLayout,
 } from "@/features/posts/actions";
 import { VisibilityDialog } from "@/features/posts/SaveDialog";
@@ -20,16 +18,11 @@ export function LayoutLibraryItem({
   post,
   isOwned,
   isDefault,
-  isSeedDefault,
-  canSetSeedDefault,
 }: {
   post: LayoutPostSummary;
   isOwned: boolean;
   isDefault: boolean;
-  isSeedDefault: boolean;
-  canSetSeedDefault: boolean;
 }) {
-  const [seedBusy, setSeedBusy] = useState(false);
   const {
     isPublic,
     removed,
@@ -53,16 +46,6 @@ export function LayoutLibraryItem({
   if (removed) return null;
 
   const handleSetDefault = () => run(() => setDefaultLayout(post.id));
-  const handleSetSeedDefault = async () => {
-    setSeedBusy(true);
-    try {
-      await setSeedDefaultLayout(post.id);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSeedBusy(false);
-    }
-  };
 
   return (
     <div className="flex items-center justify-between gap-3 rounded-lg border border-neutral-200 bg-white px-4 py-3 text-sm dark:border-neutral-700 dark:bg-neutral-900">
@@ -80,11 +63,6 @@ export function LayoutLibraryItem({
               (Default)
             </span>
           )}
-          {isSeedDefault && (
-            <span className="text-xs text-neutral-500 dark:text-neutral-400">
-              (Starter)
-            </span>
-          )}
         </p>
         <p className="truncate text-xs text-neutral-500 dark:text-neutral-400">
           By {post.ownerDisplayName ?? "Unknown"} ·{" "}
@@ -95,14 +73,6 @@ export function LayoutLibraryItem({
         <Button onClick={handleSetDefault} disabled={busy || isDefault}>
           {isDefault ? "Default" : "Set as default"}
         </Button>
-        {isOwned && canSetSeedDefault && (
-          <Button
-            onClick={handleSetSeedDefault}
-            disabled={seedBusy || isSeedDefault}
-          >
-            {isSeedDefault ? "Starter" : "Set as starter"}
-          </Button>
-        )}
         {isOwned ? (
           <>
             <Button onClick={handleToggleVisibility} disabled={busy}>

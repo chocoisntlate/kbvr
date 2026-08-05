@@ -7,6 +7,7 @@ import { createClient, getServerAuthContext } from "@/utils/supabase/server";
 import { DiagramSchema, type Diagram } from "@/features/spec/diagramSchema";
 import { LayoutSchema, type Layout } from "@/features/spec/layoutSchema";
 import { PostMeta } from "./types";
+import { OFFICIAL_ACCOUNT_EMAILS } from "./officialAccounts";
 
 type PostTable = "diagrams" | "layouts";
 type SavedTable = "saved_diagrams" | "saved_layouts";
@@ -17,20 +18,8 @@ async function requireUser() {
   return { supabase, user };
 }
 
-/*
- * There's no general role system — just one hardcoded official account
- * (see OFFICIAL_ACCOUNT_EMAIL env var and scripts/seedDefaults.ts) whose
- * posts get flagged is_official.
- */
-const OFFICIAL_ACCOUNT_EMAIL = process.env.OFFICIAL_ACCOUNT_EMAIL;
-
 function isOfficialAccount(user: User): boolean {
-  return !!OFFICIAL_ACCOUNT_EMAIL && user.email === OFFICIAL_ACCOUNT_EMAIL;
-}
-
-export async function isCurrentUserOfficial(): Promise<boolean> {
-  const { user } = await getServerAuthContext();
-  return !!user && isOfficialAccount(user);
+  return !!user.email && OFFICIAL_ACCOUNT_EMAILS.includes(user.email);
 }
 
 async function ownerDisplayName(
@@ -303,70 +292,4 @@ export async function setDefaultLayout(layoutId: string): Promise<void> {
 
 export async function deleteLayout(id: string): Promise<void> {
   return deletePost("layouts", id);
-}
-
-/*
- * Designates one of the official account's own layouts as the single
- * canonical starter new users get auto-seeded with (see
- * ensureDefaultLayoutSeeded below). Distinct from setDefaultLayout, which
- * only bookmarks a personal default for the signed-in user.
- */
-export async function setSeedDefaultLayout(layoutId: string): Promise<void> {
-  const { supabase, user } = await requireUser();
-  if (!isOfficialAccount(user)) {
-    throw new Error("Only the official account can set the starter layout.");
-  }
-
-  const { error: clearError } = await supabase
-    .from("layouts")
-    .update({ is_seed_default: false })
-    .eq("is_seed_default", true);
-  if (clearError) throw clearError;
-
-  const { error: setError } = await supabase
-    .from("layouts")
-    .update({ is_seed_default: true })
-    .eq("id", layoutId)
-    .eq("owner_id", user.id);
-  if (setError) throw setError;
-
-  revalidatePostPages();
-}
-
-/*
- * Best-effort: give every signed-in user a default layout without requiring
- * them to click anything, by bookmarking the canonical seed layout (see
- * scripts/seedDefaults.ts) the first time they don't already have one.
- * Silently no-ops if the seed hasn't been run yet or on any failure — this
- * runs on every page load for signed-in users, not from a user click, so it
- * must never break rendering.
- */
-export async function ensureDefaultLayoutSeeded(): Promise<void> {
-  try {
-    const { supabase, user } = await getServerAuthContext();
-    if (!supabase || !user) return;
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("default_layout_id")
-      .eq("id", user.id)
-      .maybeSingle();
-    if (profile?.default_layout_id) return;
-
-    const { data: seedLayout } = await supabase
-      .from("layouts")
-      .select("id")
-      .eq("is_seed_default", true)
-      .maybeSingle();
-    if (!seedLayout) return;
-
-    await supabase
-      .from("saved_layouts")
-      .upsert({ user_id: user.id, layout_id: seedLayout.id });
-    await supabase
-      .from("profiles")
-      .upsert({ id: user.id, default_layout_id: seedLayout.id });
-  } catch (err) {
-    console.warn("Could not seed default layout:", err);
-  }
 }

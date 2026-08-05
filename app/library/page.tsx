@@ -1,10 +1,6 @@
 import { Suspense } from "react";
 import { getServerAuthContext } from "@/utils/supabase/server";
 import { getLibraryDataAction } from "@/features/posts/readActions";
-import {
-  ensureDefaultLayoutSeeded,
-  isCurrentUserOfficial,
-} from "@/features/posts/actions";
 import { SignInPrompt } from "@/features/auth/SignInPrompt";
 import { LibraryList } from "@/features/library/LibraryList";
 import type { Metadata } from "next";
@@ -40,14 +36,7 @@ async function LibraryServerContent() {
     );
   }
 
-  await ensureDefaultLayoutSeeded();
+  const libraryData = await getLibraryDataAction();
 
-  const [libraryData, isOfficial] = await Promise.all([
-    getLibraryDataAction(),
-    isCurrentUserOfficial(),
-  ]);
-
-  return (
-    <LibraryList initialData={libraryData} canSetSeedDefault={isOfficial} />
-  );
+  return <LibraryList initialData={libraryData} />;
 }

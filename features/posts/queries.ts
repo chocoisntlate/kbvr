@@ -260,18 +260,6 @@ export async function getLayoutById(
   });
 }
 
-export async function getSeedDefaultLayoutId(): Promise<string | null> {
-  return safely(null, async () => {
-    const { supabase } = await getServerContext();
-    const { data } = await supabase
-      .from("layouts")
-      .select("id")
-      .eq("is_seed_default", true)
-      .maybeSingle();
-    return data?.id ?? null;
-  });
-}
-
 export async function getDefaultLayout(): Promise<LayoutPost | null> {
   return safely(null, async () => {
     const { supabase, user } = await getServerContext();

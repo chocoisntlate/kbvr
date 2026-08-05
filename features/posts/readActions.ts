@@ -7,7 +7,6 @@ import {
   getUserSavedDiagrams,
   getUserSavedLayouts,
   getUserDefaultLayoutId,
-  getSeedDefaultLayoutId,
   type SearchPostsResult,
 } from "./queries";
 import { DiagramPostSummary, LayoutPostSummary } from "./types";
@@ -47,7 +46,6 @@ export type LibraryData = {
   diagrams: { post: DiagramPostSummary; isOwned: boolean }[];
   layouts: { post: LayoutPostSummary; isOwned: boolean }[];
   defaultLayoutId: string | null;
-  seedDefaultLayoutId: string | null;
 };
 
 export async function getLibraryDataAction(): Promise<LibraryData> {
@@ -57,19 +55,16 @@ export async function getLibraryDataAction(): Promise<LibraryData> {
     savedDiagrams,
     savedLayouts,
     defaultLayoutId,
-    seedDefaultLayoutId,
   ] = await Promise.all([
     getUserOwnedDiagramSummaries(),
     getUserOwnedLayoutSummaries(),
     getUserSavedDiagrams(),
     getUserSavedLayouts(),
     getUserDefaultLayoutId(),
-    getSeedDefaultLayoutId(),
   ]);
   return {
     diagrams: dedupeById(ownedDiagrams, savedDiagrams),
     layouts: dedupeById(ownedLayouts, savedLayouts),
     defaultLayoutId,
-    seedDefaultLayoutId,
   };
 }

@@ -6,7 +6,6 @@ import { Keyboard } from "@/features/keyboard/Keyboard";
 import { KeyboardContextProvider } from "@/features/keyboard/KeyboardContext";
 import SearchBar from "@/features/search/SearchBar";
 import { getDiagramById, getDefaultLayout } from "@/features/posts/queries";
-import { ensureDefaultLayoutSeeded } from "@/features/posts/actions";
 import { PostMeta } from "@/features/posts/types";
 import { Diagram } from "@/features/spec/diagramSchema";
 import { Layout } from "@/features/spec/layoutSchema";
@@ -57,8 +56,6 @@ async function HomeContent({
   searchParams: Promise<{ diagram?: string }>;
 }) {
   const { diagram: diagramId } = await searchParams;
-
-  await ensureDefaultLayoutSeeded();
 
   let initialDiagram: Diagram | undefined;
   let initialDiagramMeta: PostMeta | null | undefined;
