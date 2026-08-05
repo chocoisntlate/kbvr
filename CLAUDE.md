@@ -17,7 +17,7 @@ npm run lint     # eslint (flat config: eslint.config.mjs)
 
 There is no test suite configured in this repo currently.
 
-The user runs `npm run dev` themselves to manually verify changes in the browser — don't start the dev server on their behalf. Verify changes with `npm run lint` (and `npm run build` when relevant).
+The user runs `npm run dev` themselves to manually verify changes in the browser — don't start the dev server on their behalf. Verify changes with `npm run lint` (and `npm run build` when relevant). After making changes, run `npx prettier --write .`.
 
 ## Core domain model
 

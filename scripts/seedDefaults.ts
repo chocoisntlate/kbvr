@@ -25,15 +25,15 @@ import { QWERTY_US_80 } from "../examples/default.layout";
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const SYSTEM_EMAIL = process.env.OFFICIAL_ACCOUNT_EMAIL;
 
-if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+if (!SUPABASE_URL || !SERVICE_ROLE_KEY || !SYSTEM_EMAIL) {
   console.error(
-    "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env.local",
+    "Missing NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, or OFFICIAL_ACCOUNT_EMAIL in .env.local",
   );
   process.exit(1);
 }
 
-const SYSTEM_EMAIL = "system@kbvr.local";
 const SYSTEM_DISPLAY_NAME = "kbvr";
 
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);

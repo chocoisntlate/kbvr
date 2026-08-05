@@ -19,14 +19,13 @@ async function requireUser() {
 
 /*
  * There's no general role system — just one hardcoded official account
- * (upgraded from the system@kbvr.local seed account created by
- * scripts/seedDefaults.ts) whose posts get flagged is_official.
+ * (see OFFICIAL_ACCOUNT_EMAIL env var and scripts/seedDefaults.ts) whose
+ * posts get flagged is_official.
  */
-const OFFICIAL_ACCOUNT_EMAIL =
-  process.env.OFFICIAL_ACCOUNT_EMAIL ?? "system@kbvr.local";
+const OFFICIAL_ACCOUNT_EMAIL = process.env.OFFICIAL_ACCOUNT_EMAIL;
 
 function isOfficialAccount(user: User): boolean {
-  return user.email === OFFICIAL_ACCOUNT_EMAIL;
+  return !!OFFICIAL_ACCOUNT_EMAIL && user.email === OFFICIAL_ACCOUNT_EMAIL;
 }
 
 export async function isCurrentUserOfficial(): Promise<boolean> {
