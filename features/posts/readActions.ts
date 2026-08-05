@@ -30,6 +30,13 @@ export async function getBrowseLayoutFlagsAction(): Promise<{
   return { savedLayoutIds: savedLayouts.map((l) => l.id), defaultLayoutId };
 }
 
+export async function getBrowseDiagramFlagsAction(): Promise<{
+  savedDiagramIds: string[];
+}> {
+  const savedDiagrams = await getUserSavedDiagrams();
+  return { savedDiagramIds: savedDiagrams.map((d) => d.id) };
+}
+
 function dedupeById<T extends { id: string }>(
   owned: T[],
   saved: T[],

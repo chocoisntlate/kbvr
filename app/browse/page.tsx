@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { searchPosts } from "@/features/posts/queries";
-import { getBrowseLayoutFlagsAction } from "@/features/posts/readActions";
+import {
+  getBrowseLayoutFlagsAction,
+  getBrowseDiagramFlagsAction,
+} from "@/features/posts/readActions";
 import { BrowseSearchInput } from "@/features/browse/BrowseSearchInput";
 import { BrowseResultsList } from "@/features/browse/BrowseResultsList";
 import type { Metadata } from "next";
@@ -77,6 +80,8 @@ async function BrowseResults({
 
   const layoutFlags =
     activeType === "layout" ? await getBrowseLayoutFlagsAction() : undefined;
+  const diagramFlags =
+    activeType === "diagram" ? await getBrowseDiagramFlagsAction() : undefined;
 
   return (
     <BrowseResultsList
@@ -84,6 +89,7 @@ async function BrowseResults({
       q={q}
       initialPage={firstPage}
       initialLayoutFlags={layoutFlags}
+      initialDiagramFlags={diagramFlags}
     />
   );
 }

@@ -66,11 +66,11 @@ export function LayoutActions({
 
   return (
     <>
-      <Button onClick={handleSave} disabled={busy || saved}>
-        {saved ? "Saved" : "Save"}
-      </Button>
       <Button onClick={handleSetDefault} disabled={busy || isDefault}>
         {isDefault ? "Default" : "Set as default"}
+      </Button>
+      <Button onClick={handleSave} disabled={busy || saved}>
+        {saved ? "Saved" : "Save"}
       </Button>
     </>
   );

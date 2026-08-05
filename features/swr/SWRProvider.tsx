@@ -7,8 +7,8 @@ export function SWRProvider({ children }: { children: ReactNode }) {
   return (
     <SWRConfig
       value={{
-        revalidateOnFocus: true,
-        revalidateOnReconnect: true,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
         dedupingInterval: 30_000,
         keepPreviousData: true,
       }}

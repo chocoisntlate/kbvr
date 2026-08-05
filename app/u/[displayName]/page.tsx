@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import {
   getPublicPostsByDisplayName,
+  getUserSavedDiagrams,
   getUserSavedLayouts,
   getUserDefaultLayoutId,
 } from "@/features/posts/queries";
@@ -37,10 +38,12 @@ export default async function PublicProfilePage({
 
   const { diagrams, layouts } = result;
 
-  const [savedLayouts, defaultLayoutId] = await Promise.all([
+  const [savedDiagrams, savedLayouts, defaultLayoutId] = await Promise.all([
+    getUserSavedDiagrams(),
     getUserSavedLayouts(),
     getUserDefaultLayoutId(),
   ]);
+  const savedDiagramIds = new Set(savedDiagrams.map((d) => d.id));
   const savedLayoutIds = new Set(savedLayouts.map((l) => l.id));
 
   return (
@@ -57,7 +60,11 @@ export default async function PublicProfilePage({
           </p>
         )}
         {diagrams.map((post) => (
-          <DiagramPostCard key={post.id} post={post} />
+          <DiagramPostCard
+            key={post.id}
+            post={post}
+            isSaved={savedDiagramIds.has(post.id)}
+          />
         ))}
       </section>
 

@@ -6,6 +6,7 @@ import useSWRInfinite from "swr/infinite";
 import {
   searchPostsAction,
   getBrowseLayoutFlagsAction,
+  getBrowseDiagramFlagsAction,
 } from "@/features/posts/readActions";
 import type { SearchPostsResult } from "@/features/posts/queries";
 import { DiagramPostCard } from "./DiagramPostCard";
@@ -15,17 +16,20 @@ import { RefreshButton } from "@/features/ui/RefreshButton";
 import { DiagramPostSummary, LayoutPostSummary } from "@/features/posts/types";
 
 type LayoutFlags = { savedLayoutIds: string[]; defaultLayoutId: string | null };
+type DiagramFlags = { savedDiagramIds: string[] };
 
 export function BrowseResultsList({
   activeType,
   q,
   initialPage,
   initialLayoutFlags,
+  initialDiagramFlags,
 }: {
   activeType: "diagram" | "layout";
   q: string;
   initialPage: SearchPostsResult;
   initialLayoutFlags?: LayoutFlags;
+  initialDiagramFlags?: DiagramFlags;
 }) {
   type BrowseKey = readonly ["browse", "diagram" | "layout", string, number];
 
@@ -56,14 +60,23 @@ export function BrowseResultsList({
     initialLayoutFlags ? { fallbackData: initialLayoutFlags } : undefined,
   );
 
+  const { data: diagramFlags, mutate: mutateDiagramFlags } =
+    useSWR<DiagramFlags>(
+      activeType === "diagram" ? ["browse-diagram-flags"] : null,
+      () => getBrowseDiagramFlagsAction(),
+      initialDiagramFlags ? { fallbackData: initialDiagramFlags } : undefined,
+    );
+
   const posts = (data ?? []).flatMap((p) => p.posts);
   const hasMore = data?.at(-1)?.hasMore ?? false;
   const savedLayoutIds = new Set(layoutFlags?.savedLayoutIds ?? []);
   const defaultLayoutId = layoutFlags?.defaultLayoutId ?? null;
+  const savedDiagramIds = new Set(diagramFlags?.savedDiagramIds ?? []);
 
   const handleRefresh = () => {
     mutate();
     if (activeType === "layout") mutateLayoutFlags();
+    if (activeType === "diagram") mutateDiagramFlags();
   };
 
   return (
@@ -79,7 +92,11 @@ export function BrowseResultsList({
       )}
       {activeType === "diagram"
         ? (posts as DiagramPostSummary[]).map((post) => (
-            <DiagramPostCard key={post.id} post={post} />
+            <DiagramPostCard
+              key={post.id}
+              post={post}
+              isSaved={savedDiagramIds.has(post.id)}
+            />
           ))
         : (posts as LayoutPostSummary[]).map((post) => (
             <LayoutPostCard
