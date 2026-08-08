@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 import {
@@ -44,15 +44,26 @@ export function BrowseResultsList({
       },
       ([, type, query, page]: BrowseKey) =>
         searchPostsAction(type, query, page),
-      { fallbackData: [initialPage] },
+      { fallbackData: [initialPage], revalidateFirstPage: false },
     );
 
   // useSWRInfinite doesn't reset `size` when the key deps change, so a
   // stale `size` would try to refetch several pages for a new search term.
+  // Compare against the previous activeType/q (rather than a one-shot
+  // "first render" flag) so it only resets on an actual change, and is
+  // immune to React Strict Mode's dev-only double-invoking of mount
+  // effects, which would otherwise still fire this on every remount.
+  const prevKeyRef = useRef({ activeType, q });
   useEffect(() => {
+    if (
+      prevKeyRef.current.activeType === activeType &&
+      prevKeyRef.current.q === q
+    ) {
+      return;
+    }
+    prevKeyRef.current = { activeType, q };
     setSize(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeType, q]);
+  }, [activeType, q, setSize]);
 
   const { data: layoutFlags, mutate: mutateLayoutFlags } = useSWR<LayoutFlags>(
     activeType === "layout" ? ["browse-layout-flags"] : null,
