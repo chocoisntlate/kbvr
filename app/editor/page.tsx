@@ -1,0 +1,120 @@
+import { Suspense } from "react";
+import ButtonsBar from "@/features/display/ButtonsBar";
+import { KeyboardPanel } from "@/features/display/InfoDisplay";
+import SpecEditor from "@/features/display/SpecEditor";
+import { Keyboard } from "@/features/keyboard/Keyboard";
+import { KeyboardContextProvider } from "@/features/keyboard/KeyboardContext";
+import SearchBar from "@/features/search/SearchBar";
+import { getDiagramById, getDefaultLayout } from "@/features/posts/queries";
+import { PostMeta } from "@/features/posts/types";
+import { Diagram } from "@/features/spec/diagramSchema";
+import { Layout } from "@/features/spec/layoutSchema";
+import type { Metadata } from "next";
+
+const EMPTY_DIAGRAM: Diagram = {
+  name: "Untitled Diagram",
+  shortcuts: [],
+};
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ diagram?: string; new?: string }>;
+}): Promise<Metadata> {
+  const { diagram: diagramId, new: isNew } = await searchParams;
+  if (isNew) return {};
+  if (!diagramId) return {};
+
+  const result = await getDiagramById(diagramId);
+  if (!result) return {};
+
+  const { name, description } = result.post.data;
+  return {
+    title: name,
+    description,
+    openGraph: { title: name, description },
+  };
+}
+
+export default function EditorPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ diagram?: string; new?: string }>;
+}) {
+  return (
+    <main className="overflow-hidden p-2 flex flex-col items-center gap-4 my-4">
+      <Suspense
+        fallback={
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            Loading…
+          </p>
+        }
+      >
+        <EditorContent searchParams={searchParams} />
+      </Suspense>
+    </main>
+  );
+}
+
+async function EditorContent({
+  searchParams,
+}: {
+  searchParams: Promise<{ diagram?: string; new?: string }>;
+}) {
+  const { diagram: diagramId, new: isNew } = await searchParams;
+
+  let initialDiagram: Diagram | undefined;
+  let initialDiagramMeta: PostMeta | null | undefined;
+
+  if (isNew) {
+    initialDiagram = EMPTY_DIAGRAM;
+  } else if (diagramId) {
+    const result = await getDiagramById(diagramId);
+    if (result) {
+      initialDiagram = result.post.data;
+      initialDiagramMeta = {
+        id: result.post.id,
+        ownerId: result.post.ownerId,
+        ownerDisplayName: result.post.ownerDisplayName,
+        isPublic: result.post.isPublic,
+        isOfficial: result.post.isOfficial,
+        isSavedByMe: result.isSavedByMe,
+      };
+    }
+  }
+
+  let initialLayout: Layout | undefined;
+  let initialLayoutMeta: PostMeta | null | undefined;
+
+  const defaultLayout = await getDefaultLayout();
+  if (defaultLayout) {
+    initialLayout = defaultLayout.data;
+    initialLayoutMeta = {
+      id: defaultLayout.id,
+      ownerId: defaultLayout.ownerId,
+      ownerDisplayName: defaultLayout.ownerDisplayName,
+      isPublic: defaultLayout.isPublic,
+      isOfficial: defaultLayout.isOfficial,
+      isSavedByMe: true,
+    };
+  }
+
+  return (
+    <KeyboardContextProvider
+      initialDiagram={initialDiagram}
+      initialDiagramMeta={initialDiagramMeta}
+      initialLayout={initialLayout}
+      initialLayoutMeta={initialLayoutMeta}
+    >
+      <KeyboardPanel />
+      <div>
+        <ButtonsBar />
+        <div className="flex items-stretch gap-4">
+          <Keyboard />
+          <SearchBar />
+        </div>
+        <SpecEditor />
+      </div>
+    </KeyboardContextProvider>
+  );
+}

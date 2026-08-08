@@ -44,7 +44,10 @@ export function DiagramLibraryItem({
 
   return (
     <div className="flex items-center justify-between gap-3 rounded-lg border border-neutral-200 bg-white px-4 py-3 text-sm dark:border-neutral-700 dark:bg-neutral-900">
-      <Link href={`/?diagram=${post.id}`} className="min-w-0 hover:opacity-80">
+      <Link
+        href={`/editor?diagram=${post.id}`}
+        className="min-w-0 hover:opacity-80"
+      >
         <p className="flex items-center gap-2 truncate font-medium text-neutral-900 dark:text-neutral-100">
           {post.name}
           {post.isOfficial && <OfficialBadge />}
@@ -56,7 +59,7 @@ export function DiagramLibraryItem({
       </Link>
       <div className="flex shrink-0 gap-2">
         <Link
-          href={`/?diagram=${post.id}`}
+          href={`/editor?diagram=${post.id}`}
           className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-neutral-50 transition-colors outline-none focus-visible:border-teal-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700 dark:focus-visible:border-teal-400"
         >
           {isOwned ? "Edit" : "View"}
