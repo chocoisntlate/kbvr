@@ -1,8 +1,8 @@
 import { Diagram } from "@/features/spec/diagramSchema";
 
 export const INTRODUCTION_DIAGRAM: Diagram = {
-  name: "Default Introduction Diagram",
-  description: "Hover over keys to learn about kbvr",
+  name: "Introduction Diagram",
+  description: "Start by hovering over the number keys!",
   intendedLayout: { name: "QWERTY US 80%", fingerprint: "1ynpbrt" },
   shortcuts: [
     {
@@ -147,57 +147,49 @@ export const INTRODUCTION_DIAGRAM: Diagram = {
     },
     {
       keys: ["ctrl-left"],
-      description: ["Click me"],
+      description: ["🎯 Click me"],
     },
     {
       keys: ["1"],
-      description: ["👋 Hello!"],
+      description: ["👋 Hello! Welcome to the introduction diagram."],
       tags: ["tutorial"],
     },
     {
       keys: ["ctrl-left", "shift-left"],
-      description: ["Click me"],
-    },
-    {
-      keys: ["2"],
-      description: [
-        "❓ kbvr is an interactive key-bind visualizer, editor, and library",
-      ],
-      tags: ["tutorial"],
+      description: ["🎯 Click me"],
     },
     {
       keys: ["3"],
       description: [
-        "↙️ Try clicking the bottom-left 'Ctrl' key to see some Google Chrome shortcuts",
+        "❓ Shortcuts display their descriptions when they are within one key press of completion",
       ],
       tags: ["tutorial"],
     },
     {
       keys: ["4"],
       description: [
-        'ℹ️ "Diagrams" are groups of related key-binds that are displayed on a supported keyboard "Layout".',
+        "↙️ Try clicking the bottom-left 'Ctrl' key to review common Google Chrome shortcuts inside this diagram",
+      ],
+      tags: ["tutorial"],
+    },
+    {
+      keys: ["2"],
+      description: [
+        'ℹ️ "Diagrams" are groups of related key-binds that are displayed on a keyboard "Layout".',
       ],
       tags: ["tutorial"],
     },
     {
       keys: ["5"],
       description: [
-        "👓 Descriptions are revealed when they are within one key press of completion.",
+        "👓 kbvr also has its own set of shortcuts, and they are already visible on this diagram. Try them and see if they work.",
       ],
       tags: ["tutorial"],
     },
     {
       keys: ["6"],
       description: [
-        "🗨️ Key-binds with multiple descriptions look like this",
-        "Useful for conflicting key-binds",
-      ],
-      tags: ["tutorial"],
-    },
-    {
-      keys: ["7"],
-      description: [
-        '🔎 "Inspect Keys" lets you view all descriptions for each key and serves as the main interface for editing key-binds.',
+        "🗨️ To quickly explore a diagram, either use the 'Search' feature and hover over the results, or use the 'Inspect Keys' feature to inspect each individual key.",
       ],
       tags: ["tutorial"],
     },

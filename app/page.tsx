@@ -49,40 +49,19 @@ export default async function LandingPage() {
       </section>
 
       <section className="mx-auto max-w-3xl px-4 py-12">
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-lg border border-neutral-300 p-4 dark:border-neutral-700">
-            <h2 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-              Too many keybinds
-            </h2>
-            <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
-              The more apps you use, the more keybinds pile up. Once you start
-              customizing them, it&apos;s easy to lose track of what&apos;s
-              bound where.
-            </p>
-          </div>
-          <div className="rounded-lg border border-neutral-300 p-4 dark:border-neutral-700">
-            <h2 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-              An intuitive reference
-            </h2>
-            <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
-              See every shortcut laid out on your actual keyboard — click a key
-              to see what&apos;s bound, then import or export the whole thing as
-              JSON.
-            </p>
-          </div>
-          <div className="rounded-lg border border-neutral-300 p-4 dark:border-neutral-700">
-            <h2 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-              Share what you build
-            </h2>
-            <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
-              Every diagram can be made public. Publish yours, or browse what
-              the community has already mapped out below.
-            </p>
-          </div>
-        </div>
+        <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+          Why?
+        </h2>
+        <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+          Keeping track of shortcuts across multiple applications gets
+          overwhelming fast, especially once you start customizing them. kbvr
+          maps your shortcuts onto a virtual keyboard, giving you a clear
+          reference point you can keep for yourself or share with others. No
+          account needed, everything imports and exports as a plain JSON file.
+        </p>
       </section>
 
-      <section className="mx-auto max-w-3xl px-4 py-12">
+      <section className="mx-auto max-w-3xl px-4 py-5">
         <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
           Featured Diagrams
         </h2>
