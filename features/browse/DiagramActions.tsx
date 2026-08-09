@@ -9,15 +9,19 @@ import { saveDiagramReference } from "@/features/posts/actions";
 
 export function DiagramActions({
   diagramId,
+  ownerId,
   initialSaved,
 }: {
   diagramId: string;
+  ownerId: string;
   initialSaved: boolean;
 }) {
   const { user } = useAuth();
   const router = useRouter();
   const [saved, setSaved] = useState(initialSaved);
   const [busy, setBusy] = useState(false);
+
+  if (user?.id === ownerId) return null;
 
   const handleSave = async () => {
     if (!user) {

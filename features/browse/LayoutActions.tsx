@@ -12,10 +12,12 @@ import {
 
 export function LayoutActions({
   layoutId,
+  ownerId,
   initialSaved,
   initialDefault,
 }: {
   layoutId: string;
+  ownerId: string;
   initialSaved: boolean;
   initialDefault: boolean;
 }) {
@@ -24,6 +26,7 @@ export function LayoutActions({
   const [saved, setSaved] = useState(initialSaved);
   const [isDefault, setIsDefault] = useState(initialDefault);
   const [busy, setBusy] = useState(false);
+  const isOwner = user?.id === ownerId;
 
   const handleSave = async () => {
     if (!user) {
@@ -69,9 +72,11 @@ export function LayoutActions({
       <Button onClick={handleSetDefault} disabled={busy || isDefault}>
         {isDefault ? "Default" : "Set as default"}
       </Button>
-      <Button onClick={handleSave} disabled={busy || saved}>
-        {saved ? "Saved" : "Save"}
-      </Button>
+      {!isOwner && (
+        <Button onClick={handleSave} disabled={busy || saved}>
+          {saved ? "Saved" : "Save"}
+        </Button>
+      )}
     </>
   );
 }

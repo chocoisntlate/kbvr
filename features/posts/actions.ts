@@ -173,11 +173,23 @@ async function deletePost(table: PostTable, id: string): Promise<void> {
 }
 
 async function saveReference(
+  sourceTable: PostTable,
   savedTable: SavedTable,
   idColumn: string,
   id: string,
 ): Promise<void> {
   const { supabase, user } = await requireUser();
+
+  const { data: source, error: sourceError } = await supabase
+    .from(sourceTable)
+    .select("owner_id")
+    .eq("id", id)
+    .single();
+  if (sourceError) throw sourceError;
+  if (source.owner_id === user.id) {
+    throw new Error("You already own this.");
+  }
+
   const { error } = await supabase
     .from(savedTable)
     .upsert({ user_id: user.id, [idColumn]: id });
@@ -221,7 +233,7 @@ export async function duplicateDiagram(
 }
 
 export async function saveDiagramReference(diagramId: string): Promise<void> {
-  return saveReference("saved_diagrams", "diagram_id", diagramId);
+  return saveReference("diagrams", "saved_diagrams", "diagram_id", diagramId);
 }
 
 export async function removeSavedDiagram(diagramId: string): Promise<void> {
@@ -260,7 +272,7 @@ export async function duplicateLayout(
 }
 
 export async function saveLayoutReference(layoutId: string): Promise<void> {
-  return saveReference("saved_layouts", "layout_id", layoutId);
+  return saveReference("layouts", "saved_layouts", "layout_id", layoutId);
 }
 
 export async function removeSavedLayout(layoutId: string): Promise<void> {

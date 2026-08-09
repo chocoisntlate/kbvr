@@ -22,7 +22,7 @@ const robotoSlab = Roboto_Slab({
 });
 
 const DESCRIPTION =
-  "Browse, manage, and visualise keybinds and keyboard shortcuts interactively";
+  "Reference, manage, and visualise keybinds / keyboard shortcuts interactively";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

@@ -36,7 +36,7 @@ export default async function LandingPage() {
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
             <Link href="/editor" className={primaryButtonClasses}>
-              Try kbvr
+              Try kbvr (Intro Diagram)
             </Link>
             <Link href="/editor?new=1" className={secondaryButtonClasses}>
               Start from scratch

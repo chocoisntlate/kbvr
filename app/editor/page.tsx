@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 import ButtonsBar from "@/features/display/ButtonsBar";
 import { KeyboardPanel } from "@/features/display/InfoDisplay";
 import SpecEditor from "@/features/display/SpecEditor";
@@ -70,17 +71,16 @@ async function EditorContent({
     initialDiagram = EMPTY_DIAGRAM;
   } else if (diagramId) {
     const result = await getDiagramById(diagramId);
-    if (result) {
-      initialDiagram = result.post.data;
-      initialDiagramMeta = {
-        id: result.post.id,
-        ownerId: result.post.ownerId,
-        ownerDisplayName: result.post.ownerDisplayName,
-        isPublic: result.post.isPublic,
-        isOfficial: result.post.isOfficial,
-        isSavedByMe: result.isSavedByMe,
-      };
-    }
+    if (!result) notFound();
+    initialDiagram = result.post.data;
+    initialDiagramMeta = {
+      id: result.post.id,
+      ownerId: result.post.ownerId,
+      ownerDisplayName: result.post.ownerDisplayName,
+      isPublic: result.post.isPublic,
+      isOfficial: result.post.isOfficial,
+      isSavedByMe: result.isSavedByMe,
+    };
   }
 
   let initialLayout: Layout | undefined;

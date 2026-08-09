@@ -29,7 +29,11 @@ export function DiagramPostCard({
           >
             View
           </Link>
-          <DiagramActions diagramId={post.id} initialSaved={isSaved} />
+          <DiagramActions
+            diagramId={post.id}
+            ownerId={post.ownerId}
+            initialSaved={isSaved}
+          />
         </>
       }
     />

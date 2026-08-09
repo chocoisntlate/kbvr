@@ -26,6 +26,7 @@ export function LayoutPostCard({
       actions={
         <LayoutActions
           layoutId={post.id}
+          ownerId={post.ownerId}
           initialSaved={isSaved}
           initialDefault={isDefault}
         />
