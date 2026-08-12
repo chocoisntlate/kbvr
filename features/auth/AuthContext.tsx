@@ -29,39 +29,10 @@ async function fetchDisplayName(userId: string): Promise<string | null> {
   }
 }
 
-export function AuthProvider({
-  initialUser,
-  initialDisplayName,
-  children,
-}: {
-  initialUser: User | null;
-  initialDisplayName: string | null;
-  children: React.ReactNode;
-}) {
-  const [user, setUser] = useState<User | null>(initialUser);
-  const [prevInitialUser, setPrevInitialUser] = useState(initialUser);
-  const [loading, setLoading] = useState(false);
-  const [displayName, setDisplayName] = useState<string | null>(
-    initialDisplayName,
-  );
-  const [prevInitialDisplayName, setPrevInitialDisplayName] =
-    useState(initialDisplayName);
-
-  // RootLayout re-executes server-side (and sends fresh props) after a
-  // Server Action redirect, e.g. sign-in, but this provider stays mounted
-  // across that navigation — without this, the initial useState values
-  // would never update and the Navbar would wait on the slower client-side
-  // onAuthStateChange listener to notice the new session. Adjusting state
-  // during render (rather than an effect) is React's documented pattern for
-  // this: https://react.dev/learn/you-might-not-need-an-effect
-  if (initialUser !== prevInitialUser) {
-    setPrevInitialUser(initialUser);
-    setUser(initialUser);
-  }
-  if (initialDisplayName !== prevInitialDisplayName) {
-    setPrevInitialDisplayName(initialDisplayName);
-    setDisplayName(initialDisplayName);
-  }
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [displayName, setDisplayName] = useState<string | null>(null);
 
   const refreshDisplayName = async () => {
     if (!user) {

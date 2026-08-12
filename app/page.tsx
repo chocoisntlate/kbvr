@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { FeaturedDiagramCard } from "@/features/landing/FeaturedDiagramCard";
@@ -14,12 +15,7 @@ const primaryButtonClasses =
 const secondaryButtonClasses =
   "inline-block rounded-md border border-neutral-300 bg-white px-5 py-2.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700";
 
-export default async function LandingPage() {
-  const results = await Promise.all(
-    FEATURED_DIAGRAM_IDS.map((id) => getDiagramById(id)),
-  );
-  const featuredDiagrams = results.filter((result) => result !== null);
-
+export default function LandingPage() {
   return (
     <>
       <section className="bg-teal-50 dark:bg-teal-950/40">
@@ -68,36 +64,57 @@ export default async function LandingPage() {
         <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
           See what the community has to offer!
         </p>
-        {featuredDiagrams.length > 0 ? (
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {featuredDiagrams.map(({ post }) => (
-              <FeaturedDiagramCard
-                key={post.id}
-                diagram={{
-                  key: post.id,
-                  name: post.data.name,
-                  description: post.data.description ?? "No description yet.",
-                  href: `/editor?diagram=${post.id}`,
-                  author: post.ownerDisplayName,
-                  isOfficial: post.isOfficial,
-                  stats: [`${post.data.shortcuts.length} shortcuts`],
-                }}
-              />
-            ))}
-          </div>
-        ) : (
-          <p className="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
-            No featured diagrams yet — browse{" "}
-            <Link
-              href="/browse"
-              className="underline hover:text-neutral-900 dark:hover:text-neutral-100"
-            >
-              what&apos;s public
-            </Link>{" "}
-            in the meantime.
-          </p>
-        )}
+        <Suspense
+          fallback={
+            <p className="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
+              Loading…
+            </p>
+          }
+        >
+          <FeaturedDiagrams />
+        </Suspense>
       </section>
     </>
+  );
+}
+
+async function FeaturedDiagrams() {
+  const results = await Promise.all(
+    FEATURED_DIAGRAM_IDS.map((id) => getDiagramById(id)),
+  );
+  const featuredDiagrams = results.filter((result) => result !== null);
+
+  if (featuredDiagrams.length === 0) {
+    return (
+      <p className="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
+        No featured diagrams yet — browse{" "}
+        <Link
+          href="/browse"
+          className="underline hover:text-neutral-900 dark:hover:text-neutral-100"
+        >
+          what&apos;s public
+        </Link>{" "}
+        in the meantime.
+      </p>
+    );
+  }
+
+  return (
+    <div className="mt-6 grid gap-4 sm:grid-cols-2">
+      {featuredDiagrams.map(({ post }) => (
+        <FeaturedDiagramCard
+          key={post.id}
+          diagram={{
+            key: post.id,
+            name: post.data.name,
+            description: post.data.description ?? "No description yet.",
+            href: `/editor?diagram=${post.id}`,
+            author: post.ownerDisplayName,
+            isOfficial: post.isOfficial,
+            stats: [`${post.data.shortcuts.length} shortcuts`],
+          }}
+        />
+      ))}
+    </div>
   );
 }
