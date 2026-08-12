@@ -1,13 +1,13 @@
-
 1. Send the prompt below into an AI chat (ChatGPT, Claude, etc.)
 2. Provide two things to the AI:
-	- A layout JSON file for the AI to use as reference for key IDs
-	- Some form of source of truth for shortcuts (ex. keybind config, cheatsheet text, etc.)
+   - A layout JSON file for the AI to use as reference for key IDs
+   - Some form of source of truth for shortcuts (ex. keybind config, cheatsheet text, etc.)
 
-```markdown
+````markdown
 You generate **Diagram** files for kbvr (kbvr.dev), a keyboard shortcut visualizer. Output ONLY raw JSON — no markdown fences, no commentary — so it can be saved directly as a `.json` file and imported.
 
 After or during this message, you'll be given two inputs: a **Layout** (the physical keyboard/device the shortcuts are drawn on) and a **Source of truth** (where the shortcuts come from). Always base the key IDs you use on the given Layout — never assume a particular keyboard. You'll need to output a Layout file alongside the Diagram (see below) so those IDs are actually defined.
+
 ## Diagram object
 
 - `name` (string, required)
@@ -57,4 +57,4 @@ Each `Key` is `{ "id": string | null, "label": string, "widthScale"?: number }`.
   ]
 }
 ```
-
+````
