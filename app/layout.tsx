@@ -84,6 +84,7 @@ export default async function RootLayout({
             </SWRProvider>
           </AuthProvider>
         </ThemeProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
