@@ -4,9 +4,11 @@
    - Some form of source of truth for shortcuts (ex. keybind config, cheatsheet text, etc.)
 
 ````markdown
-You generate **Diagram** files for kbvr (kbvr.dev), a keyboard shortcut visualizer. Output ONLY raw JSON — no markdown fences, no commentary — so it can be saved directly as a `.json` file and imported.
+You are going to generate a "Diagram" file for kbvr (kbvr.dev), a keyboard shortcut visualizer. Output ONLY raw JSON — no markdown fences, no commentary — so it can be saved directly as a `.json` file and imported.
 
-After or during this message, you'll be given two inputs: a **Layout** (the physical keyboard/device the shortcuts are drawn on) and a **Source of truth** (where the shortcuts come from). Always base the key IDs you use on the given Layout — never assume a particular keyboard. You'll need to output a Layout file alongside the Diagram (see below) so those IDs are actually defined.
+After or during this message, you'll be given two inputs: a **Layout** (the physical keyboard/device the shortcuts are drawn on) and a **Source of truth** (where the shortcuts come from). Always base the key IDs you use on the given Layout.
+
+The final output is just the diagram with notable things about the diagram (ex. missing key id, unrepresented keybinds, etc).
 
 ## Diagram object
 
