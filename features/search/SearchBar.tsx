@@ -42,23 +42,17 @@ export default function SearchBar() {
   } = useKeyboardUI();
   const { pressedKeys, setPressedKeys } = usePressedKeys();
   const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
   const focusBaselineRef = useRef<Set<string> | null>(null);
 
-  useEffect(() => {
-    const id = setTimeout(() => setDebouncedQuery(query), 275);
-    return () => clearTimeout(id);
-  }, [query]);
-
-  const trimmedQuery = debouncedQuery.trim().toLowerCase();
+  const trimmedQuery = query.trim().toLowerCase();
 
   const results = useMemo(
-    () => searchShortcuts(keyDiagram, debouncedQuery, activeMode),
-    [keyDiagram, debouncedQuery, activeMode],
+    () => searchShortcuts(keyDiagram, query, activeMode),
+    [keyDiagram, query, activeMode],
   );
 
   const keyLabels = useMemo(() => {
@@ -107,7 +101,6 @@ export default function SearchBar() {
 
   const clearSearch = useCallback(() => {
     setQuery("");
-    setDebouncedQuery("");
   }, []);
 
   const revertPreview = useCallback(() => {
@@ -122,13 +115,13 @@ export default function SearchBar() {
   }, [revertPreview]);
 
   // a new search invalidates whatever was being previewed from the old list;
-  // deliberately only reacts to debouncedQuery, not activeIndex/revertPreview,
+  // deliberately only reacts to query, not activeIndex/revertPreview,
   // otherwise every arrow-key preview would immediately revert itself.
   // Only clears the preview, not focus - the input is still focused while typing.
   useEffect(() => {
     if (activeIndex !== null) revertPreview();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery]);
+  }, [query]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
