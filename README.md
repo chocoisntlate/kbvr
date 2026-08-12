@@ -2,6 +2,8 @@
 
 Interactive keyboard shortcut visualization tool. Create, view, import, and export [Diagrams](#diagram) and [Layouts](#layout).
 
+Don't want to write JSON by hand? Use [PROMPT.md](./PROMPT.md) to have an AI generate a Diagram for you from any keybinding reference.
+
 ## Diagram
 
 A **Diagram** defines a collection of keyboard shortcuts and their metadata.
