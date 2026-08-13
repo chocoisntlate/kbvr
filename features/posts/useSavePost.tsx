@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/AuthContext";
-import { ImportExportButton } from "@/features/display/ImportExport";
 import { Diagram } from "@/features/spec/diagramSchema";
 import { Layout } from "@/features/spec/layoutSchema";
 import { PostMeta } from "./types";
@@ -19,7 +18,7 @@ import {
   saveLayoutReference,
 } from "./actions";
 
-type SavePostButtonProps =
+type SavePostProps =
   | {
       kind: "diagram";
       data: Diagram;
@@ -35,7 +34,7 @@ type SavePostButtonProps =
 
 type DialogStep = "visibility-new" | "fork-choice" | "visibility-fork" | null;
 
-export function SavePostButton(props: SavePostButtonProps) {
+export function useSavePost(props: SavePostProps) {
   const { kind, meta, onMetaChange } = props;
   const { user } = useAuth();
   const router = useRouter();
@@ -125,41 +124,33 @@ export function SavePostButton(props: SavePostButtonProps) {
       ? "Saving…"
       : "Save";
 
-  return (
-    <>
-      <ImportExportButton
-        title={label}
-        onClick={handleClick}
-        disabled={status === "saving" || alreadySavedReference}
+  const dialog =
+    step === "visibility-new" ? (
+      <VisibilityDialog
+        title={`Save this ${kind}`}
+        onCancel={() => setStep(null)}
+        onConfirm={handleConfirmNew}
       />
-      {status === "error" && (
-        <span className="text-[10px] text-red-600 dark:text-red-400">
-          Save failed
-        </span>
-      )}
+    ) : step === "fork-choice" ? (
+      <ForkChoiceDialog
+        kind={kind}
+        onCancel={() => setStep(null)}
+        onChooseDuplicate={() => setStep("visibility-fork")}
+        onChooseOriginal={handleChooseOriginal}
+      />
+    ) : step === "visibility-fork" ? (
+      <VisibilityDialog
+        title={`Save your duplicate ${kind}`}
+        onCancel={() => setStep(null)}
+        onConfirm={handleConfirmFork}
+      />
+    ) : null;
 
-      {step === "visibility-new" && (
-        <VisibilityDialog
-          title={`Save this ${kind}`}
-          onCancel={() => setStep(null)}
-          onConfirm={handleConfirmNew}
-        />
-      )}
-      {step === "fork-choice" && (
-        <ForkChoiceDialog
-          kind={kind}
-          onCancel={() => setStep(null)}
-          onChooseDuplicate={() => setStep("visibility-fork")}
-          onChooseOriginal={handleChooseOriginal}
-        />
-      )}
-      {step === "visibility-fork" && (
-        <VisibilityDialog
-          title={`Save your duplicate ${kind}`}
-          onCancel={() => setStep(null)}
-          onConfirm={handleConfirmFork}
-        />
-      )}
-    </>
-  );
+  return {
+    label,
+    status,
+    isDisabled: status === "saving" || alreadySavedReference,
+    handleClick,
+    dialog,
+  };
 }

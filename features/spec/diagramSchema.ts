@@ -2,7 +2,7 @@ import * as z from "zod";
 
 export const ShortcutSchema = z.object({
   keys: z.array(z.string().min(1).max(50)).min(1).max(5),
-  description: z.array(z.string().min(1).max(150)).min(1).max(10), // For conflicting keybinds
+  description: z.array(z.string().min(1).max(500)).min(1).max(10), // For conflicting keybinds
 
   tags: z.array(z.string().max(100).optional()).optional(),
   mode: z.string().optional(),

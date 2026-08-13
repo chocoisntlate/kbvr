@@ -44,24 +44,29 @@ export function Keyboard() {
     isInspectMode,
     activeMode,
     setKeyboardHeight,
+    setKeyboardWidth,
     editingKey,
     setEditingKey,
   } = useKeyboardUI();
   const { pressedKeys, setPressedKeys } = usePressedKeys();
   const keyboardRef = useRef<HTMLDivElement>(null);
 
-  // publish the keyboard's rendered height so sibling UI (e.g. the search
-  // panel) can size itself to match without growing past it
+  // publish the keyboard's rendered size so sibling UI can match it: the
+  // search panel matches height without growing past it, and the buttons
+  // bar matches width so it stays pinned above the keyboard regardless of
+  // whether the search panel is shown next to it
   useEffect(() => {
     const el = keyboardRef.current;
     if (!el) return;
 
     const observer = new ResizeObserver(() => {
-      setKeyboardHeight(el.getBoundingClientRect().height);
+      const rect = el.getBoundingClientRect();
+      setKeyboardHeight(rect.height);
+      setKeyboardWidth(rect.width);
     });
     observer.observe(el);
     return () => observer.disconnect();
-  }, [setKeyboardHeight]);
+  }, [setKeyboardHeight, setKeyboardWidth]);
 
   const keyCandidatesMap = useMemo(() => {
     if (!keyDiagram) return new Map<string, Shortcut[]>();

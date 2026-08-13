@@ -1,64 +1,19 @@
 "use client";
 
 import React from "react";
-import { ImportExportButton } from "./ImportExport";
 import { useKeyboardContent } from "../keyboard/KeyboardContext";
-import { SavePostButton } from "@/features/posts/SavePostButton";
 import { DiagramLayoutPairing } from "./DiagramLayoutPairing";
-import { MatchToLayoutButton } from "./MatchToLayoutButton";
 
 /* ------------------------------------------------------------------ */
 /* Keyboard panel with diagram + optional layout info                 */
 /* ------------------------------------------------------------------ */
 
 export function KeyboardPanel() {
-  const {
-    keyDiagram,
-    setKeyDiagram,
-    keyLayout,
-    setKeyLayout,
-    currentDiagramMeta,
-    setCurrentDiagramMeta,
-    currentLayoutMeta,
-    setCurrentLayoutMeta,
-  } = useKeyboardContent();
+  const { keyDiagram, keyLayout } = useKeyboardContent();
 
-  /* Helper to import JSON and update state */
-  const handleImport = <T,>(
-    file: File,
-    setter: React.Dispatch<React.SetStateAction<T>>,
-  ) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e.target?.result as string) as T;
-        setter(data);
-      } catch (err) {
-        console.error("Failed to import JSON:", err);
-      }
-    };
-    reader.readAsText(file);
-  };
-
-  /* Helper to export JSON */
-  const handleExport = (name: string, data: object) => {
-    // sanitize name to be file-system safe
-    const safeName = name
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-_]/g, "");
-    const filename = `${safeName}.keydiagram.json`;
-
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
+  const keyCount = new Set(
+    keyLayout.rows.flatMap((r) => r.map((k) => k.id).filter(Boolean)),
+  ).size;
 
   return (
     <div className="flex flex-col gap-2 w-full max-w-5xl">
@@ -69,42 +24,7 @@ export function KeyboardPanel() {
           title="Diagram"
           name={keyDiagram.name}
           description={keyDiagram.description}
-          meta={
-            <>
-              <MetaRow label="Name" value={keyDiagram.name} />
-              <MetaRow label="Description" value={keyDiagram.description} />
-              <MetaRow label="Shortcuts" value={keyDiagram.shortcuts.length} />
-              <MetaRow
-                label="Tags"
-                value={
-                  new Set(
-                    keyDiagram.shortcuts
-                      .flatMap((s) => s.tags ?? [])
-                      .filter(Boolean),
-                  ).size
-                }
-              />
-            </>
-          }
-          actions={
-            <>
-              <ImportExportButton
-                title="Import"
-                onFileSelect={(file) => handleImport(file, setKeyDiagram)}
-              />
-              <ImportExportButton
-                title="Export"
-                onClick={() => handleExport(keyDiagram.name, keyDiagram)}
-              />
-              <MatchToLayoutButton />
-              <SavePostButton
-                kind="diagram"
-                data={keyDiagram}
-                meta={currentDiagramMeta}
-                onMetaChange={setCurrentDiagramMeta}
-              />
-            </>
-          }
+          counters={`${keyDiagram.shortcuts.length} shortcuts`}
         />
 
         {/* Layout Info Row */}
@@ -112,41 +32,7 @@ export function KeyboardPanel() {
           title="Layout"
           name={keyLayout.name}
           description={keyLayout.description}
-          meta={
-            <>
-              <MetaRow label="Name" value={keyLayout.name} />
-              <MetaRow label="Description" value={keyLayout.description} />
-              <MetaRow label="Rows" value={keyLayout.rows.length} />
-              <MetaRow
-                label="Keys"
-                value={
-                  new Set(
-                    keyLayout.rows.flatMap((r) =>
-                      r.map((k) => k.id).filter(Boolean),
-                    ),
-                  ).size
-                }
-              />
-            </>
-          }
-          actions={
-            <>
-              <ImportExportButton
-                title="Import"
-                onFileSelect={(file) => handleImport(file, setKeyLayout)}
-              />
-              <ImportExportButton
-                title="Export"
-                onClick={() => handleExport(keyLayout.name, keyLayout)}
-              />
-              <SavePostButton
-                kind="layout"
-                data={keyLayout}
-                meta={currentLayoutMeta}
-                onMetaChange={setCurrentLayoutMeta}
-              />
-            </>
-          }
+          counters={`${keyCount} keys`}
         />
       </section>
     </div>
@@ -154,26 +40,19 @@ export function KeyboardPanel() {
 }
 
 /* ------------------------------------------------------------------ */
-/* InfoRow & InfoHover                                                 */
+/* InfoRow                                                             */
 /* ------------------------------------------------------------------ */
 
 type InfoRowProps = {
   title: string;
   name: string;
   description?: string;
-  meta?: React.ReactNode;
-  actions?: React.ReactNode;
+  counters: string;
 };
 
-function InfoRow({ title, name, description, meta, actions }: InfoRowProps) {
+function InfoRow({ title, name, description, counters }: InfoRowProps) {
   return (
-    <div className="flex items-center gap-x-3 rounded-lg border border-neutral-200 bg-white px-5 py-4 relative flex-1 min-w-0 dark:border-neutral-700 dark:bg-neutral-900">
-      {meta && (
-        <div className="absolute top-3 left-3">
-          <InfoHover>{meta}</InfoHover>
-        </div>
-      )}
-
+    <div className="flex items-center gap-x-3 rounded-lg border border-neutral-200 bg-white px-5 py-8 flex-1 min-w-0 dark:border-neutral-700 dark:bg-neutral-900">
       <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-500 justify-self-start w-max dark:text-neutral-400">
         {title}
       </h2>
@@ -183,53 +62,31 @@ function InfoRow({ title, name, description, meta, actions }: InfoRowProps) {
           {name}
         </span>
         {description && (
-          <span className="truncate text-xs text-neutral-500 dark:text-neutral-400">
-            {description}
-          </span>
+          <div className="group relative min-w-0">
+            <p className="line-clamp-2 text-xs text-neutral-500 dark:text-neutral-400">
+              {description}
+            </p>
+
+            {/* pt-2 (not mt-2) keeps this wrapper's box touching the
+                paragraph with no true gap, so the cursor stays over a
+                hoverable element the whole way down into the panel */}
+            <div
+              className="absolute left-0 top-full z-20 w-80 max-w-[90vw] pt-2
+                          translate-y-1 opacity-0 pointer-events-none transition-all
+                          duration-150 group-hover:translate-y-0 group-hover:opacity-100
+                          group-hover:pointer-events-auto"
+            >
+              <p className="whitespace-pre-wrap rounded-md border border-neutral-200 bg-white p-3 text-xs text-neutral-700 shadow-lg dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+                {description}
+              </p>
+            </div>
+          </div>
         )}
       </div>
 
-      {actions && (
-        <div className="flex flex-col gap-2.5 justify-center">{actions}</div>
-      )}
-    </div>
-  );
-}
-
-function MetaRow({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <div className="flex gap-1.5">
-      <span className="font-semibold text-neutral-500 dark:text-neutral-400">
-        {label}:
+      <span className="shrink-0 text-xs text-neutral-500 dark:text-neutral-400">
+        {counters}
       </span>
-      <span className="text-neutral-900 dark:text-neutral-100">{value}</span>
-    </div>
-  );
-}
-
-function InfoHover({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="group relative shrink-0">
-      <button
-        type="button"
-        className="flex h-6 w-6 items-center justify-center rounded-full border border-neutral-300 bg-white text-[10px] font-semibold text-neutral-500 hover:bg-neutral-100 hover:text-neutral-700 transition-colors dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200"
-        aria-label="More information"
-      >
-        i
-      </button>
-
-      {/* pt-2 (not mt-2) keeps this wrapper's box touching the button with
-          no true gap, so the cursor stays over a hoverable element the
-          whole way from the icon into the panel below it */}
-      <div
-        className="absolute left-0 top-full z-10 w-64 pt-2 translate-y-1
-                opacity-0 pointer-events-none transition-all duration-150
-                group-hover:translate-y-0 group-hover:opacity-100 group-hover:pointer-events-auto"
-      >
-        <div className="rounded-md border border-neutral-200 bg-white p-4 text-sm text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
-          <div className="flex flex-col gap-2">{children}</div>
-        </div>
-      </div>
     </div>
   );
 }

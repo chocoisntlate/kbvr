@@ -9,6 +9,10 @@ import {
 import { HoverTooltip } from "../keyboard/HoverTooltip";
 import { Button } from "../ui/Button";
 import { Dropdown } from "../ui/Dropdown";
+import { SaveMenuButton } from "./SaveMenuButton";
+import { ImportMenuButton } from "./ImportMenuButton";
+import { ExportMenuButton } from "./ExportMenuButton";
+import { MatchToLayoutButton } from "./MatchToLayoutButton";
 
 function isTypingTarget(el: Element | null): boolean {
   if (!el) return false;
@@ -27,6 +31,7 @@ export default function ButtonsBar() {
     setJsonEditorVisible,
     activeMode,
     setActiveMode,
+    keyboardWidth,
   } = useKeyboardUI();
   const { setPressedKeys } = usePressedKeys();
 
@@ -157,80 +162,96 @@ export default function ButtonsBar() {
 
   return (
     <div
-      className="inline-flex items-center gap-2 my-2"
-      style={{ background: "none", minHeight: 0 }}
+      className="flex items-center justify-between gap-2 my-2"
+      style={{
+        background: "none",
+        minHeight: 0,
+        // pinned to the keyboard's own rendered width so the right-hand
+        // buttons stay above the keyboard's right edge, not the far edge
+        // of the row (which widens once the search panel is shown)
+        width: keyboardWidth ?? undefined,
+      }}
     >
-      <Button
-        size="md"
-        className="relative group"
-        onClick={() => setInspectMode((prev) => !prev)}
-        aria-pressed={isInspectMode}
-      >
-        {isInspectMode ? "Exit Inspection" : "Inspect Keys"}
-        <HoverTooltip>Press I to toggle</HoverTooltip>
-      </Button>
-      <Button
-        size="md"
-        className="relative group"
-        onClick={() => setJsonEditorVisible((prev) => !prev)}
-        aria-pressed={isJsonEditorVisible}
-      >
-        {isJsonEditorVisible ? "Hide JSON" : "Show JSON"}
-        <HoverTooltip>Press J to toggle</HoverTooltip>
-      </Button>
-      <Button
-        size="md"
-        className="relative group"
-        onClick={() => setSearchVisible((prev) => !prev)}
-        aria-pressed={isSearchVisible}
-      >
-        {isSearchVisible ? "Hide Search" : "Show Search"}
-        <HoverTooltip>Press / to toggle</HoverTooltip>
-      </Button>
-      <Button
-        size="md"
-        className="relative group"
-        onClick={() => setPressedKeys(new Set())}
-      >
-        Reset Pressed Keys
-        <HoverTooltip>Press Escape to reset</HoverTooltip>
-      </Button>
-      <div className="relative">
+      <div className="inline-flex items-center gap-2">
         <Button
-          ref={modeTriggerRef}
           size="md"
           className="relative group"
-          onClick={() =>
-            setIsModeMenuOpen((prev) => {
-              const next = !prev;
-              if (next) {
-                const currentIndex = modeItems.findIndex(
-                  (item) => item.value === activeMode,
-                );
-                setHighlightedIndex(currentIndex === -1 ? 0 : currentIndex);
-              }
-              return next;
-            })
-          }
-          aria-haspopup="listbox"
-          aria-expanded={isModeMenuOpen}
+          onClick={() => setInspectMode((prev) => !prev)}
+          aria-pressed={isInspectMode}
         >
-          {activeMode ?? "All modes"}
-          <span className="ml-1 opacity-60">▾</span>
-          <HoverTooltip>Press M to open • 0-9 to jump directly</HoverTooltip>
+          {isInspectMode ? "Exit Inspection" : "Inspect Keys"}
+          <HoverTooltip>Press I to toggle</HoverTooltip>
         </Button>
+        <Button
+          size="md"
+          className="relative group"
+          onClick={() => setJsonEditorVisible((prev) => !prev)}
+          aria-pressed={isJsonEditorVisible}
+        >
+          {isJsonEditorVisible ? "Hide JSON" : "Show JSON"}
+          <HoverTooltip>Press J to toggle</HoverTooltip>
+        </Button>
+        <Button
+          size="md"
+          className="relative group"
+          onClick={() => setSearchVisible((prev) => !prev)}
+          aria-pressed={isSearchVisible}
+        >
+          {isSearchVisible ? "Hide Search" : "Show Search"}
+          <HoverTooltip>Press / to toggle</HoverTooltip>
+        </Button>
+        <Button
+          size="md"
+          className="relative group"
+          onClick={() => setPressedKeys(new Set())}
+        >
+          Reset Pressed Keys
+          <HoverTooltip>Press Escape to reset</HoverTooltip>
+        </Button>
+        <div className="relative">
+          <Button
+            ref={modeTriggerRef}
+            size="md"
+            className="relative group"
+            onClick={() =>
+              setIsModeMenuOpen((prev) => {
+                const next = !prev;
+                if (next) {
+                  const currentIndex = modeItems.findIndex(
+                    (item) => item.value === activeMode,
+                  );
+                  setHighlightedIndex(currentIndex === -1 ? 0 : currentIndex);
+                }
+                return next;
+              })
+            }
+            aria-haspopup="listbox"
+            aria-expanded={isModeMenuOpen}
+          >
+            {activeMode ?? "All modes"}
+            <span className="ml-1 opacity-60">▾</span>
+            <HoverTooltip>Press M to open • 0-9 to jump directly</HoverTooltip>
+          </Button>
 
-        <Dropdown
-          items={modeItems}
-          value={activeMode}
-          onChange={setActiveMode}
-          isOpen={isModeMenuOpen}
-          onOpenChange={setIsModeMenuOpen}
-          highlightedIndex={highlightedIndex}
-          onHighlightChange={setHighlightedIndex}
-          triggerRef={modeTriggerRef}
-          renderBadge={(index) => (index <= 9 ? index : null)}
-        />
+          <Dropdown
+            items={modeItems}
+            value={activeMode}
+            onChange={setActiveMode}
+            isOpen={isModeMenuOpen}
+            onOpenChange={setIsModeMenuOpen}
+            highlightedIndex={highlightedIndex}
+            onHighlightChange={setHighlightedIndex}
+            triggerRef={modeTriggerRef}
+            renderBadge={(index) => (index <= 9 ? index : null)}
+          />
+        </div>
+      </div>
+
+      <div className="inline-flex items-center gap-2">
+        <SaveMenuButton />
+        <ImportMenuButton />
+        <ExportMenuButton />
+        <MatchToLayoutButton />
       </div>
     </div>
   );

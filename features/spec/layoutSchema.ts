@@ -22,7 +22,7 @@ export const RowSchema = z
 
 export const LayoutSchema = z.object({
   name: z.string().min(1).max(100),
-  description: z.string().max(500).optional(),
+  description: z.string().max(2000).optional(),
   rows: z.array(RowSchema).min(1, "Layout must have at least one row"),
 });
 
