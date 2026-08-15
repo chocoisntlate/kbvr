@@ -53,7 +53,7 @@ export function Key({
       type="button"
       onClick={onClick}
       className={[
-        "relative flex items-center justify-center group",
+        "relative flex items-center justify-center",
         "rounded-md",
         "font-medium",
         "transition-[background-color,border-color] select-none flex-none",

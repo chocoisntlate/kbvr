@@ -36,14 +36,16 @@ function addGapCompensation(rows: Layout["rows"], unit: number, gap: number) {
   );
 }
 
-function getMaxRowUnits(rows: Layout["rows"]) {
+function getMaxRowScale(rows: Layout["rows"]) {
   return Math.max(
-    ...rows.map((row) => {
-      const widthSum = row.reduce((sum, key) => sum + (key.widthScale ?? 1), 0);
-      return widthSum + (widthSum - 1) * GAP_RATIO;
-    }),
+    ...rows.map((row) =>
+      row.reduce((sum, key) => sum + (key.widthScale ?? 1), 0),
+    ),
   );
 }
+
+const clampUnit = (value: number) =>
+  Math.max(MIN_UNIT, Math.min(MAX_UNIT, value));
 
 // ------------------------------------------------------------------
 // Component
@@ -82,35 +84,49 @@ export function Keyboard() {
     return () => observer.disconnect();
   }, [setKeyboardHeight, setKeyboardWidth]);
 
-  const maxRowUnits = useMemo(
-    () => getMaxRowUnits(keyLayout.rows),
+  const maxRowScale = useMemo(
+    () => getMaxRowScale(keyLayout.rows),
     [keyLayout],
   );
 
   // shrink/grow the key unit to fit whatever width the surrounding layout
-  // actually gives us, instead of rendering at a fixed pixel size
+  // actually gives us, instead of rendering at a fixed pixel size. gap is
+  // resolved before the final unit because it rounds to whole pixels, and a
+  // rounded-up gap would otherwise push the rendered rows past the width we
+  // measured against and raise a scrollbar.
   useEffect(() => {
     const outer = sizerRef.current;
     const inner = keyboardRef.current;
     if (!outer || !inner) return;
 
     const observer = new ResizeObserver(() => {
-      const cs = getComputedStyle(inner);
-      const paddingBorder =
-        parseFloat(cs.paddingLeft) +
-        parseFloat(cs.paddingRight) +
-        parseFloat(cs.borderLeftWidth) +
-        parseFloat(cs.borderRightWidth);
-      const raw = (outer.clientWidth - paddingBorder) / maxRowUnits;
-      const nextUnit = Math.round(Math.max(MIN_UNIT, Math.min(MAX_UNIT, raw)));
-      const nextGap = Math.max(2, Math.round(nextUnit * GAP_RATIO));
+      requestAnimationFrame(() => {
+        const available = outer.clientWidth;
+        if (!available) return;
 
-      setUnit((prev) => (prev === nextUnit ? prev : nextUnit));
-      setGap((prev) => (prev === nextGap ? prev : nextGap));
+        const cs = getComputedStyle(inner);
+        const paddingBorder =
+          parseFloat(cs.paddingLeft) +
+          parseFloat(cs.paddingRight) +
+          parseFloat(cs.borderLeftWidth) +
+          parseFloat(cs.borderRightWidth);
+        const content = available - paddingBorder;
+
+        const nextGap = Math.max(
+          2,
+          Math.round(clampUnit(content / maxRowScale) * GAP_RATIO),
+        );
+        const nextUnit = clampUnit(
+          Math.floor((content - (maxRowScale - 1) * nextGap) / maxRowScale),
+        );
+
+        setUnit((prev) => (prev === nextUnit ? prev : nextUnit));
+        setGap((prev) => (prev === nextGap ? prev : nextGap));
+      });
     });
     observer.observe(outer);
     return () => observer.disconnect();
-  }, [maxRowUnits]);
+  }, [maxRowScale]);
 
   const keyCandidatesMap = useMemo(() => {
     if (!keyDiagram) return new Map<string, Shortcut[]>();

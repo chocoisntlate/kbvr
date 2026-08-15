@@ -170,12 +170,16 @@ export default function ButtonsBar() {
         // buttons stay above the keyboard's right edge, not the far edge
         // of the row (which widens once the search panel is shown)
         width: keyboardWidth ?? undefined,
+        // the keyboard has a minimum size and scrolls inside its own box on
+        // narrow screens; the bar has no such box, so it must wrap instead of
+        // dragging the whole page into horizontal scroll
+        maxWidth: "100%",
       }}
     >
       <div className="inline-flex flex-wrap items-center gap-2">
         <Button
           size="md"
-          className="relative group"
+          className="relative"
           onClick={() => setInspectMode((prev) => !prev)}
           aria-pressed={isInspectMode}
         >
@@ -184,7 +188,7 @@ export default function ButtonsBar() {
         </Button>
         <Button
           size="md"
-          className="relative group"
+          className="relative"
           onClick={() => setJsonEditorVisible((prev) => !prev)}
           aria-pressed={isJsonEditorVisible}
         >
@@ -193,7 +197,7 @@ export default function ButtonsBar() {
         </Button>
         <Button
           size="md"
-          className="relative group"
+          className="relative"
           onClick={() => setSearchVisible((prev) => !prev)}
           aria-pressed={isSearchVisible}
         >
@@ -202,7 +206,7 @@ export default function ButtonsBar() {
         </Button>
         <Button
           size="md"
-          className="relative group"
+          className="relative"
           onClick={() => setPressedKeys(new Set())}
         >
           Reset Pressed Keys
@@ -212,7 +216,7 @@ export default function ButtonsBar() {
           <Button
             ref={modeTriggerRef}
             size="md"
-            className="relative group"
+            className="relative"
             onClick={() =>
               setIsModeMenuOpen((prev) => {
                 const next = !prev;
