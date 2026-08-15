@@ -43,7 +43,7 @@ export default function EditorPage({
   searchParams: Promise<{ diagram?: string; new?: string }>;
 }) {
   return (
-    <main className="overflow-hidden p-2 flex flex-col items-center gap-4 my-4">
+    <main className="p-2 flex flex-col items-center gap-4 my-4">
       <Suspense
         fallback={
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
@@ -107,10 +107,12 @@ async function EditorContent({
       initialLayoutMeta={initialLayoutMeta}
     >
       <KeyboardPanel />
-      <div>
+      <div className="flex flex-col gap-2 w-full max-w-[1600px]">
         <ButtonsBar />
-        <div className="flex items-stretch gap-4">
-          <Keyboard />
+        <div className="flex flex-col lg:flex-row items-stretch gap-4 w-full lg:w-fit">
+          <div className="min-w-0 flex-1">
+            <Keyboard />
+          </div>
           <SearchBar />
         </div>
         <SpecEditor />

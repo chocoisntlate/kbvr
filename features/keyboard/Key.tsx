@@ -45,6 +45,8 @@ export function Key({
 }: KeyProps) {
   const isHighlighted =
     (!!description && !isInspectMode) || (candidateCount > 0 && isInspectMode);
+  const labelFontSize = Math.min(12, Math.max(9, unit * 0.2));
+  const descFontSize = Math.min(9.6, Math.max(7, unit * 0.16));
 
   return (
     <button
@@ -53,7 +55,7 @@ export function Key({
       className={[
         "relative flex items-center justify-center group",
         "rounded-md",
-        "text-xs font-medium",
+        "font-medium",
         "transition-[background-color,border-color] select-none flex-none",
         "outline-none focus-visible:border-teal-500 dark:focus-visible:border-teal-400",
         isPressed
@@ -67,7 +69,10 @@ export function Key({
         height: unit + "px",
       }}
     >
-      <span className="absolute top-1 left-1.5 text-xs opacity-75">
+      <span
+        className="absolute top-1 left-1.5 opacity-75"
+        style={{ fontSize: labelFontSize }}
+      >
         {label}
       </span>
 
@@ -79,7 +84,10 @@ export function Key({
 
       {!isInspectMode && description && (
         <>
-          <span className="absolute left-1 right-1 top-1/2 origin-top text-[0.6rem] leading-[1.35] text-center px-0.5 font-medium line-clamp-2">
+          <span
+            className="absolute left-1 right-1 top-1/2 origin-top leading-[1.35] text-center px-0.5 font-medium line-clamp-2"
+            style={{ fontSize: descFontSize }}
+          >
             {description.length > 1 ? (
               <>
                 <span className="ml-1 opacity-75">+{description.length}</span>

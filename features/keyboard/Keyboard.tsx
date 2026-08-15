@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "@/features/spec/layoutSchema";
 import { Shortcut } from "../spec/diagramSchema";
 import { Key } from "./Key";
@@ -17,20 +17,32 @@ import { getDisplayKey } from "../diagram/shortcut";
 // Configuration
 // ------------------------------------------------------------------
 
-const UNIT = 60;
+const MAX_UNIT = 60;
+const MIN_UNIT = 32;
 const GAP = 4;
+const GAP_RATIO = GAP / MAX_UNIT;
 
 // ------------------------------------------------------------------
 // Helpers
 // ------------------------------------------------------------------
 
-function addGapCompensation(rows: Layout["rows"], gap: number) {
+function addGapCompensation(rows: Layout["rows"], unit: number, gap: number) {
   return rows.map((row) =>
     row.map((key) => ({
       ...key,
       adjustedWidth:
-        (key.widthScale ?? 1) * UNIT + ((key.widthScale ?? 1) - 1) * gap,
+        (key.widthScale ?? 1) * unit + ((key.widthScale ?? 1) - 1) * gap,
     })),
+  );
+}
+
+function getMaxRowUnits(rows: Layout["rows"]) {
+  return Math.max(
+    ...rows.map(
+      (row) =>
+        row.reduce((sum, key) => sum + (key.widthScale ?? 1), 0) +
+        (row.length - 1) * GAP_RATIO,
+    ),
   );
 }
 
@@ -50,6 +62,9 @@ export function Keyboard() {
   } = useKeyboardUI();
   const { pressedKeys, setPressedKeys } = usePressedKeys();
   const keyboardRef = useRef<HTMLDivElement>(null);
+  const sizerRef = useRef<HTMLDivElement>(null);
+  const [unit, setUnit] = useState(MAX_UNIT);
+  const [gap, setGap] = useState(GAP);
 
   // publish the keyboard's rendered size so sibling UI can match it: the
   // search panel matches height without growing past it, and the buttons
@@ -67,6 +82,36 @@ export function Keyboard() {
     observer.observe(el);
     return () => observer.disconnect();
   }, [setKeyboardHeight, setKeyboardWidth]);
+
+  const maxRowUnits = useMemo(
+    () => getMaxRowUnits(keyLayout.rows),
+    [keyLayout],
+  );
+
+  // shrink/grow the key unit to fit whatever width the surrounding layout
+  // actually gives us, instead of rendering at a fixed pixel size
+  useEffect(() => {
+    const outer = sizerRef.current;
+    const inner = keyboardRef.current;
+    if (!outer || !inner) return;
+
+    const observer = new ResizeObserver(() => {
+      const cs = getComputedStyle(inner);
+      const paddingBorder =
+        parseFloat(cs.paddingLeft) +
+        parseFloat(cs.paddingRight) +
+        parseFloat(cs.borderLeftWidth) +
+        parseFloat(cs.borderRightWidth);
+      const raw = (outer.clientWidth - paddingBorder) / maxRowUnits;
+      const nextUnit = Math.round(Math.max(MIN_UNIT, Math.min(MAX_UNIT, raw)));
+      const nextGap = Math.max(2, Math.round(nextUnit * GAP_RATIO));
+
+      setUnit((prev) => (prev === nextUnit ? prev : nextUnit));
+      setGap((prev) => (prev === nextGap ? prev : nextGap));
+    });
+    observer.observe(outer);
+    return () => observer.disconnect();
+  }, [maxRowUnits]);
 
   const keyCandidatesMap = useMemo(() => {
     if (!keyDiagram) return new Map<string, Shortcut[]>();
@@ -89,8 +134,8 @@ export function Keyboard() {
   }, [keyDiagram, activeMode]);
 
   const layout = useMemo(
-    () => addGapCompensation(keyLayout.rows, GAP),
-    [keyLayout],
+    () => addGapCompensation(keyLayout.rows, unit, gap),
+    [keyLayout, unit, gap],
   );
 
   // ------------------------------------------------------------------
@@ -131,39 +176,44 @@ export function Keyboard() {
   return (
     <>
       <div
-        ref={keyboardRef}
-        className="flex flex-col gap-1 rounded-xl p-3 border border-neutral-300 w-fit dark:border-neutral-700 dark:bg-neutral-900"
+        ref={sizerRef}
+        className="w-full min-w-0 flex justify-center lg:justify-start overflow-x-auto"
       >
-        {layout.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex" style={{ gap: GAP }}>
-            {row.map((key, keyIndex) =>
-              key.id === null ? (
-                <div
-                  key={`gap-${rowIndex}-${keyIndex}`}
-                  className="flex-none"
-                  style={{ width: key.adjustedWidth }}
-                />
-              ) : (
-                <Key
-                  key={key.id}
-                  label={key.label}
-                  width={key.adjustedWidth}
-                  unit={UNIT}
-                  description={getKeyDescription(
-                    keyCandidatesMap.get(key.id),
-                    pressedKeys,
-                  )}
-                  candidateCount={keyCandidatesMap.get(key.id)?.length ?? 0}
-                  isPressed={pressedKeys.has(key.id)}
-                  isInspectMode={isInspectMode}
-                  onClick={() =>
-                    isInspectMode ? setEditingKey(key.id) : toggleKey(key.id)
-                  }
-                />
-              ),
-            )}
-          </div>
-        ))}
+        <div
+          ref={keyboardRef}
+          className="flex flex-col gap-1 rounded-xl p-3 border border-neutral-300 w-fit dark:border-neutral-700 dark:bg-neutral-900"
+        >
+          {layout.map((row, rowIndex) => (
+            <div key={rowIndex} className="flex" style={{ gap }}>
+              {row.map((key, keyIndex) =>
+                key.id === null ? (
+                  <div
+                    key={`gap-${rowIndex}-${keyIndex}`}
+                    className="flex-none"
+                    style={{ width: key.adjustedWidth }}
+                  />
+                ) : (
+                  <Key
+                    key={key.id}
+                    label={key.label}
+                    width={key.adjustedWidth}
+                    unit={unit}
+                    description={getKeyDescription(
+                      keyCandidatesMap.get(key.id),
+                      pressedKeys,
+                    )}
+                    candidateCount={keyCandidatesMap.get(key.id)?.length ?? 0}
+                    isPressed={pressedKeys.has(key.id)}
+                    isInspectMode={isInspectMode}
+                    onClick={() =>
+                      isInspectMode ? setEditingKey(key.id) : toggleKey(key.id)
+                    }
+                  />
+                ),
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
       {editingKey && (

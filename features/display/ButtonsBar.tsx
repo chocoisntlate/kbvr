@@ -162,7 +162,7 @@ export default function ButtonsBar() {
 
   return (
     <div
-      className="flex items-center justify-between gap-2 my-2"
+      className="flex flex-wrap items-center justify-between gap-2 gap-y-2 my-2"
       style={{
         background: "none",
         minHeight: 0,
@@ -172,7 +172,7 @@ export default function ButtonsBar() {
         width: keyboardWidth ?? undefined,
       }}
     >
-      <div className="inline-flex items-center gap-2">
+      <div className="inline-flex flex-wrap items-center gap-2">
         <Button
           size="md"
           className="relative group"
@@ -247,7 +247,7 @@ export default function ButtonsBar() {
         </div>
       </div>
 
-      <div className="inline-flex items-center gap-2">
+      <div className="inline-flex flex-wrap items-center gap-2">
         <SaveMenuButton />
         <ImportMenuButton />
         <ExportMenuButton />
