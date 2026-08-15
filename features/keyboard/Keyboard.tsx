@@ -38,11 +38,10 @@ function addGapCompensation(rows: Layout["rows"], unit: number, gap: number) {
 
 function getMaxRowUnits(rows: Layout["rows"]) {
   return Math.max(
-    ...rows.map(
-      (row) =>
-        row.reduce((sum, key) => sum + (key.widthScale ?? 1), 0) +
-        (row.length - 1) * GAP_RATIO,
-    ),
+    ...rows.map((row) => {
+      const widthSum = row.reduce((sum, key) => sum + (key.widthScale ?? 1), 0);
+      return widthSum + (widthSum - 1) * GAP_RATIO;
+    }),
   );
 }
 
