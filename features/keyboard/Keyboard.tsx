@@ -91,9 +91,9 @@ export function Keyboard() {
 
   // shrink/grow the key unit to fit whatever width the surrounding layout
   // actually gives us, instead of rendering at a fixed pixel size. gap is
-  // resolved before the final unit because it rounds to whole pixels, and a
-  // rounded-up gap would otherwise push the rendered rows past the width we
-  // measured against and raise a scrollbar.
+  // resolved first because it rounds to whole pixels; the unit then takes the
+  // remainder unrounded so the rows land exactly on the measured width rather
+  // than stopping up to a unit short of it and leaving a hole on the right.
   useEffect(() => {
     const outer = sizerRef.current;
     const inner = keyboardRef.current;
@@ -110,14 +110,15 @@ export function Keyboard() {
           parseFloat(cs.paddingRight) +
           parseFloat(cs.borderLeftWidth) +
           parseFloat(cs.borderRightWidth);
-        const content = available - paddingBorder;
+        // half a pixel of slack so float error can never round up into a scrollbar
+        const content = available - paddingBorder - 0.5;
 
         const nextGap = Math.max(
           2,
           Math.round(clampUnit(content / maxRowScale) * GAP_RATIO),
         );
         const nextUnit = clampUnit(
-          Math.floor((content - (maxRowScale - 1) * nextGap) / maxRowScale),
+          (content - (maxRowScale - 1) * nextGap) / maxRowScale,
         );
 
         setUnit((prev) => (prev === nextUnit ? prev : nextUnit));

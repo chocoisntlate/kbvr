@@ -188,7 +188,7 @@ export default function SearchBar() {
 
   return (
     <div
-      className="flex min-h-0 w-full lg:w-64 flex-col gap-1"
+      className="flex min-h-0 w-full lg:w-64 xl:w-80 2xl:w-[25rem] flex-col gap-1"
       style={{ height: keyboardHeight ?? undefined }}
     >
       <input
