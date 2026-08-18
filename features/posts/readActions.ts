@@ -2,14 +2,20 @@
 
 import {
   searchPosts,
+  getUserOwnedDiagrams,
+  getUserOwnedLayouts,
   getUserOwnedDiagramSummaries,
   getUserOwnedLayoutSummaries,
   getUserSavedDiagrams,
   getUserSavedLayouts,
+  getSavedDiagramIds,
+  getSavedLayoutIds,
   getUserDefaultLayoutId,
   type SearchPostsResult,
 } from "./queries";
 import { DiagramPostSummary, LayoutPostSummary } from "./types";
+import type { Diagram } from "@/features/spec/diagramSchema";
+import type { Layout } from "@/features/spec/layoutSchema";
 
 export async function searchPostsAction(
   type: "diagram" | "layout",
@@ -23,18 +29,17 @@ export async function getBrowseLayoutFlagsAction(): Promise<{
   savedLayoutIds: string[];
   defaultLayoutId: string | null;
 }> {
-  const [savedLayouts, defaultLayoutId] = await Promise.all([
-    getUserSavedLayouts(),
+  const [savedLayoutIds, defaultLayoutId] = await Promise.all([
+    getSavedLayoutIds(),
     getUserDefaultLayoutId(),
   ]);
-  return { savedLayoutIds: savedLayouts.map((l) => l.id), defaultLayoutId };
+  return { savedLayoutIds, defaultLayoutId };
 }
 
 export async function getBrowseDiagramFlagsAction(): Promise<{
   savedDiagramIds: string[];
 }> {
-  const savedDiagrams = await getUserSavedDiagrams();
-  return { savedDiagramIds: savedDiagrams.map((d) => d.id) };
+  return { savedDiagramIds: await getSavedDiagramIds() };
 }
 
 function dedupeById<T extends { id: string }>(
@@ -73,5 +78,23 @@ export async function getLibraryDataAction(): Promise<LibraryData> {
     diagrams: dedupeById(ownedDiagrams, savedDiagrams),
     layouts: dedupeById(ownedLayouts, savedLayouts),
     defaultLayoutId,
+  };
+}
+
+/*
+ * The only caller that needs every owned post's full `data` jsonb. Invoked
+ * from ExportDataButton on click, so /account doesn't pay for it on render.
+ */
+export async function getExportBundleAction(): Promise<{
+  diagrams: Diagram[];
+  layouts: Layout[];
+}> {
+  const [diagrams, layouts] = await Promise.all([
+    getUserOwnedDiagrams(),
+    getUserOwnedLayouts(),
+  ]);
+  return {
+    diagrams: diagrams.map((d) => d.data),
+    layouts: layouts.map((l) => l.data),
   };
 }

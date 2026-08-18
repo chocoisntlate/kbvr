@@ -3,11 +3,17 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { FeaturedDiagramCard } from "@/features/landing/FeaturedDiagramCard";
 import { FEATURED_DIAGRAM_IDS } from "@/features/landing/featuredDiagrams";
-import { getDiagramById } from "@/features/posts/queries";
+import { getDiagramSummariesByIds } from "@/features/posts/queries";
 
 export const metadata: Metadata = {
   title: "kbvr",
 };
+
+// Featured diagrams are public and identical for every visitor, and
+// getDiagramSummariesByIds uses the cookie-free public client, so this page
+// renders statically and revalidates hourly. Mutations already call
+// revalidatePath("/") (features/posts/actions.ts), so it stays current.
+export const revalidate = 3600;
 
 const primaryButtonClasses =
   "inline-block rounded-md border border-teal-300 bg-teal-50 px-5 py-2.5 text-sm font-medium text-teal-700 transition-colors hover:bg-teal-100 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-300 dark:hover:bg-teal-950/60";
@@ -79,10 +85,7 @@ export default function LandingPage() {
 }
 
 async function FeaturedDiagrams() {
-  const results = await Promise.all(
-    FEATURED_DIAGRAM_IDS.map((id) => getDiagramById(id)),
-  );
-  const featuredDiagrams = results.filter((result) => result !== null);
+  const featuredDiagrams = await getDiagramSummariesByIds(FEATURED_DIAGRAM_IDS);
 
   if (featuredDiagrams.length === 0) {
     return (
@@ -101,17 +104,17 @@ async function FeaturedDiagrams() {
 
   return (
     <div className="mt-6 grid gap-4 sm:grid-cols-2">
-      {featuredDiagrams.map(({ post }) => (
+      {featuredDiagrams.map((post) => (
         <FeaturedDiagramCard
           key={post.id}
           diagram={{
             key: post.id,
-            name: post.data.name,
-            description: post.data.description ?? "No description yet.",
+            name: post.name,
+            description: post.description ?? "No description yet.",
             href: `/editor?diagram=${post.id}`,
             author: post.ownerDisplayName,
             isOfficial: post.isOfficial,
-            stats: [`${post.data.shortcuts.length} shortcuts`],
+            stats: [`${post.shortcutCount} shortcuts`],
           }}
         />
       ))}

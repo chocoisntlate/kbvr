@@ -40,7 +40,14 @@ export const createClient = async (request: NextRequest) => {
     // Refreshing the auth token must happen here (do not remove): this is what
     // actually triggers the cookie getAll/setAll calls above. Supabase's SDK
     // only reads/writes session cookies lazily, when an auth method is called.
-    await supabase.auth.getUser();
+    //
+    // getClaims() rather than getUser(): it verifies the JWT locally against a
+    // cached JWKS instead of making an HTTPS round trip to the Auth server on
+    // every single request. It still calls getSession() internally, so the
+    // refresh-and-write-cookies behaviour above is unchanged. Requires the
+    // project to use an asymmetric JWT signing key; with a symmetric key the
+    // SDK silently falls back to a getUser() round trip.
+    await supabase.auth.getClaims();
   } catch (err) {
     console.warn("Supabase unavailable, passing request through:", err);
   }

@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import {
   getPublicPostsByDisplayName,
-  getUserSavedDiagrams,
-  getUserSavedLayouts,
+  getSavedDiagramIds,
+  getSavedLayoutIds,
   getUserDefaultLayoutId,
 } from "@/features/posts/queries";
 import { DiagramPostCard } from "@/features/browse/DiagramPostCard";
@@ -33,18 +33,20 @@ export default async function PublicProfilePage({
   const { displayName: encoded } = await params;
   const displayName = decodeURIComponent(encoded);
 
-  const result = await getPublicPostsByDisplayName(displayName);
+  // The viewer's own saved/default flags don't depend on whose profile this
+  // is, so they resolve alongside the profile lookup rather than after it.
+  const [result, savedDiagrams, savedLayouts, defaultLayoutId] =
+    await Promise.all([
+      getPublicPostsByDisplayName(displayName),
+      getSavedDiagramIds(),
+      getSavedLayoutIds(),
+      getUserDefaultLayoutId(),
+    ]);
   if (!result) notFound();
 
   const { diagrams, layouts } = result;
-
-  const [savedDiagrams, savedLayouts, defaultLayoutId] = await Promise.all([
-    getUserSavedDiagrams(),
-    getUserSavedLayouts(),
-    getUserDefaultLayoutId(),
-  ]);
-  const savedDiagramIds = new Set(savedDiagrams.map((d) => d.id));
-  const savedLayoutIds = new Set(savedLayouts.map((l) => l.id));
+  const savedDiagramIds = new Set(savedDiagrams);
+  const savedLayoutIds = new Set(savedLayouts);
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-6 p-4">

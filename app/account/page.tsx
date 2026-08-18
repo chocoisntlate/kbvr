@@ -1,11 +1,6 @@
 import { Suspense } from "react";
 import { getServerAuthContext } from "@/utils/supabase/server";
-import {
-  getUserOwnedDiagrams,
-  getUserOwnedLayouts,
-  getUserSavedDiagrams,
-  getUserSavedLayouts,
-} from "@/features/posts/queries";
+import { getAccountStats } from "@/features/posts/queries";
 import { SignInPrompt } from "@/features/auth/SignInPrompt";
 import { DisplayNameForm } from "@/features/account/DisplayNameForm";
 import { ExportDataButton } from "@/features/account/ExportDataButton";
@@ -37,17 +32,29 @@ export default function AccountPage() {
 async function AccountContent() {
   let email: string | null = null;
   let displayName: string | null = null;
+  let stats = {
+    ownedDiagrams: 0,
+    ownedLayouts: 0,
+    savedDiagrams: 0,
+    savedLayouts: 0,
+  };
 
   const { supabase, user } = await getServerAuthContext();
   if (supabase && user) {
     email = user.email ?? null;
     try {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("display_name")
-        .eq("id", user.id)
-        .maybeSingle();
+      // The stats counts don't depend on the profile row, so both resolve in
+      // one round trip's worth of latency.
+      const [{ data: profile }, accountStats] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("display_name")
+          .eq("id", user.id)
+          .maybeSingle(),
+        getAccountStats(),
+      ]);
       displayName = profile?.display_name ?? null;
+      stats = accountStats;
     } catch (err) {
       console.warn("Supabase unavailable, continuing signed out:", err);
     }
@@ -64,14 +71,6 @@ async function AccountContent() {
       </p>
     );
   }
-
-  const [ownedDiagrams, ownedLayouts, savedDiagrams, savedLayouts] =
-    await Promise.all([
-      getUserOwnedDiagrams(),
-      getUserOwnedLayouts(),
-      getUserSavedDiagrams(),
-      getUserSavedLayouts(),
-    ]);
 
   return (
     <>
@@ -95,7 +94,7 @@ async function AccountContent() {
               Diagrams created
             </dt>
             <dd className="font-medium text-neutral-900 dark:text-neutral-100">
-              {ownedDiagrams.length}
+              {stats.ownedDiagrams}
             </dd>
           </div>
           <div>
@@ -103,7 +102,7 @@ async function AccountContent() {
               Layouts created
             </dt>
             <dd className="font-medium text-neutral-900 dark:text-neutral-100">
-              {ownedLayouts.length}
+              {stats.ownedLayouts}
             </dd>
           </div>
           <div>
@@ -111,7 +110,7 @@ async function AccountContent() {
               Diagrams saved
             </dt>
             <dd className="font-medium text-neutral-900 dark:text-neutral-100">
-              {savedDiagrams.length}
+              {stats.savedDiagrams}
             </dd>
           </div>
           <div>
@@ -119,7 +118,7 @@ async function AccountContent() {
               Layouts saved
             </dt>
             <dd className="font-medium text-neutral-900 dark:text-neutral-100">
-              {savedLayouts.length}
+              {stats.savedLayouts}
             </dd>
           </div>
         </dl>
@@ -132,10 +131,7 @@ async function AccountContent() {
         <p className="mb-3 text-xs text-neutral-500 dark:text-neutral-400">
           Download every diagram and layout you own as a single JSON file.
         </p>
-        <ExportDataButton
-          diagrams={ownedDiagrams.map((d) => d.data)}
-          layouts={ownedLayouts.map((l) => l.data)}
-        />
+        <ExportDataButton />
       </section>
 
       <DeleteAccountDialog displayName={displayName} />

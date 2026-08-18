@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { cache } from "react";
-import type { SupabaseClient, User } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { isSupabaseConfigured } from "./config";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -30,14 +30,26 @@ export const createClient = (
   });
 };
 
+// Only what callers actually read. Sourced from verified JWT claims rather
+// than a full auth.users row, so resolving it costs no network round trip.
+export type AuthUser = {
+  id: string;
+  email: string | null;
+  fullName: string | null;
+};
+
 export type ServerAuthContext = {
   supabase: SupabaseClient | null;
-  user: User | null;
+  user: AuthUser | null;
 };
 
 // Memoized per request/render pass: every caller within the same navigation
-// (layout, page, nested query functions) shares one auth.getUser() call
-// instead of each re-hitting Supabase's Auth API.
+// (layout, page, nested query functions) shares one identity resolution
+// instead of each re-deriving it.
+//
+// getClaims() verifies the access token locally against a cached JWKS, so
+// unlike getUser() this does not hit the Auth server on every render. The
+// tradeoff is that a revoked session stays valid until its token expires.
 export const getServerAuthContext = cache(
   async (): Promise<ServerAuthContext> => {
     if (!isSupabaseConfigured()) {
@@ -45,10 +57,18 @@ export const getServerAuthContext = cache(
     }
     const supabase = createClient(await cookies());
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      return { supabase, user };
+      const { data } = await supabase.auth.getClaims();
+      const claims = data?.claims;
+      if (!claims?.sub) return { supabase, user: null };
+      const fullName = claims.user_metadata?.full_name;
+      return {
+        supabase,
+        user: {
+          id: claims.sub,
+          email: claims.email ?? null,
+          fullName: typeof fullName === "string" ? fullName : null,
+        },
+      };
     } catch (err) {
       console.warn("Supabase unavailable, continuing signed out:", err);
       return { supabase, user: null };

@@ -43,7 +43,7 @@ export default function Navbar() {
             href="/library"
             className="hover:text-neutral-900 transition-colors dark:hover:text-neutral-100"
           >
-            Library
+            My Library
           </Link>
         </nav>
       </div>

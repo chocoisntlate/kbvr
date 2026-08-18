@@ -1,9 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import type { User } from "@supabase/supabase-js";
 import type { z } from "zod";
-import { createClient, getServerAuthContext } from "@/utils/supabase/server";
+import {
+  createClient,
+  getServerAuthContext,
+  type AuthUser,
+} from "@/utils/supabase/server";
 import { DiagramSchema, type Diagram } from "@/features/spec/diagramSchema";
 import { LayoutSchema, type Layout } from "@/features/spec/layoutSchema";
 import { PostMeta } from "./types";
@@ -18,25 +21,20 @@ async function requireUser() {
   return { supabase, user };
 }
 
-function isOfficialAccount(user: User): boolean {
+function isOfficialAccount(user: AuthUser): boolean {
   return !!user.email && OFFICIAL_ACCOUNT_EMAILS.includes(user.email);
 }
 
 async function ownerDisplayName(
   supabase: ReturnType<typeof createClient>,
-  user: User,
+  user: AuthUser,
 ): Promise<string | null> {
   const { data: profile } = await supabase
     .from("profiles")
     .select("display_name")
     .eq("id", user.id)
     .maybeSingle();
-  return (
-    profile?.display_name ??
-    (user.user_metadata?.full_name as string | undefined) ??
-    user.email ??
-    null
-  );
+  return profile?.display_name ?? user.fullName ?? user.email ?? null;
 }
 
 function revalidatePostPages() {
@@ -289,14 +287,15 @@ export async function toggleLayoutVisibility(
 export async function setDefaultLayout(layoutId: string): Promise<void> {
   const { supabase, user } = await requireUser();
 
-  const { error: saveError } = await supabase
-    .from("saved_layouts")
-    .upsert({ user_id: user.id, layout_id: layoutId });
+  const [{ error: saveError }, { error: profileError }] = await Promise.all([
+    supabase
+      .from("saved_layouts")
+      .upsert({ user_id: user.id, layout_id: layoutId }),
+    supabase
+      .from("profiles")
+      .upsert({ id: user.id, default_layout_id: layoutId }),
+  ]);
   if (saveError) throw saveError;
-
-  const { error: profileError } = await supabase
-    .from("profiles")
-    .upsert({ id: user.id, default_layout_id: layoutId });
   if (profileError) throw profileError;
 
   revalidatePostPages();

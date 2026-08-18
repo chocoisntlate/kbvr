@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { getServerAuthContext } from "@/utils/supabase/server";
+import { createPublicClient } from "@/utils/supabase/public";
 import { isSupabaseConfigured } from "@/utils/supabase/config";
 import { Diagram } from "@/features/spec/diagramSchema";
 import { Layout } from "@/features/spec/layoutSchema";
@@ -208,77 +209,72 @@ export const getDiagramById = cache(async function getDiagramById(
   return safely(null, async () => {
     const { supabase, user } = await getServerContext();
 
-    const { data, error } = await supabase
-      .from("diagrams")
-      .select("*")
-      .eq("id", id)
-      .maybeSingle();
+    // The saved-check only depends on `id` and `user.id`, not on the post
+    // row, so it runs alongside the post fetch rather than after it.
+    const [{ data, error }, saved] = await Promise.all([
+      supabase.from("diagrams").select("*").eq("id", id).maybeSingle(),
+      user
+        ? supabase
+            .from("saved_diagrams")
+            .select("diagram_id")
+            .eq("user_id", user.id)
+            .eq("diagram_id", id)
+            .maybeSingle()
+        : null,
+    ]);
     if (error) throw error;
     if (!data) return null;
 
-    let isSavedByMe = false;
-    if (user) {
-      const { data: saved } = await supabase
-        .from("saved_diagrams")
-        .select("diagram_id")
-        .eq("user_id", user.id)
-        .eq("diagram_id", id)
-        .maybeSingle();
-      isSavedByMe = !!saved;
-    }
-
-    return { post: mapRow<Diagram>(data as PostRow), isSavedByMe };
+    return {
+      post: mapRow<Diagram>(data as PostRow),
+      isSavedByMe: !!saved?.data,
+    };
   });
 });
 
-export async function getLayoutById(
+export const getLayoutById = cache(async function getLayoutById(
   id: string,
 ): Promise<{ post: LayoutPost; isSavedByMe: boolean } | null> {
   return safely(null, async () => {
     const { supabase, user } = await getServerContext();
 
-    const { data, error } = await supabase
-      .from("layouts")
-      .select("*")
-      .eq("id", id)
-      .maybeSingle();
+    const [{ data, error }, saved] = await Promise.all([
+      supabase.from("layouts").select("*").eq("id", id).maybeSingle(),
+      user
+        ? supabase
+            .from("saved_layouts")
+            .select("layout_id")
+            .eq("user_id", user.id)
+            .eq("layout_id", id)
+            .maybeSingle()
+        : null,
+    ]);
     if (error) throw error;
     if (!data) return null;
 
-    let isSavedByMe = false;
-    if (user) {
-      const { data: saved } = await supabase
-        .from("saved_layouts")
-        .select("layout_id")
-        .eq("user_id", user.id)
-        .eq("layout_id", id)
-        .maybeSingle();
-      isSavedByMe = !!saved;
-    }
-
-    return { post: mapRow<Layout>(data as PostRow), isSavedByMe };
+    return {
+      post: mapRow<Layout>(data as PostRow),
+      isSavedByMe: !!saved?.data,
+    };
   });
-}
+});
 
 export async function getDefaultLayout(): Promise<LayoutPost | null> {
   return safely(null, async () => {
     const { supabase, user } = await getServerContext();
     if (!user) return null;
 
-    const { data: profile } = await supabase
+    // One round trip: PostgREST resolves the embed through the
+    // profiles.default_layout_id -> layouts.id foreign key.
+    const { data, error } = await supabase
       .from("profiles")
-      .select("default_layout_id")
+      .select("layouts(*)")
       .eq("id", user.id)
       .maybeSingle();
-    if (!profile?.default_layout_id) return null;
-
-    const { data, error } = await supabase
-      .from("layouts")
-      .select("*")
-      .eq("id", profile.default_layout_id)
-      .maybeSingle();
     if (error) throw error;
-    return data ? mapRow<Layout>(data as PostRow) : null;
+
+    const layout = (data as { layouts: PostRow | null } | null)?.layouts;
+    return layout ? mapRow<Layout>(layout) : null;
   });
 }
 
@@ -382,6 +378,86 @@ export async function getUserSavedLayouts(): Promise<LayoutPostSummary[]> {
   });
 }
 
+/*
+ * Callers that only need "which posts has this user saved?" as a set of ids
+ * (browse cards, the profile page) use these instead of
+ * getUserSavedDiagrams/getUserSavedLayouts, which embed the whole joined post
+ * row only to have it thrown away.
+ */
+export async function getSavedDiagramIds(): Promise<string[]> {
+  return safely([], async () => {
+    const { supabase, user } = await getServerContext();
+    if (!user) return [];
+
+    const { data, error } = await supabase
+      .from("saved_diagrams")
+      .select("diagram_id")
+      .eq("user_id", user.id);
+    if (error) throw error;
+    return (data as { diagram_id: string }[]).map((row) => row.diagram_id);
+  });
+}
+
+export async function getSavedLayoutIds(): Promise<string[]> {
+  return safely([], async () => {
+    const { supabase, user } = await getServerContext();
+    if (!user) return [];
+
+    const { data, error } = await supabase
+      .from("saved_layouts")
+      .select("layout_id")
+      .eq("user_id", user.id);
+    if (error) throw error;
+    return (data as { layout_id: string }[]).map((row) => row.layout_id);
+  });
+}
+
+export type AccountStats = {
+  ownedDiagrams: number;
+  ownedLayouts: number;
+  savedDiagrams: number;
+  savedLayouts: number;
+};
+
+/*
+ * `head: true` makes PostgREST return the count in a header and no rows at
+ * all, so the account page's stats block costs four empty responses rather
+ * than every owned post's full `data` jsonb.
+ */
+export async function getAccountStats(): Promise<AccountStats> {
+  const empty: AccountStats = {
+    ownedDiagrams: 0,
+    ownedLayouts: 0,
+    savedDiagrams: 0,
+    savedLayouts: 0,
+  };
+  return safely(empty, async () => {
+    const { supabase, user } = await getServerContext();
+    if (!user) return empty;
+
+    const countOf = (table: string, column: string) =>
+      supabase
+        .from(table)
+        .select("*", { count: "exact", head: true })
+        .eq(column, user.id);
+
+    const [ownedDiagrams, ownedLayouts, savedDiagrams, savedLayouts] =
+      await Promise.all([
+        countOf("diagrams", "owner_id"),
+        countOf("layouts", "owner_id"),
+        countOf("saved_diagrams", "user_id"),
+        countOf("saved_layouts", "user_id"),
+      ]);
+
+    return {
+      ownedDiagrams: ownedDiagrams.count ?? 0,
+      ownedLayouts: ownedLayouts.count ?? 0,
+      savedDiagrams: savedDiagrams.count ?? 0,
+      savedLayouts: savedLayouts.count ?? 0,
+    };
+  });
+}
+
 export async function getPublicPostsByDisplayName(
   displayName: string,
 ): Promise<{
@@ -437,36 +513,46 @@ export async function getPublicPostsByDisplayName(
   });
 }
 
+/*
+ * Sitemap only. Uses the cookie-free public client so app/sitemap.ts stays
+ * cacheable, and public_display_names() (0009_query_performance.sql) so the
+ * dedupe happens in Postgres instead of transferring every public row.
+ */
 export async function getPublicDisplayNames(): Promise<string[]> {
   return safely([], async () => {
-    const { supabase } = await getServerContext();
+    const supabase = createPublicClient();
+    const { data, error } = await supabase.rpc("public_display_names");
+    if (error) throw error;
+    return (data as string[]) ?? [];
+  });
+}
 
-    const [
-      { data: diagramNames, error: diagramsError },
-      { data: layoutNames, error: layoutsError },
-    ] = await Promise.all([
-      supabase
-        .from("diagrams")
-        .select("owner_display_name")
-        .eq("is_public", true)
-        .not("owner_display_name", "is", null),
-      supabase
-        .from("layouts")
-        .select("owner_display_name")
-        .eq("is_public", true)
-        .not("owner_display_name", "is", null),
-    ]);
-    if (diagramsError) throw diagramsError;
-    if (layoutsError) throw layoutsError;
+/*
+ * Landing-page featured cards. One query for all ids, list columns only, on
+ * the public client — the previous getDiagramById() per id pulled each post's
+ * full `data` jsonb plus a saved-check the cards never read.
+ */
+export async function getDiagramSummariesByIds(
+  ids: string[],
+): Promise<DiagramPostSummary[]> {
+  return safely([], async () => {
+    if (ids.length === 0) return [];
+    const supabase = createPublicClient();
 
-    const names = new Set<string>();
-    for (const row of diagramNames as { owner_display_name: string }[]) {
-      names.add(row.owner_display_name);
-    }
-    for (const row of layoutNames as { owner_display_name: string }[]) {
-      names.add(row.owner_display_name);
-    }
-    return [...names];
+    const { data, error } = await supabase
+      .from("diagrams")
+      .select(LIST_COLUMNS.diagrams)
+      .in("id", ids);
+    if (error) throw error;
+
+    const byId = new Map(
+      (data as unknown as DiagramListRow[]).map((row) => [row.id, row]),
+    );
+    // Preserve the caller's ordering; `.in()` does not guarantee it.
+    return ids
+      .map((id) => byId.get(id))
+      .filter((row): row is DiagramListRow => !!row)
+      .map(mapDiagramListRow);
   });
 }
 

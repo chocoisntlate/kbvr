@@ -2,6 +2,10 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 import { getPublicDisplayNames } from "@/features/posts/queries";
 
+// getPublicDisplayNames() uses the cookie-free public client and a single
+// RPC, so this route is cacheable rather than re-scanned per crawl.
+export const revalidate = 86400;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const displayNames = await getPublicDisplayNames();
 

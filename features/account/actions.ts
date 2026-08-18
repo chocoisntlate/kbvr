@@ -1,18 +1,14 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import * as z from "zod";
-import { createClient } from "@/utils/supabase/server";
+import { getServerAuthContext } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { DisplayNameSchema } from "./validation";
 
 async function requireUser() {
-  const supabase = createClient(await cookies());
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("You must be signed in to do this.");
+  const { supabase, user } = await getServerAuthContext();
+  if (!supabase || !user) throw new Error("You must be signed in to do this.");
   return { supabase, user };
 }
 
@@ -48,14 +44,16 @@ export async function updateDisplayName(name: string): Promise<void> {
 
   // Keep existing posts' attribution in sync immediately, rather than only
   // on next save.
-  await supabase
-    .from("diagrams")
-    .update({ owner_display_name: displayName })
-    .eq("owner_id", user.id);
-  await supabase
-    .from("layouts")
-    .update({ owner_display_name: displayName })
-    .eq("owner_id", user.id);
+  await Promise.all([
+    supabase
+      .from("diagrams")
+      .update({ owner_display_name: displayName })
+      .eq("owner_id", user.id),
+    supabase
+      .from("layouts")
+      .update({ owner_display_name: displayName })
+      .eq("owner_id", user.id),
+  ]);
 
   revalidateAccountPages();
 }

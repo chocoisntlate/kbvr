@@ -76,12 +76,11 @@ async function BrowseResults({
   activeType: "diagram" | "layout";
   q: string;
 }) {
-  const firstPage = await searchPosts(activeType, q, 0);
-
-  const layoutFlags =
-    activeType === "layout" ? await getBrowseLayoutFlagsAction() : undefined;
-  const diagramFlags =
-    activeType === "diagram" ? await getBrowseDiagramFlagsAction() : undefined;
+  const [firstPage, layoutFlags, diagramFlags] = await Promise.all([
+    searchPosts(activeType, q, 0),
+    activeType === "layout" ? getBrowseLayoutFlagsAction() : undefined,
+    activeType === "diagram" ? getBrowseDiagramFlagsAction() : undefined,
+  ]);
 
   return (
     <BrowseResultsList

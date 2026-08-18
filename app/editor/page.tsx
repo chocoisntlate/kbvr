@@ -64,13 +64,19 @@ async function EditorContent({
 }) {
   const { diagram: diagramId, new: isNew } = await searchParams;
 
+  // Independent of each other, so they share one round trip's worth of
+  // latency rather than two.
+  const [result, defaultLayout] = await Promise.all([
+    !isNew && diagramId ? getDiagramById(diagramId) : null,
+    getDefaultLayout(),
+  ]);
+
   let initialDiagram: Diagram | undefined;
   let initialDiagramMeta: PostMeta | null | undefined;
 
   if (isNew) {
     initialDiagram = EMPTY_DIAGRAM;
   } else if (diagramId) {
-    const result = await getDiagramById(diagramId);
     if (!result) notFound();
     initialDiagram = result.post.data;
     initialDiagramMeta = {
@@ -86,7 +92,6 @@ async function EditorContent({
   let initialLayout: Layout | undefined;
   let initialLayoutMeta: PostMeta | null | undefined;
 
-  const defaultLayout = await getDefaultLayout();
   if (defaultLayout) {
     initialLayout = defaultLayout.data;
     initialLayoutMeta = {
