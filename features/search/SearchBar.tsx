@@ -112,7 +112,7 @@ export default function SearchBar() {
     revertPreview();
     clearSearch();
     setIsFocused(false);
-  }, [revertPreview]);
+  }, [revertPreview, clearSearch]);
 
   // a new search invalidates whatever was being previewed from the old list;
   // deliberately only reacts to query, not activeIndex/revertPreview,

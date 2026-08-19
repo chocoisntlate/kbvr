@@ -42,10 +42,12 @@ export function LandingPage() {
           Terminology
         </h2>
         <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-          <b>Diagrams</b> define a collection of keyboard shortcuts. It is simply a JSON file that can be imported and exported.
+          <b>Diagrams</b> define a collection of keyboard shortcuts. It is
+          simply a JSON file that can be imported and exported.
         </p>
         <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-          <b>Layouts</b> define a physical structure of the keyboard as keys arranged in rows. Also just a JSON file.
+          <b>Layouts</b> define a physical structure of the keyboard as keys
+          arranged in rows. Also just a JSON file.
         </p>
       </section>
 
@@ -54,10 +56,12 @@ export function LandingPage() {
           Why?
         </h2>
         <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-          The main reason is that I wanted a cooler reference for
-          shortcuts that I could refer to, something I could fully customise and change
-          however I wanted. Another reason is that when I want to change
-          default shortcuts for an application, I want some kind of visual to see which keys are taken, how most keys are used, etc. It gives me a good idea and helps me decide.
+          The main reason is that I wanted a cooler reference for shortcuts that
+          I could refer to, something I could fully customise and change however
+          I wanted. Another reason is that when I want to change default
+          shortcuts for an application, I want some kind of visual to see which
+          keys are taken, how most keys are used, etc. It gives me a good idea
+          and helps me decide.
         </p>
       </section>
 
