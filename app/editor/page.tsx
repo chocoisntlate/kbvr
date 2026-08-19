@@ -43,7 +43,7 @@ export default function EditorPage({
   searchParams: Promise<{ diagram?: string; new?: string }>;
 }) {
   return (
-    <main className="p-2 flex flex-col items-center gap-4 my-4">
+    <main className="px-4 py-2 flex flex-col items-center gap-4 my-4">
       <Suspense
         fallback={
           <p className="text-sm text-neutral-500 dark:text-neutral-400">

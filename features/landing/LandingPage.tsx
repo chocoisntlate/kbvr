@@ -37,7 +37,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-3xl px-4 my-8">
+      <section className="mx-auto max-w-3xl px-4 my-10">
         <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
           Terminology
         </h2>
@@ -49,7 +49,7 @@ export function LandingPage() {
         </p>
       </section>
 
-      <section className="mx-auto max-w-3xl px-4 my-8">
+      <section className="mx-auto max-w-3xl px-4 my-10">
         <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
           Why?
         </h2>
@@ -61,7 +61,7 @@ export function LandingPage() {
         </p>
       </section>
 
-      <section className="mx-auto max-w-3xl px-4 my-8">
+      <section className="mx-auto max-w-3xl px-4 my-10">
         <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
           Featured Diagrams
         </h2>
