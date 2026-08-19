@@ -21,41 +21,52 @@ export function LandingPage() {
             <span className="text-teal-600 dark:text-teal-400">r</span>
           </h1>
           <p className="max-w-xl text-sm text-neutral-600 dark:text-neutral-400">
-            Browse and build a visual reference for your keybinds.
+            View and build a visual reference for your keybinds.
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
             <Link href="/editor" className={primaryButtonClasses}>
-              Try kbvr (Intro Diagram)
+              Intro Diagram
             </Link>
-            <Link href="/editor?new=1" className={secondaryButtonClasses}>
-              Start from scratch
+            <Link href="/editor?new=1" className={primaryButtonClasses}>
+              Empty Diagram
             </Link>
             <Link href="/browse" className={secondaryButtonClasses}>
-              Browse diagrams
+              Browse
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-3xl px-4 py-12">
+      <section className="mx-auto max-w-3xl px-4 my-8">
+        <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+          Terminology
+        </h2>
+        <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+          <b>Diagrams</b> define a collection of keyboard shortcuts. It is simply a JSON file that can be imported and exported.
+        </p>
+        <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+          <b>Layouts</b> define a physical structure of the keyboard as keys arranged in rows. Also just a JSON file.
+        </p>
+      </section>
+
+      <section className="mx-auto max-w-3xl px-4 my-8">
         <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
           Why?
         </h2>
         <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-          Keeping track of shortcuts across multiple applications gets
-          overwhelming fast, especially once you start customizing them. kbvr
-          maps your shortcuts onto a virtual keyboard, giving you a clear
-          reference point you can keep for yourself or share with others. No
-          account needed, everything imports and exports as a plain JSON file.
+          The main reason is that I wanted a cooler reference for
+          shortcuts that I could refer to, something I could fully customise and change
+          however I wanted. Another reason is that when I want to change
+          default shortcuts for an application, I want some kind of visual to see which keys are taken, how most keys are used, etc. It gives me a good idea and helps me decide.
         </p>
       </section>
 
-      <section className="mx-auto max-w-3xl px-4 py-5">
+      <section className="mx-auto max-w-3xl px-4 my-8">
         <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
           Featured Diagrams
         </h2>
         <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-          See what the community has to offer!
+          Diagrams from the community
         </p>
         <Suspense
           fallback={
