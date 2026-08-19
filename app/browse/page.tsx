@@ -6,6 +6,7 @@ import {
   getBrowseDiagramFlagsAction,
 } from "@/features/posts/readActions";
 import { BrowseSearchInput } from "@/features/browse/BrowseSearchInput";
+import { BrowseRefreshButton } from "@/features/browse/BrowseRefreshButton";
 import { BrowseResultsList } from "@/features/browse/BrowseResultsList";
 import type { Metadata } from "next";
 
@@ -53,7 +54,10 @@ export default async function BrowsePage({
         </Link>
       </div>
 
-      <BrowseSearchInput initialQuery={q} type={activeType} />
+      <div className="flex items-center gap-3">
+        <BrowseSearchInput initialQuery={q} type={activeType} />
+        <BrowseRefreshButton activeType={activeType} q={q} />
+      </div>
 
       <Suspense
         key={`${activeType}:${q}`}

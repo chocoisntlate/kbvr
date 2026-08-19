@@ -12,7 +12,6 @@ import type { SearchPostsResult } from "@/features/posts/queries";
 import { DiagramPostCard } from "./DiagramPostCard";
 import { LayoutPostCard } from "./LayoutPostCard";
 import { Button } from "@/features/ui/Button";
-import { RefreshButton } from "@/features/ui/RefreshButton";
 import { DiagramPostSummary, LayoutPostSummary } from "@/features/posts/types";
 
 type LayoutFlags = { savedLayoutIds: string[]; defaultLayoutId: string | null };
@@ -33,7 +32,7 @@ export function BrowseResultsList({
 }) {
   type BrowseKey = readonly ["browse", "diagram" | "layout", string, number];
 
-  const { data, size, setSize, isValidating, mutate } =
+  const { data, size, setSize, isValidating } =
     useSWRInfinite<SearchPostsResult>(
       (
         pageIndex,
@@ -65,18 +64,17 @@ export function BrowseResultsList({
     setSize(1);
   }, [activeType, q, setSize]);
 
-  const { data: layoutFlags, mutate: mutateLayoutFlags } = useSWR<LayoutFlags>(
+  const { data: layoutFlags } = useSWR<LayoutFlags>(
     activeType === "layout" ? ["browse-layout-flags"] : null,
     () => getBrowseLayoutFlagsAction(),
     initialLayoutFlags ? { fallbackData: initialLayoutFlags } : undefined,
   );
 
-  const { data: diagramFlags, mutate: mutateDiagramFlags } =
-    useSWR<DiagramFlags>(
-      activeType === "diagram" ? ["browse-diagram-flags"] : null,
-      () => getBrowseDiagramFlagsAction(),
-      initialDiagramFlags ? { fallbackData: initialDiagramFlags } : undefined,
-    );
+  const { data: diagramFlags } = useSWR<DiagramFlags>(
+    activeType === "diagram" ? ["browse-diagram-flags"] : null,
+    () => getBrowseDiagramFlagsAction(),
+    initialDiagramFlags ? { fallbackData: initialDiagramFlags } : undefined,
+  );
 
   const posts = (data ?? []).flatMap((p) => p.posts);
   const hasMore = data?.at(-1)?.hasMore ?? false;
@@ -84,18 +82,8 @@ export function BrowseResultsList({
   const defaultLayoutId = layoutFlags?.defaultLayoutId ?? null;
   const savedDiagramIds = new Set(diagramFlags?.savedDiagramIds ?? []);
 
-  const handleRefresh = () => {
-    mutate();
-    if (activeType === "layout") mutateLayoutFlags();
-    if (activeType === "diagram") mutateDiagramFlags();
-  };
-
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex justify-end">
-        <RefreshButton onRefresh={handleRefresh} isValidating={isValidating} />
-      </div>
-
+    <div className="flex flex-col gap-4">
       {posts.length === 0 && !isValidating && (
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
           No public {activeType}s found.

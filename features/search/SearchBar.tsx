@@ -8,12 +8,7 @@ import {
 } from "../keyboard/KeyboardContext";
 import { searchShortcuts } from "./searchShortcuts";
 import { getDisplayKey } from "../diagram/shortcut";
-
-function isTypingTarget(el: Element | null): boolean {
-  if (!el) return false;
-  if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") return true;
-  return (el as HTMLElement).isContentEditable ?? false;
-}
+import { useFocusShortcut } from "../ui/useFocusShortcut";
 
 function highlightMatch(description: string, trimmedQuery: string) {
   if (!trimmedQuery) return description;
@@ -114,6 +109,8 @@ export default function SearchBar() {
     setIsFocused(false);
   }, [revertPreview, clearSearch]);
 
+  useFocusShortcut(inputRef, { enabled: isSearchVisible });
+
   // a new search invalidates whatever was being previewed from the old list;
   // deliberately only reacts to query, not activeIndex/revertPreview,
   // otherwise every arrow-key preview would immediately revert itself.
@@ -126,13 +123,6 @@ export default function SearchBar() {
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (!isSearchVisible) return;
-
-      if (e.key === "Escape") {
-        if (document.activeElement === inputRef.current) {
-          inputRef.current?.blur();
-        }
-        return;
-      }
 
       if (document.activeElement === inputRef.current && results.length > 0) {
         if (e.key === "ArrowDown") {
@@ -159,17 +149,6 @@ export default function SearchBar() {
           selectResult(activeIndex);
           return;
         }
-      }
-
-      if (
-        e.key.toLowerCase() === "s" &&
-        !e.metaKey &&
-        !e.ctrlKey &&
-        !e.altKey &&
-        !isTypingTarget(document.activeElement)
-      ) {
-        e.preventDefault();
-        inputRef.current?.focus();
       }
     }
 

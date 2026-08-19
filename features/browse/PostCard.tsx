@@ -1,5 +1,8 @@
+import { ReactNode } from "react";
 import Link from "next/link";
 import { MetadataCard } from "@/features/display/MetadataCard";
+
+type Stat = string | { label: string; accent?: boolean };
 
 type PostCardProps = {
   name: string;
@@ -7,7 +10,8 @@ type PostCardProps = {
   ownerDisplayName: string | null;
   isOfficial?: boolean;
   createdAt: string;
-  stats: string[];
+  stats: Stat[];
+  icon?: ReactNode;
   actions: React.ReactNode;
 };
 
@@ -26,12 +30,14 @@ export function PostCard({
   isOfficial,
   createdAt,
   stats,
+  icon,
   actions,
 }: PostCardProps) {
   return (
     <MetadataCard
       title={
         <span className="flex items-center gap-2">
+          {icon}
           {name}
           {isOfficial && <OfficialBadge />}
         </span>
@@ -43,16 +49,26 @@ export function PostCard({
             {description}
           </p>
         )}
-        <div className="flex flex-wrap gap-1.5">
-          {stats.map((stat) => (
-            <span
-              key={stat}
-              className="rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
-            >
-              {stat}
-            </span>
-          ))}
-        </div>
+        {stats.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {stats.map((stat) => {
+              const label = typeof stat === "string" ? stat : stat.label;
+              const accent = typeof stat === "string" ? false : stat.accent;
+              return (
+                <span
+                  key={label}
+                  className={
+                    accent
+                      ? "rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-medium text-teal-700 dark:bg-teal-950/50 dark:text-teal-300"
+                      : "rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
+                  }
+                >
+                  {label}
+                </span>
+              );
+            })}
+          </div>
+        )}
         <p className="text-xs text-neutral-500 dark:text-neutral-400">
           By{" "}
           {ownerDisplayName ? (

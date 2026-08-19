@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Keyboard } from "lucide-react";
 import { OfficialBadge } from "@/features/browse/PostCard";
 
 export type FeaturedDiagramData = {
@@ -22,6 +23,7 @@ export function FeaturedDiagramCard({
       className="flex h-full flex-col rounded-lg border border-neutral-300 p-4 text-sm hover:bg-neutral-50 dark:hover:bg-neutral-700"
     >
       <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+        <Keyboard className="h-4 w-4 text-teal-600 dark:text-teal-400" />
         {diagram.name}
         {diagram.isOfficial && <OfficialBadge />}
       </h3>

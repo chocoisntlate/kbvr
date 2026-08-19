@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Keyboard } from "lucide-react";
 import { PostCard } from "./PostCard";
 import { DiagramActions } from "./DiagramActions";
 import { DiagramPostSummary } from "@/features/posts/types";
@@ -17,10 +18,8 @@ export function DiagramPostCard({
       ownerDisplayName={post.ownerDisplayName}
       isOfficial={post.isOfficial}
       createdAt={post.createdAt}
-      stats={[
-        `${post.shortcutCount} shortcuts`,
-        `${post.saveCount} save${post.saveCount === 1 ? "" : "s"}`,
-      ]}
+      icon={<Keyboard className="h-4 w-4 text-teal-600 dark:text-teal-400" />}
+      stats={[]}
       actions={
         <>
           <Link

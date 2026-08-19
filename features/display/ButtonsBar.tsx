@@ -13,12 +13,7 @@ import { SaveMenuButton } from "./SaveMenuButton";
 import { ImportMenuButton } from "./ImportMenuButton";
 import { ExportMenuButton } from "./ExportMenuButton";
 import { MatchToLayoutButton } from "./MatchToLayoutButton";
-
-function isTypingTarget(el: Element | null): boolean {
-  if (!el) return false;
-  if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") return true;
-  return (el as HTMLElement).isContentEditable ?? false;
-}
+import { isTypingTarget } from "../ui/isTypingTarget";
 
 export default function ButtonsBar() {
   const { keyDiagram } = useKeyboardContent();

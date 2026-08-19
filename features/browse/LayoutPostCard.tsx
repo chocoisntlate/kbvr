@@ -1,3 +1,4 @@
+import { LayoutGrid } from "lucide-react";
 import { PostCard } from "./PostCard";
 import { LayoutActions } from "./LayoutActions";
 import { LayoutPostSummary } from "@/features/posts/types";
@@ -18,11 +19,8 @@ export function LayoutPostCard({
       ownerDisplayName={post.ownerDisplayName}
       isOfficial={post.isOfficial}
       createdAt={post.createdAt}
-      stats={[
-        `${post.rowCount} rows`,
-        `${post.keyCount} keys`,
-        `${post.saveCount} save${post.saveCount === 1 ? "" : "s"}`,
-      ]}
+      icon={<LayoutGrid className="h-4 w-4 text-teal-600 dark:text-teal-400" />}
+      stats={[]}
       actions={
         <LayoutActions
           layoutId={post.id}
