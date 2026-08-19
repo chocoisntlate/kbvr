@@ -11,6 +11,10 @@ export type FeaturedDiagramData = {
   stats: string[];
 };
 
+
+const secondaryButtonClasses =
+  "inline-block rounded-md border border-neutral-300 bg-white px-5 py-2.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700";
+
 export function FeaturedDiagramCard({
   diagram,
 }: {
@@ -19,7 +23,7 @@ export function FeaturedDiagramCard({
   return (
     <Link
       href={diagram.href}
-      className="flex h-full flex-col rounded-lg border border-neutral-300 p-4 text-sm transition-all duration-150 hover:-translate-y-0.5 hover:border-teal-400 hover:shadow-sm dark:border-neutral-700 dark:hover:border-teal-600"
+      className="flex h-full flex-col rounded-lg border border-neutral-300 p-4 text-sm hover:bg-neutral-50 dark:hover:bg-neutral-700"
     >
       <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
         {diagram.name}
