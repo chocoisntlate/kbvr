@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useKeyboardContent, useKeyboardUI } from "../keyboard/KeyboardContext";
+import { useMatchKeyboardWidth } from "../keyboard/useMatchKeyboardWidth";
 import { DiagramSchema } from "../spec/diagramSchema";
 import { LayoutSchema } from "../spec/layoutSchema";
 import { useJsonDraft } from "./hooks/useJsonDraft";
@@ -18,11 +19,15 @@ type Target = "diagram" | "layout";
 export default function SpecEditor() {
   const { isJsonEditorVisible } = useKeyboardUI();
   const [target, setTarget] = useState<Target>("diagram");
+  const matchKeyboardWidth = useMatchKeyboardWidth();
 
   if (!isJsonEditorVisible) return null;
 
   return (
-    <div className="mt-4 w-full rounded-lg border border-neutral-300 p-4 space-y-3 text-sm dark:border-neutral-700">
+    <div
+      className={`mt-4 rounded-lg border border-neutral-300 p-4 space-y-3 text-sm dark:border-neutral-700 ${matchKeyboardWidth.className}`}
+      style={matchKeyboardWidth.style}
+    >
       <div className="flex items-center justify-between">
         <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           Raw JSON

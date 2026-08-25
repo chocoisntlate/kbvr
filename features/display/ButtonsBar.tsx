@@ -14,6 +14,7 @@ import { ImportMenuButton } from "./ImportMenuButton";
 import { ExportMenuButton } from "./ExportMenuButton";
 import { MatchToLayoutButton } from "./MatchToLayoutButton";
 import { isTypingTarget } from "../ui/isTypingTarget";
+import { useMatchKeyboardWidth } from "../keyboard/useMatchKeyboardWidth";
 
 export default function ButtonsBar() {
   const { keyDiagram } = useKeyboardContent();
@@ -26,9 +27,9 @@ export default function ButtonsBar() {
     setJsonEditorVisible,
     activeMode,
     setActiveMode,
-    keyboardWidth,
   } = useKeyboardUI();
   const { setPressedKeys } = usePressedKeys();
+  const matchKeyboardWidth = useMatchKeyboardWidth();
 
   const [isModeMenuOpen, setIsModeMenuOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -157,18 +158,14 @@ export default function ButtonsBar() {
 
   return (
     <div
-      className="flex flex-wrap items-center justify-between gap-2 gap-y-2 my-2"
+      className={`flex flex-wrap items-center justify-between gap-2 gap-y-2 my-2 ${matchKeyboardWidth.className}`}
       style={{
         background: "none",
         minHeight: 0,
-        // pinned to the keyboard's own rendered width so the right-hand
-        // buttons stay above the keyboard's right edge, not the far edge
-        // of the row (which widens once the search panel is shown)
-        width: keyboardWidth ?? undefined,
         // the keyboard has a minimum size and scrolls inside its own box on
         // narrow screens; the bar has no such box, so it must wrap instead of
         // dragging the whole page into horizontal scroll
-        maxWidth: "100%",
+        ...matchKeyboardWidth.style,
       }}
     >
       <div className="inline-flex flex-wrap items-center gap-2">

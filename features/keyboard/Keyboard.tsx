@@ -60,6 +60,7 @@ export function Keyboard() {
     setKeyboardWidth,
     editingKey,
     setEditingKey,
+    isSearchVisible,
   } = useKeyboardUI();
   const { pressedKeys, setPressedKeys } = usePressedKeys();
   const keyboardRef = useRef<HTMLDivElement>(null);
@@ -193,7 +194,9 @@ export function Keyboard() {
     <>
       <div
         ref={sizerRef}
-        className="w-full min-w-0 flex justify-center lg:justify-start overflow-x-auto"
+        className={`w-full min-w-0 flex overflow-x-auto ${
+          isSearchVisible ? "justify-center lg:justify-start" : "justify-center"
+        }`}
       >
         <div
           ref={keyboardRef}
