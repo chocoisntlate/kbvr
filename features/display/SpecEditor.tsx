@@ -61,7 +61,7 @@ function JsonEditorPane({ target }: { target: Target }) {
 
   const diagramDraft = useJsonDraft(keyDiagram, setKeyDiagram, DiagramSchema);
   const layoutDraft = useJsonDraft(keyLayout, setKeyLayout, LayoutSchema);
-  const { text, onChange, error } =
+  const { text, onChange, onBlur, error } =
     target === "diagram" ? diagramDraft : layoutDraft;
 
   return (
@@ -70,6 +70,7 @@ function JsonEditorPane({ target }: { target: Target }) {
         spellCheck={false}
         value={text}
         onChange={(e) => onChange(e.target.value)}
+        onBlur={onBlur}
         className={`h-80 w-full resize-y rounded-md border px-3 py-2 font-mono text-xs leading-relaxed dark:bg-neutral-800 dark:text-neutral-100 focus:outline-none focus:border-teal-500 dark:focus:border-teal-400 ${
           error
             ? "border-red-500 dark:border-red-500"

@@ -26,34 +26,43 @@ export function useJsonDraft<T>(
     };
   }, []);
 
+  const commit = (next: string, format: boolean) => {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(next);
+    } catch {
+      setError("Invalid JSON");
+      return;
+    }
+
+    if (format) setText(JSON.stringify(parsed, null, 2));
+
+    const result = schema.safeParse(parsed);
+    if (!result.success) {
+      setError(
+        result.error.issues
+          .map((i) => `${i.path.join(".")}: ${i.message}`)
+          .join("; "),
+      );
+      return;
+    }
+
+    setError(null);
+    setLastCommitted(JSON.stringify(result.data, null, 2));
+    setValue(result.data);
+  };
+
   const onChange = (next: string) => {
     setText(next);
 
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      let parsed: unknown;
-      try {
-        parsed = JSON.parse(next);
-      } catch {
-        setError("Invalid JSON");
-        return;
-      }
-
-      const result = schema.safeParse(parsed);
-      if (!result.success) {
-        setError(
-          result.error.issues
-            .map((i) => `${i.path.join(".")}: ${i.message}`)
-            .join("; "),
-        );
-        return;
-      }
-
-      setError(null);
-      setLastCommitted(JSON.stringify(result.data, null, 2));
-      setValue(result.data);
-    }, 500);
+    timeoutRef.current = setTimeout(() => commit(next, false), 500);
   };
 
-  return { text, onChange, error };
+  const onBlur = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    commit(text, true);
+  };
+
+  return { text, onChange, onBlur, error };
 }
