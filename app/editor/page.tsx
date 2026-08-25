@@ -115,7 +115,7 @@ async function EditorContent({
       <div className="flex flex-col gap-2 w-full max-w-[1600px]">
         <ButtonsBar />
         <div className="flex flex-col lg:flex-row items-stretch gap-4 w-full">
-          <div className="min-w-0 flex-1">
+          <div className="hidden min-w-0 flex-1 lg:block">
             <Keyboard />
           </div>
           <SearchBar />

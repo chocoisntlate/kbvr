@@ -23,7 +23,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="p-4 bg-neutral-100 flex items-center justify-between dark:bg-neutral-800">
+    <div className="p-4 bg-neutral-100 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between dark:bg-neutral-800">
       <div className="flex items-center gap-4">
         <Link className="flex items-center gap-1.5 font-mono" href="/">
           <KeySquare
@@ -52,7 +52,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3 text-xs">
           <Link
             href="/account"
-            className="text-neutral-600 hover:text-neutral-900 transition-colors dark:text-neutral-400 dark:hover:text-neutral-100"
+            className="truncate max-w-[10rem] text-neutral-600 hover:text-neutral-900 transition-colors dark:text-neutral-400 dark:hover:text-neutral-100"
           >
             {displayName ?? user.user_metadata?.full_name ?? user.email}
           </Link>

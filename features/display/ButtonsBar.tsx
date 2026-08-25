@@ -158,7 +158,7 @@ export default function ButtonsBar() {
 
   return (
     <div
-      className={`flex flex-wrap items-center justify-between gap-2 gap-y-2 my-2 ${matchKeyboardWidth.className}`}
+      className={`hidden lg:flex flex-wrap items-center justify-between gap-2 gap-y-2 my-2 ${matchKeyboardWidth.className}`}
       style={{
         background: "none",
         minHeight: 0,

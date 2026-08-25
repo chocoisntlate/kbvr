@@ -78,6 +78,11 @@ export function Keyboard() {
 
     const observer = new ResizeObserver(() => {
       const rect = el.getBoundingClientRect();
+      // below `lg` the keyboard's wrapper is `display: none`, which reports
+      // a phantom 0x0 rect here; ignore it so dependent UI (the search
+      // panel's height match) keeps its last real measurement instead of
+      // collapsing to 0
+      if (rect.width === 0 && rect.height === 0) return;
       setKeyboardHeight(rect.height);
       setKeyboardWidth(rect.width);
     });

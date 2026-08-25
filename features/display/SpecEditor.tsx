@@ -25,7 +25,7 @@ export default function SpecEditor() {
 
   return (
     <div
-      className={`mt-4 rounded-lg border border-neutral-300 p-4 space-y-3 text-sm dark:border-neutral-700 ${matchKeyboardWidth.className}`}
+      className={`hidden lg:block lg:mt-4 rounded-lg border border-neutral-300 p-4 space-y-3 text-sm dark:border-neutral-700 ${matchKeyboardWidth.className}`}
       style={matchKeyboardWidth.style}
     >
       <div className="flex items-center justify-between">
